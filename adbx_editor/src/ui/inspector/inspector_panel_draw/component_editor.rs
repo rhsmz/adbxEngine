@@ -15,7 +15,7 @@ pub fn draw_component_editors(
     mesh_material_3d_query: &Query<&bevy::prelude::MeshMaterial3d<bevy::pbr::StandardMaterial>>,
     lua_script_query: &Query<&adbx_runtime::lua::component::LuaScript>,
     lua_script_state_query: &Query<&adbx_runtime::lua::component::LuaScriptState>,
-    transform_query: &Query<&Transform>,
+    transform_query: &Query<&Transform, Changed<Transform>>,
 ) {
     // Camera3dコンポーネントの表示
     if camera_3d_query.get(entity).is_ok() {
@@ -49,11 +49,11 @@ pub fn draw_component_editors(
     if let Ok(lua_script) = lua_script_query.get(entity) {
         let lua_script_state = lua_script_state_query.get(entity).ok();
         draw_lua_script_component(
-            &mut commands,
+            commands,
             entity,
             content_entity,
             lua_script,
-            lua_script_state.as_ref(),
+            lua_script_state,
         );
     }
     

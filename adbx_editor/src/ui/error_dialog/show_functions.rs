@@ -31,7 +31,7 @@ pub fn show_error_dialog_from_error(
 
 /// エラーダイアログを表示（従来の方法）
 pub fn show_error_dialog(
-    error_dialog: &mut ResMut<ErrorDialog>,
+    error_dialog: &mut ErrorDialog,
     title: String,
     message: String,
     details: Option<String>,

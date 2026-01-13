@@ -9,7 +9,7 @@ pub fn handle_mouse_wheel_event(
     input_state: &InspectorInputState,
     wheel_event: &bevy::input::mouse::MouseWheel,
     keyboard_input: &Res<ButtonInput<KeyCode>>,
-    mut operation_recorder: ResMut<crate::systems::operation_recording::OperationRecorder>,
+    operation_recorder: &mut crate::systems::operation_recording::OperationRecorder,
 ) {
     if let Some((_entity, _field_type)) = input_state.editing_field {
         let sensitivity = if keyboard_input.pressed(KeyCode::ShiftLeft) || keyboard_input.pressed(KeyCode::ShiftRight) {
@@ -31,10 +31,10 @@ pub fn handle_mouse_wheel_event(
 /// ドラッグイベントの処理
 pub fn handle_drag_event(
     transform_query: &mut Query<&mut Transform>,
-    input_state: &mut ResMut<InspectorInputState>,
+    input_state: &mut InspectorInputState,
     current_pos: Vec2,
     keyboard_input: &Res<ButtonInput<KeyCode>>,
-    mut operation_recorder: ResMut<crate::systems::operation_recording::OperationRecorder>,
+    operation_recorder: &mut crate::systems::operation_recording::OperationRecorder,
 ) {
     if let Some(start_pos) = input_state.drag_start_mouse_pos {
         let delta_x = current_pos.x - start_pos.x;
@@ -85,7 +85,7 @@ pub fn handle_field_click(
 }
 
 /// ドラッグ終了イベントの処理
-pub fn handle_drag_end(mut input_state: ResMut<InspectorInputState>) {
+pub fn handle_drag_end(input_state: &mut InspectorInputState) {
     input_state.editing_field = None;
     input_state.drag_start_value = None;
     input_state.drag_start_mouse_pos = None;
@@ -93,15 +93,15 @@ pub fn handle_drag_end(mut input_state: ResMut<InspectorInputState>) {
 
 /// ボタンクリックイベントの処理（スクリプト削除など）
 pub fn handle_button_click(
-    mut inspector: ResMut<InspectorPanel>,
+    inspector: &mut InspectorPanel,
     name: &str,
-    communication: ResMut<crate::communication::EditorRuntimeCommunication>,
+    communication: &crate::communication::EditorRuntimeCommunication,
 ) {
     if name.starts_with("DetachScriptButton_") {
         if let Some(entity_id_str) = name.strip_prefix("DetachScriptButton_") {
             if let Ok(entity_id) = entity_id_str.parse::<u32>() {
                 if let Err(e) = crate::communication::send_to_runtime(
-                    &*communication,
+                    communication,
                     adbx_shared::EditorMessage::DetachScript { entity_id },
                 ) {
                     bevy::log::error!("Failed to send detach script message: {}", e);

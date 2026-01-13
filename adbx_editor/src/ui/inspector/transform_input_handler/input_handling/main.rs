@@ -28,7 +28,7 @@ pub fn handle_inspector_transform_input(
     if mouse_input.just_pressed(MouseButton::Left) {
         for (interaction, name) in button_interaction_query.iter() {
             if *interaction == Interaction::Pressed {
-                handle_button_click(inspector, name.as_str(), communication);
+                handle_button_click(&mut inspector, name.as_str(), &*communication);
             }
         }
     }
@@ -40,7 +40,7 @@ pub fn handle_inspector_transform_input(
             &input_state,
             &wheel_event,
             &keyboard_input,
-            operation_recorder,
+            &mut *operation_recorder,
         );
     }
     
@@ -52,16 +52,16 @@ pub fn handle_inspector_transform_input(
                 if let Some(current_pos) = window.cursor_position() {
                     handle_drag_event(
                         &mut transform_query,
-                        &mut input_state,
+                        &mut *input_state,
                         current_pos,
                         &keyboard_input,
-                        operation_recorder,
+                        &mut *operation_recorder,
                     );
                 }
             }
         } else {
             // ドラッグ終了
-            handle_drag_end(input_state);
+            handle_drag_end(&mut *input_state);
         }
     }
     

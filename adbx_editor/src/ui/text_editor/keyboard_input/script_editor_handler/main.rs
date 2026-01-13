@@ -9,8 +9,8 @@ use super::shortcuts::{copy_selection, paste_text, cut_selection, select_all};
 
 /// スクリプトエディタのキーボード入力処理
 pub fn handle_script_editor_keyboard_input(
-    script_editor: &mut ScriptEditor,
-    text_editor_state: &mut TextEditorState,
+    mut script_editor: &mut ScriptEditor,
+    mut text_editor_state: &mut TextEditorState,
     keyboard_input: &mut MessageReader<KeyboardInput>,
     keyboard: &Res<ButtonInput<KeyCode>>,
 ) {

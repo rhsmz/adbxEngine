@@ -46,7 +46,7 @@ pub fn handle_toolbar_click(
                 
                 // 保存
                 if name_str == "ToolbarSave" {
-                    crate::ui::code_editor::save_active_file_in_code_editor(&mut code_editor, &mut error_dialog);
+                    crate::ui::code_editor::save_active_file_in_code_editor(&mut *code_editor, &mut *error_dialog);
                 }
                 
                 // Undo
@@ -63,25 +63,27 @@ pub fn handle_toolbar_click(
                 if name_str == "ToolbarPlay" {
                     if runtime_state.is_stopped() {
                         // ランタイムプロセスを起動
-                        let project_path = project.project_path.as_ref().map(|p| p.as_path());
+                        let project_path: Option<&std::path::Path> = project.project_path.as_deref();
                         if let Err(e) = crate::communication::start_runtime_process(
                             &mut communication,
                             project_path,
                         ) {
                             bevy::log::error!("Failed to start runtime process: {}", e);
                             crate::ui::error_dialog::show_error_dialog(
-                                &mut error_dialog,
+                                &mut *error_dialog,
                                 "実行エラー".to_string(),
                                 format!("ランタイムプロセスの起動に失敗しました: {}", e),
                                 None,
                             );
                         } else {
                             // 現在のシーンを実行
-                            let scene_path = if let Some(project_path) = &project.project_path {
-                                Some(project_path.join("scenes").join(format!("{}.json", scene_manager.current_scene_name)).to_string_lossy().to_string())
-                            } else {
-                                None
-                            };
+                            let scene_path = project.project_path.as_ref().map(|project_path| {
+                                project_path
+                                    .join("scenes")
+                                    .join(format!("{}.json", scene_manager.current_scene_name))
+                                    .to_string_lossy()
+                                    .to_string()
+                            });
                             runtime_state.start(scene_path);
                             bevy::log::info!("Runtime started");
                         }
@@ -129,7 +131,7 @@ pub fn handle_toolbar_click(
             crate::ui::file_dialog::FileDialogResult::File(path) => {
                 // ファイルを開く
                 let path_str = path.to_string_lossy().to_string();
-                crate::ui::code_editor::open_file_in_code_editor(path_str, &mut code_editor, &mut error_dialog);
+                crate::ui::code_editor::open_file_in_code_editor(path_str, &mut *code_editor, &mut *error_dialog);
             }
             crate::ui::file_dialog::FileDialogResult::Folder(_) => {
                 // フォルダ選択の結果（必要に応じて処理）

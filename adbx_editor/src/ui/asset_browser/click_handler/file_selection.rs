@@ -4,7 +4,7 @@ use super::super::{AssetBrowser, AssetType};
 /// ファイル選択処理
 pub fn handle_file_selection(
     asset_browser: &mut AssetBrowser,
-    script_editor: &mut crate::ui::script_editor::ScriptEditor,
+    mut script_editor: &mut crate::ui::script_editor::ScriptEditor,
     file_name: &str,
 ) {
     // アセットファイルを検索（パスを先に取得）
@@ -27,7 +27,7 @@ pub fn handle_file_selection(
 
 /// インポートボタンのクリック処理
 pub fn handle_import_button_click(
-    file_dialog_request: &mut crate::ui::file_dialog::FileDialogRequest,
+    mut file_dialog_request: &mut crate::ui::file_dialog::FileDialogRequest,
 ) {
     crate::ui::file_dialog::open_file_dialog(
         &mut file_dialog_request,
@@ -39,8 +39,8 @@ pub fn handle_import_button_click(
 /// エクスポートボタンのクリック処理
 pub fn handle_export_button_click(
     asset_browser: &mut AssetBrowser,
-    file_dialog_request: &mut crate::ui::file_dialog::FileDialogRequest,
-    error_dialog: &mut crate::ui::error_dialog::ErrorDialog,
+    mut file_dialog_request: &mut crate::ui::file_dialog::FileDialogRequest,
+    mut error_dialog: &mut crate::ui::error_dialog::ErrorDialog,
 ) {
     if let Some(selected_path) = asset_browser.selected_asset.clone() {
         // エクスポート待ちフラグを立てる

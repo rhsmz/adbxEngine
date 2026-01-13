@@ -5,8 +5,8 @@ use crate::ui::code_editor::state::OpenFile;
 /// ファイルを開く
 pub fn open_file_in_code_editor(
     file_path: String,
-    code_editor: &mut ResMut<CodeEditor>,
-    error_dialog: &mut ResMut<crate::ui::error_dialog::ErrorDialog>,
+    code_editor: &mut CodeEditor,
+    error_dialog: &mut crate::ui::error_dialog::ErrorDialog,
 ) {
     match std::fs::read_to_string(&file_path) {
         Ok(content) => {
@@ -38,8 +38,8 @@ pub fn open_file_in_code_editor(
 
 /// 現在のファイルを保存
 pub fn save_active_file_in_code_editor(
-    code_editor: &mut ResMut<CodeEditor>,
-    error_dialog: &mut ResMut<crate::ui::error_dialog::ErrorDialog>,
+    code_editor: &mut CodeEditor,
+    error_dialog: &mut crate::ui::error_dialog::ErrorDialog,
 ) {
     let active_tab = code_editor.active_tab;
     if let Some(active_file) = code_editor.open_files.get_mut(active_tab) {

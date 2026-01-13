@@ -14,7 +14,7 @@ pub fn handle_shortcuts(
         if keys.just_pressed(bevy::prelude::KeyCode::KeyA) {
             handle_select_all(code_editor);
         } else if keys.just_pressed(bevy::prelude::KeyCode::KeyS) {
-            save_active_file_in_code_editor(&mut code_editor, &mut error_dialog);
+            save_active_file_in_code_editor(code_editor, error_dialog);
         } else if keys.just_pressed(bevy::prelude::KeyCode::KeyZ) {
             undo_edit(code_editor);
         } else if keys.just_pressed(bevy::prelude::KeyCode::KeyY) || 

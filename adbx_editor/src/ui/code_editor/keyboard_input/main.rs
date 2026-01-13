@@ -80,5 +80,5 @@ pub fn handle_code_editor_keyboard_input(
     }
 
     // ショートカットキーの処理
-    handle_shortcuts(&mut code_editor, &mut error_dialog, &keys);
+    handle_shortcuts(&mut *code_editor, &mut *error_dialog, &keys);
 }

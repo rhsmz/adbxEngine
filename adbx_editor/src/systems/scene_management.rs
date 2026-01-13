@@ -57,8 +57,9 @@ pub fn save_current_scene(
         
         // プロジェクトの設定されたシリアライゼーション形式を使用
         let format = project.serialization_format;
-        let scene_path = project_path.join("scenes").join(format!("{}.{}", 
-            scene_name, 
+        let scene_path: std::path::PathBuf = project_path.join("scenes").join(format!(
+            "{}.{}",
+            scene_name,
             match format {
                 SerializationFormat::Json => "json",
                 SerializationFormat::MessagePack => "msgpack",

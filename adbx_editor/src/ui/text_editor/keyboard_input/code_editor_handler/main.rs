@@ -9,8 +9,8 @@ use super::shortcuts::{copy_selection, paste_text, cut_selection, select_all};
 
 /// コードエディタのキーボード入力処理
 pub fn handle_code_editor_keyboard_input(
-    code_editor: &mut CodeEditor,
-    text_editor_state: &mut TextEditorState,
+    mut code_editor: &mut CodeEditor,
+    mut text_editor_state: &mut TextEditorState,
     keyboard_input: &mut MessageReader<KeyboardInput>,
     keyboard: &Res<ButtonInput<KeyCode>>,
 ) {
