@@ -1,0 +1,14 @@
+[package]
+name = "adbx_shared"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+bevy = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+rmp-serde = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }

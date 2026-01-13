@@ -1,0 +1,913 @@
+pub fn build_editor_ui(
+    mut commands: Commands,
+    layout: Res<EditorLayout>,
+) {
+    // メインコンテナ
+    commands.spawn((
+        Node {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            flex_direction: FlexDirection::Column,
+            ..default()
+        },
+        Name::new("EditorRoot"),
+    )).with_children(|parent| {
+                // メニューバー
+                parent.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        height: Val::Px(30.0),
+                        flex_direction: FlexDirection::Row,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        ..default()
+                    },
+                    Name::new("MenuBar"),
+                    BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
+                )).with_children(|menu| {
+                    // File メニュー
+                    menu.spawn((
+                        Node {
+                            flex_direction: FlexDirection::Row,
+                            padding: UiRect::horizontal(Val::Px(10.0)),
+                            ..default()
+                        },
+                        Name::new("FileMenu"),
+                    )).with_children(|file_menu| {
+                        file_menu.spawn((
+                            Text::new("File"),
+                            bevy::text::TextFont {
+                                font_size: 14.0,
+                                ..default()
+                            },
+                            bevy::text::TextColor(Color::WHITE),
+                        ));
+                        
+                        // メニュー項目（簡易実装：クリック可能なボタンとして表示）
+                        // New Project
+                        file_menu.spawn((
+                            Node {
+                                width: Val::Px(100.0),
+                                height: Val::Px(20.0),
+                                margin: UiRect::left(Val::Px(10.0)),
+                                justify_content: JustifyContent::Center,
+                                align_items: AlignItems::Center,
+                                ..default()
+                            },
+                            BackgroundColor(Color::srgb(0.3, 0.3, 0.3)),
+                            Interaction::default(),
+                            Name::new("MenuNewProject"),
+                        )).with_children(|button| {
+                            button.spawn((
+                                Text::new("New Project"),
+                                bevy::text::TextFont {
+                                    font_size: 12.0,
+                                    ..default()
+                                },
+                                bevy::text::TextColor(Color::WHITE),
+                            ));
+                        });
+                        
+                        // Open Project
+                        file_menu.spawn((
+                            Node {
+                                width: Val::Px(100.0),
+                                height: Val::Px(20.0),
+                                margin: UiRect::left(Val::Px(5.0)),
+                                justify_content: JustifyContent::Center,
+                                align_items: AlignItems::Center,
+                                ..default()
+                            },
+                            BackgroundColor(Color::srgb(0.3, 0.3, 0.3)),
+                            Interaction::default(),
+                            Name::new("MenuOpenProject"),
+                        )).with_children(|button| {
+                            button.spawn((
+                                Text::new("Open Project"),
+                                bevy::text::TextFont {
+                                    font_size: 12.0,
+                                    ..default()
+                                },
+                                bevy::text::TextColor(Color::WHITE),
+                            ));
+                        });
+                    });
+                    
+                    // Edit メニュー
+                    menu.spawn((
+                        Node {
+                            flex_direction: FlexDirection::Row,
+                            padding: UiRect::horizontal(Val::Px(10.0)),
+                            ..default()
+                        },
+                        Name::new("EditMenu"),
+                    )).with_children(|edit_menu| {
+                        edit_menu.spawn((
+                            Text::new("Edit"),
+                            bevy::text::TextFont {
+                                font_size: 14.0,
+                                ..default()
+                            },
+                            bevy::text::TextColor(Color::WHITE),
+                        ));
+                        
+                        // 設定メニュー項目
+                        edit_menu.spawn((
+                            Node {
+                                width: Val::Px(100.0),
+                                height: Val::Px(20.0),
+                                margin: UiRect::left(Val::Px(10.0)),
+                                justify_content: JustifyContent::Center,
+                                align_items: AlignItems::Center,
+                                ..default()
+                            },
+                            BackgroundColor(Color::srgb(0.3, 0.3, 0.3)),
+                            Interaction::default(),
+                            Name::new("MenuSettings"),
+                        )).with_children(|button| {
+                            button.spawn((
+                                Text::new("Settings"),
+                                bevy::text::TextFont {
+                                    font_size: 12.0,
+                                    ..default()
+                                },
+                                bevy::text::TextColor(Color::WHITE),
+                            ));
+                        });
+                    });
+                    
+                    // Build メニュー
+                    menu.spawn((
+                        Node {
+                            flex_direction: FlexDirection::Row,
+                            padding: UiRect::horizontal(Val::Px(10.0)),
+                            ..default()
+                        },
+                        Name::new("BuildMenu"),
+                    )).with_children(|build_menu| {
+                        build_menu.spawn((
+                            Text::new("Build"),
+                            bevy::text::TextFont {
+                                font_size: 14.0,
+                                ..default()
+                            },
+                            bevy::text::TextColor(Color::WHITE),
+                        ));
+                        
+                        // Build Game
+                        build_menu.spawn((
+                            Node {
+                                width: Val::Px(120.0),
+                                height: Val::Px(20.0),
+                                margin: UiRect::left(Val::Px(10.0)),
+                                justify_content: JustifyContent::Center,
+                                align_items: AlignItems::Center,
+                                ..default()
+                            },
+                            BackgroundColor(Color::srgb(0.3, 0.3, 0.3)),
+                            Interaction::default(),
+                            Name::new("MenuBuildGame"),
+                        )).with_children(|button| {
+                            button.spawn((
+                                Text::new("Build Game"),
+                                bevy::text::TextFont {
+                                    font_size: 12.0,
+                                    ..default()
+                                },
+                                bevy::text::TextColor(Color::WHITE),
+                            ));
+                        });
+                    });
+                    
+                    // View メニュー
+                    menu.spawn((
+                        Node {
+                            flex_direction: FlexDirection::Row,
+                            padding: UiRect::horizontal(Val::Px(10.0)),
+                            ..default()
+                        },
+                        Name::new("ViewMenu"),
+                    )).with_children(|view_menu| {
+                        view_menu.spawn((
+                            Text::new("View"),
+                            bevy::text::TextFont {
+                                font_size: 14.0,
+                                ..default()
+                            },
+                            bevy::text::TextColor(Color::WHITE),
+                        ));
+                    });
+                    
+                    // Help メニュー
+                    menu.spawn((
+                        Node {
+                            flex_direction: FlexDirection::Row,
+                            padding: UiRect::horizontal(Val::Px(10.0)),
+                            ..default()
+                        },
+                        Name::new("HelpMenu"),
+                    )).with_children(|help_menu| {
+                        help_menu.spawn((
+                            Text::new("Help"),
+                            bevy::text::TextFont {
+                                font_size: 14.0,
+                                ..default()
+                            },
+                            bevy::text::TextColor(Color::WHITE),
+                        ));
+                    });
+                });
+        
+        // ツールバー
+        parent.spawn((
+            Node {
+                width: Val::Percent(100.0),
+                height: Val::Px(35.0),
+                flex_direction: FlexDirection::Row,
+                padding: UiRect::all(Val::Px(3.0)),
+                align_items: AlignItems::Center,
+                border: UiRect::bottom(Val::Px(1.0)),
+                ..default()
+            },
+            Name::new("Toolbar"),
+            BackgroundColor(Color::srgb(0.18, 0.18, 0.18)),
+            bevy::ui::BorderColor::all(Color::srgb(0.3, 0.3, 0.3)),
+        )).with_children(|toolbar| {
+            // ファイル操作グループ
+            toolbar.spawn((
+                Node {
+                    flex_direction: FlexDirection::Row,
+                    padding: UiRect::horizontal(Val::Px(5.0)),
+                    align_items: AlignItems::Center,
+                    border: UiRect::right(Val::Px(1.0)),
+                    margin: UiRect::right(Val::Px(5.0)),
+                    ..default()
+                },
+                bevy::ui::BorderColor::all(Color::srgb(0.3, 0.3, 0.3)),
+            )).with_children(|file_group| {
+                // 新規ファイル
+                file_group.spawn((
+                    Node {
+                        width: Val::Px(30.0),
+                        height: Val::Px(30.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        margin: UiRect::right(Val::Px(3.0)),
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.25, 0.25, 0.25)),
+                    Interaction::default(),
+                    Name::new("ToolbarNewFile"),
+                )).with_children(|button| {
+                    button.spawn((
+                        Text::new("📄"),
+                        bevy::text::TextFont {
+                            font_size: 16.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+                
+                // ファイルを開く
+                file_group.spawn((
+                    Node {
+                        width: Val::Px(30.0),
+                        height: Val::Px(30.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        margin: UiRect::right(Val::Px(3.0)),
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.25, 0.25, 0.25)),
+                    Interaction::default(),
+                    Name::new("ToolbarOpenFile"),
+                )).with_children(|button| {
+                    button.spawn((
+                        Text::new("📂"),
+                        bevy::text::TextFont {
+                            font_size: 16.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+                
+                // 保存
+                file_group.spawn((
+                    Node {
+                        width: Val::Px(30.0),
+                        height: Val::Px(30.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        margin: UiRect::right(Val::Px(3.0)),
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.25, 0.25, 0.25)),
+                    Interaction::default(),
+                    Name::new("ToolbarSave"),
+                )).with_children(|button| {
+                    button.spawn((
+                        Text::new("💾"),
+                        bevy::text::TextFont {
+                            font_size: 16.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+            });
+            
+            // 編集操作グループ
+            toolbar.spawn((
+                Node {
+                    flex_direction: FlexDirection::Row,
+                    padding: UiRect::horizontal(Val::Px(5.0)),
+                    align_items: AlignItems::Center,
+                    border: UiRect::right(Val::Px(1.0)),
+                    margin: UiRect::right(Val::Px(5.0)),
+                    ..default()
+                },
+                bevy::ui::BorderColor::all(Color::srgb(0.3, 0.3, 0.3)),
+            )).with_children(|edit_group| {
+                // Undo
+                edit_group.spawn((
+                    Node {
+                        width: Val::Px(30.0),
+                        height: Val::Px(30.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        margin: UiRect::right(Val::Px(3.0)),
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.25, 0.25, 0.25)),
+                    Interaction::default(),
+                    Name::new("ToolbarUndo"),
+                )).with_children(|button| {
+                    button.spawn((
+                        Text::new("↶"),
+                        bevy::text::TextFont {
+                            font_size: 16.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+                
+                // Redo
+                edit_group.spawn((
+                    Node {
+                        width: Val::Px(30.0),
+                        height: Val::Px(30.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        margin: UiRect::right(Val::Px(3.0)),
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.25, 0.25, 0.25)),
+                    Interaction::default(),
+                    Name::new("ToolbarRedo"),
+                )).with_children(|button| {
+                    button.spawn((
+                        Text::new("↷"),
+                        bevy::text::TextFont {
+                            font_size: 16.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+            });
+            
+            // 実行操作グループ
+            toolbar.spawn((
+                Node {
+                    flex_direction: FlexDirection::Row,
+                    padding: UiRect::horizontal(Val::Px(5.0)),
+                    align_items: AlignItems::Center,
+                    border: UiRect::right(Val::Px(1.0)),
+                    margin: UiRect::right(Val::Px(5.0)),
+                    ..default()
+                },
+                bevy::ui::BorderColor::all(Color::srgb(0.3, 0.3, 0.3)),
+            )).with_children(|run_group| {
+                // 実行/再生
+                run_group.spawn((
+                    Node {
+                        width: Val::Px(30.0),
+                        height: Val::Px(30.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        margin: UiRect::right(Val::Px(3.0)),
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.25, 0.5, 0.25)),
+                    Interaction::default(),
+                    Name::new("ToolbarPlay"),
+                )).with_children(|button| {
+                    button.spawn((
+                        Text::new("▶"),
+                        bevy::text::TextFont {
+                            font_size: 16.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+                
+                // 停止
+                run_group.spawn((
+                    Node {
+                        width: Val::Px(30.0),
+                        height: Val::Px(30.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        margin: UiRect::right(Val::Px(3.0)),
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.5, 0.25, 0.25)),
+                    Interaction::default(),
+                    Name::new("ToolbarStop"),
+                )).with_children(|button| {
+                    button.spawn((
+                        Text::new("⏹"),
+                        bevy::text::TextFont {
+                            font_size: 16.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+            });
+            
+            // ビュー操作グループ
+            toolbar.spawn((
+                Node {
+                    flex_direction: FlexDirection::Row,
+                    padding: UiRect::horizontal(Val::Px(5.0)),
+                    align_items: AlignItems::Center,
+                    ..default()
+                },
+            )).with_children(|view_group| {
+                // パネルの表示/非表示切り替え
+                view_group.spawn((
+                    Node {
+                        width: Val::Px(30.0),
+                        height: Val::Px(30.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        margin: UiRect::right(Val::Px(3.0)),
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.25, 0.25, 0.25)),
+                    Interaction::default(),
+                    Name::new("ToolbarTogglePanels"),
+                )).with_children(|button| {
+                    button.spawn((
+                        Text::new("⊞"),
+                        bevy::text::TextFont {
+                            font_size: 16.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+            });
+        });
+        
+        // メインコンテンツエリア
+        parent.spawn((
+            Node {
+                width: Val::Percent(100.0),
+                flex_grow: 1.0,
+                flex_direction: FlexDirection::Row,
+                ..default()
+            },
+            Name::new("MainContent"),
+        )).with_children(|content| {
+            // ヒエラルキーパネル（左側）
+            content.spawn((
+                Node {
+                    width: Val::Px(layout.hierarchy_width),
+                    height: Val::Percent(100.0),
+                    flex_direction: FlexDirection::Column,
+                    border: UiRect::right(Val::Px(1.0)),
+                    ..default()
+                },
+                Name::new("HierarchyPanel"),
+                BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
+                bevy::ui::BorderColor::all(Color::srgb(0.3, 0.3, 0.3)),
+            )).with_children(|hierarchy| {
+                // パネルヘッダー（ドラッグ可能）
+                hierarchy.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        height: Val::Px(25.0),
+                        flex_direction: FlexDirection::Row,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
+                    Interaction::default(),
+                    super::docking::PanelHeader {
+                        panel_name: "HierarchyPanel".to_string(),
+                    },
+                    Name::new("HierarchyPanelHeader"),
+                )).with_children(|header| {
+                    // ドラッグハンドル（視覚的インジケーター）
+                    header.spawn((
+                        Node {
+                            width: Val::Px(20.0),
+                            height: Val::Percent(100.0),
+                            justify_content: JustifyContent::Center,
+                            align_items: AlignItems::Center,
+                            margin: UiRect::right(Val::Px(5.0)),
+                            ..default()
+                        },
+                        Name::new("DragHandle"),
+                    )).with_children(|handle| {
+                        handle.spawn((
+                            Text::new("⋮⋮"),
+                            bevy::text::TextFont {
+                                font_size: 12.0,
+                                ..default()
+                            },
+                            bevy::text::TextColor(Color::srgb(0.6, 0.6, 0.6)),
+                        ));
+                    });
+                    
+                    header.spawn((
+                        Text::new("Hierarchy"),
+                        bevy::text::TextFont {
+                            font_size: 14.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+                
+                // パネルコンテンツ
+                hierarchy.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        flex_grow: 1.0,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        ..default()
+                    },
+                    Name::new("HierarchyPanelContent"),
+                ));
+            });
+            
+            // 中央エリア（シーンビュー）
+            content.spawn((
+                Node {
+                    flex_grow: 1.0,
+                    height: Val::Percent(100.0),
+                    flex_direction: FlexDirection::Column,
+                    ..default()
+                },
+                Name::new("SceneViewArea"),
+                BackgroundColor(Color::srgb(0.1, 0.1, 0.1)),
+            )).with_children(|scene| {
+                scene.spawn((
+                    Text::new("Scene View"),
+                    bevy::text::TextFont {
+                        font_size: 16.0,
+                        ..default()
+                    },
+                    bevy::text::TextColor(Color::WHITE),
+                ));
+            });
+            
+            // インスペクターパネル（右側）
+            content.spawn((
+                Node {
+                    width: Val::Px(layout.inspector_width),
+                    height: Val::Percent(100.0),
+                    flex_direction: FlexDirection::Column,
+                    border: UiRect::left(Val::Px(1.0)),
+                    ..default()
+                },
+                Name::new("InspectorPanel"),
+                BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
+                bevy::ui::BorderColor::all(Color::srgb(0.3, 0.3, 0.3)),
+            )).with_children(|inspector| {
+                // パネルヘッダー（ドラッグ可能）
+                inspector.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        height: Val::Px(25.0),
+                        flex_direction: FlexDirection::Row,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
+                    Interaction::default(),
+                    super::docking::PanelHeader {
+                        panel_name: "InspectorPanel".to_string(),
+                    },
+                    Name::new("InspectorPanelHeader"),
+                )).with_children(|header| {
+                    // ドラッグハンドル
+                    header.spawn((
+                        Node {
+                            width: Val::Px(20.0),
+                            height: Val::Percent(100.0),
+                            justify_content: JustifyContent::Center,
+                            align_items: AlignItems::Center,
+                            margin: UiRect::right(Val::Px(5.0)),
+                            ..default()
+                        },
+                        Name::new("DragHandle"),
+                    )).with_children(|handle| {
+                        handle.spawn((
+                            Text::new("⋮⋮"),
+                            bevy::text::TextFont {
+                                font_size: 12.0,
+                                ..default()
+                            },
+                            bevy::text::TextColor(Color::srgb(0.6, 0.6, 0.6)),
+                        ));
+                    });
+                    
+                    header.spawn((
+                        Text::new("Inspector"),
+                        bevy::text::TextFont {
+                            font_size: 14.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+                
+                // パネルコンテンツ
+                inspector.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        flex_grow: 1.0,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        ..default()
+                    },
+                    Name::new("InspectorPanelContent"),
+                ));
+            });
+        });
+        
+        // 下部エリア（アセットブラウザー、スクリプトエディタ、ログパネル）
+        parent.spawn((
+            Node {
+                width: Val::Percent(100.0),
+                height: Val::Px(layout.asset_browser_height),
+                flex_direction: FlexDirection::Row,
+                border: UiRect::top(Val::Px(1.0)),
+                ..default()
+            },
+            Name::new("BottomPanel"),
+        )).with_children(|bottom| {
+            // アセットブラウザー（左側）
+            bottom.spawn((
+                Node {
+                    width: Val::Percent(33.33),
+                    height: Val::Percent(100.0),
+                    flex_direction: FlexDirection::Column,
+                    border: UiRect::right(Val::Px(1.0)),
+                    ..default()
+                },
+                Name::new("AssetBrowserPanel"),
+                BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
+                bevy::ui::BorderColor::all(Color::srgb(0.3, 0.3, 0.3)),
+            )).with_children(|browser| {
+                // パネルヘッダー（ドラッグ可能）
+                browser.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        height: Val::Px(25.0),
+                        flex_direction: FlexDirection::Row,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
+                    Interaction::default(),
+                    super::docking::PanelHeader {
+                        panel_name: "AssetBrowserPanel".to_string(),
+                    },
+                    Name::new("AssetBrowserPanelHeader"),
+                )).with_children(|header| {
+                    // ドラッグハンドル
+                    header.spawn((
+                        Node {
+                            width: Val::Px(20.0),
+                            height: Val::Percent(100.0),
+                            justify_content: JustifyContent::Center,
+                            align_items: AlignItems::Center,
+                            margin: UiRect::right(Val::Px(5.0)),
+                            ..default()
+                        },
+                        Name::new("DragHandle"),
+                    )).with_children(|handle| {
+                        handle.spawn((
+                            Text::new("⋮⋮"),
+                            bevy::text::TextFont {
+                                font_size: 12.0,
+                                ..default()
+                            },
+                            bevy::text::TextColor(Color::srgb(0.6, 0.6, 0.6)),
+                        ));
+                    });
+                    
+                    header.spawn((
+                        Text::new("Asset Browser"),
+                        bevy::text::TextFont {
+                            font_size: 14.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+                
+                // パネルコンテンツ
+                browser.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        flex_grow: 1.0,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        ..default()
+                    },
+                    Name::new("AssetBrowserPanelContent"),
+                ));
+            });
+            
+            // コードエディタ（中央）
+            bottom.spawn((
+                Node {
+                    width: Val::Percent(33.33),
+                    height: Val::Percent(100.0),
+                    flex_direction: FlexDirection::Column,
+                    border: UiRect::right(Val::Px(1.0)),
+                    ..default()
+                },
+                Name::new("CodeEditorPanel"),
+                BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
+                bevy::ui::BorderColor::all(Color::srgb(0.3, 0.3, 0.3)),
+            )).with_children(|code_editor| {
+                // パネルヘッダー（ドラッグ可能）
+                code_editor.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        height: Val::Px(25.0),
+                        flex_direction: FlexDirection::Row,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
+                    Interaction::default(),
+                    super::docking::PanelHeader {
+                        panel_name: "CodeEditorPanel".to_string(),
+                    },
+                    Name::new("CodeEditorPanelHeader"),
+                )).with_children(|header| {
+                    // ドラッグハンドル
+                    header.spawn((
+                        Node {
+                            width: Val::Px(20.0),
+                            height: Val::Percent(100.0),
+                            justify_content: JustifyContent::Center,
+                            align_items: AlignItems::Center,
+                            margin: UiRect::right(Val::Px(5.0)),
+                            ..default()
+                        },
+                        Name::new("DragHandle"),
+                    )).with_children(|handle| {
+                        handle.spawn((
+                            Text::new("⋮⋮"),
+                            bevy::text::TextFont {
+                                font_size: 12.0,
+                                ..default()
+                            },
+                            bevy::text::TextColor(Color::srgb(0.6, 0.6, 0.6)),
+                        ));
+                    });
+                    
+                    header.spawn((
+                        Text::new("Code Editor"),
+                        bevy::text::TextFont {
+                            font_size: 14.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+                
+                // パネルコンテンツ
+                code_editor.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        flex_grow: 1.0,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        ..default()
+                    },
+                    Name::new("CodeEditorPanelContent"),
+                ));
+            });
+            
+            // スクリプトエディタ（右側）
+            bottom.spawn((
+                Node {
+                    width: Val::Percent(33.33),
+                    height: Val::Percent(100.0),
+                    flex_direction: FlexDirection::Column,
+                    border: UiRect::right(Val::Px(1.0)),
+                    ..default()
+                },
+                Name::new("ScriptEditorPanel"),
+                BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
+                bevy::ui::BorderColor::all(Color::srgb(0.3, 0.3, 0.3)),
+            )).with_children(|script_editor| {
+                // パネルヘッダー（ドラッグ可能）
+                script_editor.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        height: Val::Px(25.0),
+                        flex_direction: FlexDirection::Row,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
+                    Interaction::default(),
+                    super::docking::PanelHeader {
+                        panel_name: "ScriptEditorPanel".to_string(),
+                    },
+                    Name::new("ScriptEditorPanelHeader"),
+                )).with_children(|header| {
+                    // ドラッグハンドル
+                    header.spawn((
+                        Node {
+                            width: Val::Px(20.0),
+                            height: Val::Percent(100.0),
+                            justify_content: JustifyContent::Center,
+                            align_items: AlignItems::Center,
+                            margin: UiRect::right(Val::Px(5.0)),
+                            ..default()
+                        },
+                        Name::new("DragHandle"),
+                    )).with_children(|handle| {
+                        handle.spawn((
+                            Text::new("⋮⋮"),
+                            bevy::text::TextFont {
+                                font_size: 12.0,
+                                ..default()
+                            },
+                            bevy::text::TextColor(Color::srgb(0.6, 0.6, 0.6)),
+                        ));
+                    });
+                    
+                    header.spawn((
+                        Text::new("Script Editor"),
+                        bevy::text::TextFont {
+                            font_size: 14.0,
+                            ..default()
+                        },
+                        bevy::text::TextColor(Color::WHITE),
+                    ));
+                });
+                
+                // パネルコンテンツ
+                script_editor.spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        flex_grow: 1.0,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        ..default()
+                    },
+                    Name::new("ScriptEditorPanelContent"),
+                ));
+            });
+            
+            // ログパネル（右端）
+            bottom.spawn((
+                Node {
+                    width: Val::Percent(33.34),
+                    height: Val::Percent(100.0),
+                    flex_direction: FlexDirection::Column,
+                    padding: UiRect::all(Val::Px(5.0)),
+                    ..default()
+                },
+                Name::new("LogPanel"),
+                BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
+            )).with_children(|log_panel| {
+                log_panel.spawn((
+                    Text::new("Log"),
+                    bevy::text::TextFont {
+                        font_size: 16.0,
+                        ..default()
+                    },
+                    bevy::text::TextColor(Color::WHITE),
+                ));
+            });
+        });
+    });
+}

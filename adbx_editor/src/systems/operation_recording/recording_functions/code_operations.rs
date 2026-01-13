@@ -1,0 +1,26 @@
+use bevy::prelude::*;
+use super::super::{OperationRecorder, OperationType, OperationContext};
+
+/// コード生成を記録
+pub fn record_code_generated(
+    mut recorder: ResMut<OperationRecorder>,
+    prompt: String,
+    generated_code: String,
+    file_path: Option<String>,
+) {
+    recorder.record_operation(
+        OperationType::CodeGenerated,
+        OperationContext {
+            entity_id: None,
+            component_type: None,
+            panel_name: Some("CodeEditorPanel".to_string()),
+            file_path: file_path.clone(),
+            user_intent: Some(format!("Generate code from prompt: {}", prompt)),
+        },
+        serde_json::json!({
+            "prompt": prompt,
+            "generated_code_length": generated_code.len(),
+            "file_path": file_path,
+        }),
+    );
+}

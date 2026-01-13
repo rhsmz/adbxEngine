@@ -1,0 +1,36 @@
+use adbx_shared::scene::SceneData;
+use super::EditorRuntimeCommunication;
+use super::message_sending::send_to_runtime;
+
+/// エディタからランタイムにシーン読み込みを要求
+pub fn request_scene_load(
+    communication: &EditorRuntimeCommunication,
+    scene_path: String,
+) -> Result<(), String> {
+    send_to_runtime(
+        communication,
+        adbx_shared::EditorMessage::LoadScene { scene_path },
+    )
+}
+
+/// エディタからランタイムにシーン保存を要求
+pub fn request_scene_save(
+    communication: &EditorRuntimeCommunication,
+    scene: SceneData,
+) -> Result<(), String> {
+    send_to_runtime(
+        communication,
+        adbx_shared::EditorMessage::SaveScene { scene },
+    )
+}
+
+/// エディタからランタイムにアセット読み込みを要求
+pub fn request_asset_load(
+    communication: &EditorRuntimeCommunication,
+    asset_path: String,
+) -> Result<(), String> {
+    send_to_runtime(
+        communication,
+        adbx_shared::EditorMessage::LoadAsset { asset_path },
+    )
+}

@@ -1,0 +1,208 @@
+version: '3'
+
+vars:
+  EDITOR_BIN: adbx_editor
+  RUNTIME_BIN: adbx_runtime
+
+tasks:
+  default:
+    desc: デフォルトタスク（エディタを実行）
+    cmds:
+      - task: run
+
+  build:
+    desc: プロジェクトをビルド（デバッグモード）
+    cmds:
+      - cargo build
+
+  build-release:
+    desc: プロジェクトをリリースモードでビルド
+    cmds:
+      - cargo build --release
+
+  run:
+    desc: エディタを実行
+    cmds:
+      - cargo run --bin {{.EDITOR_BIN}}
+
+  run-release:
+    desc: リリースモードでエディタを実行
+    cmds:
+      - cargo run --release --bin {{.EDITOR_BIN}}
+
+  run-runtime:
+    desc: ランタイムを実行
+    cmds:
+      - cargo run --bin {{.RUNTIME_BIN}}
+
+  test:
+    desc: すべてのテストを実行
+    cmds:
+      - cargo test
+
+  test-shared:
+    desc: adbx_sharedのテストを実行
+    cmds:
+      - cargo test -p adbx_shared
+
+  test-runtime:
+    desc: adbx_runtimeのテストを実行
+    cmds:
+      - cargo test -p adbx_runtime
+
+  test-editor:
+    desc: adbx_editorのテストを実行
+    cmds:
+      - cargo test -p adbx_editor
+
+  test-integration:
+    desc: 統合テストを実行
+    cmds:
+      - cargo test --test '*'
+
+  test-e2e:
+    desc: E2Eテストを実行
+    cmds:
+      - cargo test --test '*'
+
+  check:
+    desc: コードのコンパイルチェック（ビルドしない）
+    cmds:
+      - cargo check
+
+  check-all:
+    desc: すべてのクレートをチェック
+    cmds:
+      - cargo check --workspace
+
+  fmt:
+    desc: コードをフォーマット
+    cmds:
+      - cargo fmt
+
+  fmt-check:
+    desc: フォーマットチェック（変更しない）
+    cmds:
+      - cargo fmt -- --check
+
+  clippy:
+    desc: Clippyでリント
+    cmds:
+      - cargo clippy -- -D warnings
+
+  clippy-all:
+    desc: すべてのクレートでClippyを実行
+    cmds:
+      - cargo clippy --workspace -- -D warnings
+
+  doc:
+    desc: ドキュメントを生成
+    cmds:
+      - cargo doc --no-deps --open
+
+  doc-all:
+    desc: すべてのクレートのドキュメントを生成
+    cmds:
+      - cargo doc --workspace --no-deps --open
+
+  clean:
+    desc: ビルド成果物を削除
+    cmds:
+      - cargo clean
+
+  clean-all:
+    desc: すべてのビルド成果物とキャッシュを削除
+    cmds:
+      - cargo clean
+      - rm -rf target/
+
+  lint:
+    desc: フォーマットとClippyを実行
+    deps:
+      - fmt-check
+      - clippy
+
+  lint-all:
+    desc: すべてのクレートでフォーマットとClippyを実行
+    deps:
+      - fmt-check
+      - clippy-all
+
+  watch:
+    desc: ファイル変更を監視して自動ビルド
+    cmds:
+      - cargo watch -x build
+
+  watch-test:
+    desc: ファイル変更を監視して自動テスト
+    cmds:
+      - cargo watch -x test
+
+  watch-run:
+    desc: ファイル変更を監視して自動実行
+    cmds:
+      - cargo watch -x "run --bin {{.EDITOR_BIN}}"
+
+  bench:
+    desc: ベンチマークを実行
+    cmds:
+      - cargo bench
+
+  update:
+    desc: 依存関係を更新
+    cmds:
+      - cargo update
+
+  tree:
+    desc: 依存関係ツリーを表示
+    cmds:
+      - cargo tree
+
+  tree-editor:
+    desc: エディタの依存関係ツリーを表示
+    cmds:
+      - cargo tree -p adbx_editor
+
+  tree-runtime:
+    desc: ランタイムの依存関係ツリーを表示
+    cmds:
+      - cargo tree -p adbx_runtime
+
+  tree-shared:
+    desc: 共有ライブラリの依存関係ツリーを表示
+    cmds:
+      - cargo tree -p adbx_shared
+
+  audit:
+    desc: セキュリティ監査（cargo-auditが必要）
+    cmds:
+      - cargo audit
+
+  outdated:
+    desc: 古い依存関係を確認（cargo-outdatedが必要）
+    cmds:
+      - cargo outdated
+
+  build-game:
+    desc: ゲームをスタンドアロン実行可能ファイルとしてビルド
+    cmds:
+      - cargo build --release --bin adbx_runtime
+
+  package-game:
+    desc: ビルドしたゲームをパッケージ化
+    cmds:
+      - echo "Package game functionality is available in the editor"
+
+  dev:
+    desc: 開発環境のセットアップ
+    cmds:
+      - task: fmt
+      - task: clippy
+      - task: test
+
+  ci:
+    desc: CI用のチェック（フォーマット、Clippy、テスト）
+    deps:
+      - fmt-check
+      - clippy-all
+      - test

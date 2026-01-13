@@ -1,0 +1,38 @@
+[package]
+name = "adbx_editor"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "adbx_editor"
+path = "src/main.rs"
+
+[dependencies]
+bevy = { workspace = true, features = ["bevy_gizmos"] }
+adbx_shared = { path = "../adbx_shared" }
+adbx_runtime = { path = "../adbx_runtime" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+rmp-serde = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+mlua = { workspace = true }
+dirs = { workspace = true }
+arboard = { workspace = true }
+syntect = { workspace = true }
+rfd = { workspace = true }
+regex = { workspace = true, default-features = false, features = ["std", "unicode-perl"] }
+
+[features]
+default = []
+ai = ["dep:reqwest", "dep:tokio"]
+
+[dependencies.reqwest]
+workspace = true
+optional = true
+
+[dependencies.tokio]
+workspace = true
+optional = true
