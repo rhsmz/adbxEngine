@@ -5,11 +5,11 @@ pub fn validate_rename_name(name: &str) -> Result<(), String> {
     if name.is_empty() {
         return Err("名前が空です".to_string());
     }
-    
+
     if name.contains('/') || name.contains('\\') || name.contains(':') {
         return Err("名前に無効な文字が含まれています".to_string());
     }
-    
+
     Ok(())
 }
 

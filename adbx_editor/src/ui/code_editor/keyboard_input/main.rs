@@ -1,10 +1,15 @@
-use bevy::prelude::*;
 use super::super::resource::CodeEditor;
 use super::character_input::handle_character_input;
+use super::completion_navigation::{
+    handle_completion_navigation, handle_manual_completion_trigger,
+};
 use super::editing_operations::{handle_backspace, handle_delete, handle_enter, handle_tab};
-use super::navigation::{handle_arrow_left, handle_arrow_right, handle_arrow_up, handle_arrow_down, handle_home, handle_end};
+use super::navigation::{
+    handle_arrow_down, handle_arrow_left, handle_arrow_right, handle_arrow_up, handle_end,
+    handle_home,
+};
 use super::shortcuts::handle_shortcuts;
-use super::completion_navigation::{handle_completion_navigation, handle_manual_completion_trigger};
+use bevy::prelude::*;
 
 /// キーボード入力の処理
 pub fn handle_code_editor_keyboard_input(
@@ -37,12 +42,12 @@ pub fn handle_code_editor_keyboard_input(
         if handle_completion_navigation(&mut code_editor, &event.logical_key) {
             continue;
         }
-        
+
         // Ctrl+Spaceで補完を手動でトリガー
         if handle_manual_completion_trigger(&mut code_editor, &event.logical_key, &keys) {
             continue;
         }
-        
+
         // その他のキーの処理
         match &event.logical_key {
             bevy::input::keyboard::Key::Backspace => {

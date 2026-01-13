@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use super::super::resource::{DockingSystem, PanelPosition, PanelState};
+use bevy::prelude::*;
 
 /// ドロップゾーン情報
 #[derive(Debug, Clone)]
@@ -15,7 +15,7 @@ pub fn detect_drop_zone(position: Vec2, window_size: Vec2) -> Option<PanelPositi
     let right_threshold = window_size.x * 0.85;
     let top_threshold = window_size.y * 0.15;
     let bottom_threshold = window_size.y * 0.85;
-    
+
     if position.x < left_threshold {
         Some(PanelPosition::Left)
     } else if position.x > right_threshold {

@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use super::super::{AssetBrowser, AssetType};
+use bevy::prelude::*;
 
 /// ファイル選択処理
 pub fn handle_file_selection(
@@ -8,15 +8,17 @@ pub fn handle_file_selection(
     file_name: &str,
 ) {
     // アセットファイルを検索（パスを先に取得）
-    let asset_path_opt = asset_browser.asset_files.iter()
+    let asset_path_opt = asset_browser
+        .asset_files
+        .iter()
         .find(|f| f.name == file_name)
         .map(|f| (f.is_directory, f.asset_type, f.path.clone()));
-    
+
     if let Some((is_directory, asset_type, asset_path)) = asset_path_opt {
         if !is_directory {
             // ファイルの場合は選択
             asset_browser.selected_asset = Some(asset_path.clone());
-            
+
             // スクリプトファイルの場合は、スクリプトエディタで開く
             if asset_type == AssetType::Script {
                 crate::ui::script_editor::load_script_file(asset_path, &mut script_editor);
@@ -46,7 +48,8 @@ pub fn handle_export_button_click(
         // エクスポート待ちフラグを立てる
         asset_browser.is_export_pending = true;
         // エクスポート先を選択
-        let default_name = selected_path.file_name()
+        let default_name = selected_path
+            .file_name()
             .and_then(|n| n.to_str())
             .map(|s| s.to_string());
         crate::ui::file_dialog::save_file_dialog(

@@ -7,9 +7,9 @@ pub struct InspectorPanel {
     pub selected_entity: Option<Entity>,
     pub content_entity: Option<Entity>, // 現在のコンテンツエンティティ
     pub transform_input_values: HashMap<Entity, TransformInputValues>, // エンティティごとの入力値
-    pub last_update_time: f64, // 最後の更新時刻（遅延更新用）
-    pub update_throttle: f64, // 更新間隔（秒単位、デフォルト0.1秒）
-    pub pending_update: bool, // 更新待ちフラグ
+    pub last_update_time: f64,          // 最後の更新時刻（遅延更新用）
+    pub update_throttle: f64,           // 更新間隔（秒単位、デフォルト0.1秒）
+    pub pending_update: bool,           // 更新待ちフラグ
 }
 
 /// Transform入力値の一時保存

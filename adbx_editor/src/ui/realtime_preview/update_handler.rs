@@ -1,6 +1,6 @@
-use bevy::prelude::*;
+use super::preview_generation::{detect_preview_type, update_preview};
 use super::RealtimePreview;
-use super::preview_generation::{update_preview, detect_preview_type};
+use bevy::prelude::*;
 
 /// コード変更を監視してプレビューを更新
 pub fn update_preview_on_code_change(
@@ -10,7 +10,7 @@ pub fn update_preview_on_code_change(
     if !preview.is_enabled {
         return;
     }
-    
+
     // 現在のファイルの内容を取得
     if let Some(active_file) = code_editor.open_files.get(code_editor.active_tab) {
         let preview_type = detect_preview_type(&active_file.path);

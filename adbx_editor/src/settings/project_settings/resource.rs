@@ -1,7 +1,7 @@
+use crate::project::SerializationFormat;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use crate::project::SerializationFormat;
 
 /// プロジェクト設定
 #[derive(Debug, Clone, Serialize, Deserialize)]

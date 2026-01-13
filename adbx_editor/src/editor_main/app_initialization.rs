@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use adbx_runtime::AdbxRuntimePlugin;
+use bevy::prelude::*;
 
 /// アプリケーションの初期化
 pub fn initialize_app() -> App {
@@ -39,7 +39,9 @@ pub fn initialize_app() -> App {
     app.init_resource::<crate::settings::EditorSettings>();
     app.init_resource::<crate::settings::SettingsPanel>();
     app.init_resource::<crate::ui::docking::DockingSystem>();
-    app.insert_resource(crate::systems::operation_recording::OperationRecorder::new(1000));
+    app.insert_resource(crate::systems::operation_recording::OperationRecorder::new(
+        1000,
+    ));
     app.init_resource::<crate::ui::realtime_preview::RealtimePreview>();
     app.init_resource::<crate::ui::text_editor::TextEditorState>();
     app.init_resource::<crate::ui::context_menu::ContextMenu>();

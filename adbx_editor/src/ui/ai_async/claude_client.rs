@@ -9,27 +9,27 @@ pub async fn generate_with_claude_async(
     request: &AiRequest,
 ) -> AiResponse {
     use serde_json::json;
-    
+
     // Claude APIのエンドポイント
     let url = "https://api.anthropic.com/v1/messages";
-    
+
     // リクエストボディを構築
     let mut messages = vec![json!({
         "role": "user",
         "content": request.prompt
     })];
-    
+
     // コンテキストがある場合は追加
     if let Some(ref context) = request.context {
         messages[0]["content"] = json!(format!("{}\n\nContext:\n{}", request.prompt, context));
     }
-    
+
     let request_body = json!({
         "model": "claude-3-5-sonnet-20241022",
         "max_tokens": 4096,
         "messages": messages
     });
-    
+
     // 非同期でリクエストを送信
     match client
         .post(url)
@@ -71,7 +71,10 @@ pub async fn generate_with_claude_async(
                 }
             } else {
                 let status = response.status();
-                let error_text = response.text().await.unwrap_or_else(|_| "Unknown error".to_string());
+                let error_text = response
+                    .text()
+                    .await
+                    .unwrap_or_else(|_| "Unknown error".to_string());
                 AiResponse {
                     content: String::new(),
                     success: false,

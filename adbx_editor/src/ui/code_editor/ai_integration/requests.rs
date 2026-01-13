@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use super::resource::{AiRequest, AiRequestType};
+use bevy::prelude::*;
 
 /// AIによるコード生成（非同期処理のためのリクエストキューに追加）
 pub fn request_ai_code_generation(

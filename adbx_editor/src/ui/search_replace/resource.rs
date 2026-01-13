@@ -10,6 +10,7 @@ pub struct SearchReplace {
     pub replace_text: String,
     pub case_sensitive: bool,
     pub use_regex: bool,
+    #[allow(dead_code)]
     pub match_whole_word: bool,
     pub search_results: Vec<SearchResult>,
     pub current_result_index: usize,
@@ -22,6 +23,7 @@ pub struct SearchResult {
     pub line: usize,
     pub column: usize,
     pub length: usize,
+    #[allow(dead_code)]
     pub match_text: String,
 }
 
@@ -36,4 +38,3 @@ pub fn show_replace_dialog(search_replace: &mut ResMut<SearchReplace>) {
     search_replace.is_search_visible = true;
     search_replace.is_replace_visible = true;
 }
-

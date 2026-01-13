@@ -8,7 +8,8 @@ use std::sync::mpsc;
 #[derive(Resource)]
 pub struct AiAsyncProcessor {
     // mpsc::ReceiverはSyncではないため、Mutexで保護する必要がある
-    pub response_receiver: Option<std::sync::Mutex<mpsc::Receiver<(usize, crate::ui::code_editor::AiResponse)>>>,
+    pub response_receiver:
+        Option<std::sync::Mutex<mpsc::Receiver<(usize, crate::ui::code_editor::AiResponse)>>>,
     pub response_sender: Option<mpsc::Sender<(usize, crate::ui::code_editor::AiResponse)>>,
 }
 

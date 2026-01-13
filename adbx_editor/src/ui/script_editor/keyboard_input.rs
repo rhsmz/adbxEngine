@@ -1,6 +1,9 @@
+use super::cursor_position::{
+    get_char_position, get_cursor_position, get_line_length, insert_char_at_position,
+    remove_char_at_position,
+};
+use super::{validation::validate_script, ScriptEditor};
 use bevy::prelude::*;
-use super::{ScriptEditor, validation::validate_script};
-use super::cursor_position::{get_cursor_position, get_char_position, get_line_length, insert_char_at_position, remove_char_at_position};
 
 /// スクリプトエディタのキーボード入力処理
 pub fn handle_script_editor_keyboard_input(
@@ -28,16 +31,20 @@ pub fn handle_script_editor_keyboard_input(
 
             // 文字を挿入
             let cursor_pos = script_editor.cursor_position;
-            insert_char_at_position(&mut script_editor.content, cursor_pos, ch.chars().next().unwrap());
+            insert_char_at_position(
+                &mut script_editor.content,
+                cursor_pos,
+                ch.chars().next().unwrap(),
+            );
             script_editor.cursor_position = cursor_pos + ch.len();
 
             // UI更新を促す
             script_editor.content_entity = None;
-            
+
             // リアルタイムでエラーを検出（簡易実装：短い遅延後に検証）
             // 実際の実装では、デバウンス処理を追加することを推奨
             validate_script(script_editor.as_mut());
-            
+
             continue;
         }
 
@@ -77,33 +84,43 @@ pub fn handle_script_editor_keyboard_input(
                 }
             }
             bevy::input::keyboard::Key::ArrowUp => {
-                let (current_line, current_col) = get_cursor_position(&script_editor.content, script_editor.cursor_position);
+                let (current_line, current_col) =
+                    get_cursor_position(&script_editor.content, script_editor.cursor_position);
                 if current_line > 0 {
                     let new_line = current_line - 1;
-                    let new_col = current_col.min(get_line_length(&script_editor.content, new_line));
-                    script_editor.cursor_position = get_char_position(&script_editor.content, new_line, new_col);
+                    let new_col =
+                        current_col.min(get_line_length(&script_editor.content, new_line));
+                    script_editor.cursor_position =
+                        get_char_position(&script_editor.content, new_line, new_col);
                     script_editor.content_entity = None;
                 }
             }
             bevy::input::keyboard::Key::ArrowDown => {
-                let (current_line, current_col) = get_cursor_position(&script_editor.content, script_editor.cursor_position);
+                let (current_line, current_col) =
+                    get_cursor_position(&script_editor.content, script_editor.cursor_position);
                 let total_lines = script_editor.content.lines().count();
                 if current_line < total_lines - 1 {
                     let new_line = current_line + 1;
-                    let new_col = current_col.min(get_line_length(&script_editor.content, new_line));
-                    script_editor.cursor_position = get_char_position(&script_editor.content, new_line, new_col);
+                    let new_col =
+                        current_col.min(get_line_length(&script_editor.content, new_line));
+                    script_editor.cursor_position =
+                        get_char_position(&script_editor.content, new_line, new_col);
                     script_editor.content_entity = None;
                 }
             }
             bevy::input::keyboard::Key::Home => {
-                let (current_line, _) = get_cursor_position(&script_editor.content, script_editor.cursor_position);
-                script_editor.cursor_position = get_char_position(&script_editor.content, current_line, 0);
+                let (current_line, _) =
+                    get_cursor_position(&script_editor.content, script_editor.cursor_position);
+                script_editor.cursor_position =
+                    get_char_position(&script_editor.content, current_line, 0);
                 script_editor.content_entity = None;
             }
             bevy::input::keyboard::Key::End => {
-                let (current_line, _) = get_cursor_position(&script_editor.content, script_editor.cursor_position);
+                let (current_line, _) =
+                    get_cursor_position(&script_editor.content, script_editor.cursor_position);
                 let line_length = get_line_length(&script_editor.content, current_line);
-                script_editor.cursor_position = get_char_position(&script_editor.content, current_line, line_length);
+                script_editor.cursor_position =
+                    get_char_position(&script_editor.content, current_line, line_length);
                 script_editor.content_entity = None;
             }
             bevy::input::keyboard::Key::Enter => {

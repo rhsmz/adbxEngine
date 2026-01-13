@@ -31,7 +31,7 @@ impl FrameCounter {
     pub fn should_update_ui(&self, interval: u32) -> bool {
         self.frame % interval == 0
     }
-    
+
     pub fn increment(&mut self) {
         self.frame += 1;
     }

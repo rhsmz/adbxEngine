@@ -1,26 +1,29 @@
-use bevy::prelude::*;
 use super::super::resource::{DockingSystem, PanelPosition};
+use bevy::prelude::*;
 
 /// パネルの位置とサイズを動的に更新するシステム
 pub fn update_panel_layout(
     docking: ResMut<DockingSystem>,
-    mut panel_query: Query<(&Name, &mut Node), (With<Node>, Without<super::super::resource::PanelHeader>)>,
+    mut panel_query: Query<
+        (&Name, &mut Node),
+        (With<Node>, Without<super::super::resource::PanelHeader>),
+    >,
     windows: Query<&Window>,
 ) {
     if let Some(window) = windows.iter().next() {
         let _window_width = window.width();
         let _window_height = window.height();
-        
+
         // 各パネルのUIノードを更新
         for (name, mut node) in panel_query.iter_mut() {
             let panel_name = name.as_str();
-            
+
             if let Some(panel_state) = docking.panels.get(panel_name) {
                 if !panel_state.is_visible {
                     // 非表示のパネルはスキップ
                     continue;
                 }
-                
+
                 // パネルの位置に応じてサイズを更新
                 match panel_state.position {
                     PanelPosition::Left | PanelPosition::Right => {

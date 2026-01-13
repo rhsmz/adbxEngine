@@ -1,4 +1,3 @@
-use std::path::PathBuf;
 use super::super::editor_settings::EditorSettings;
 use super::manager::SettingsManager;
 

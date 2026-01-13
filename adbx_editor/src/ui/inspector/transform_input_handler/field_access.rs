@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::ui::inspector::inspector_panel_resource::TransformFieldType;
+use bevy::prelude::*;
 
 /// Transformの値を取得
 pub fn get_transform_field_value(transform: &Transform, field_type: TransformFieldType) -> f32 {
@@ -26,7 +26,11 @@ pub fn get_transform_field_value(transform: &Transform, field_type: TransformFie
 }
 
 /// Transformの値を更新
-pub fn update_transform_field_value(transform: &mut Transform, field_type: TransformFieldType, change: f32) {
+pub fn update_transform_field_value(
+    transform: &mut Transform,
+    field_type: TransformFieldType,
+    change: f32,
+) {
     match field_type {
         TransformFieldType::TranslationX => transform.translation.x += change,
         TransformFieldType::TranslationY => transform.translation.y += change,

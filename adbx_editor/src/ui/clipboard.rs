@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// クリップボードリソース
 #[derive(Resource, Default)]
@@ -44,28 +44,28 @@ impl Clipboard {
             entity_data: None,
         }
     }
-    
+
     pub fn set_text(&mut self, text: String) {
         self.text_content = text;
         self.entity_data = None; // テキストを設定したらEntityデータをクリア
     }
-    
+
     pub fn set_entity_data(&mut self, data: EntityClipboardData) {
         self.entity_data = Some(data);
     }
-    
+
     pub fn get_text(&self) -> &str {
         &self.text_content
     }
-    
+
     pub fn get_entity_data(&self) -> Option<&EntityClipboardData> {
         self.entity_data.as_ref()
     }
-    
+
     pub fn has_text(&self) -> bool {
         !self.text_content.is_empty()
     }
-    
+
     pub fn has_entity_data(&self) -> bool {
         self.entity_data.is_some()
     }

@@ -1,7 +1,9 @@
-use bevy::prelude::*;
-use crate::communication::{EditorRuntimeCommunication, notify_entity_selection, notify_component_update};
+use crate::communication::{
+    notify_component_update, notify_entity_selection, EditorRuntimeCommunication,
+};
 use crate::systems::selection::Selection;
 use adbx_shared::scene::ComponentData;
+use bevy::prelude::*;
 
 /// リアルタイム同期システム
 /// Entity状態、Component変更、選択状態をランタイムと同期します
@@ -46,7 +48,7 @@ pub fn sync_transform_changes(
                 },
             }),
         };
-        
+
         notify_component_update(&communication, entity, component_data);
     }
 }
@@ -58,7 +60,7 @@ pub fn apply_runtime_entity_updates(
     _commands: Commands,
 ) {
     let messages = crate::communication::receive_from_runtime(communication.as_mut());
-    
+
     for message in messages {
         match message {
             adbx_shared::RuntimeMessage::EntityUpdated { entity_id } => {

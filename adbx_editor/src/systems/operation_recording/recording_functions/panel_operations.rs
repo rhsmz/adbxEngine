@@ -1,5 +1,5 @@
+use super::super::{OperationContext, OperationRecorder, OperationType};
 use bevy::prelude::*;
-use super::super::{OperationRecorder, OperationType, OperationContext};
 
 /// パネル移動を記録
 pub fn record_panel_moved(
@@ -15,7 +15,10 @@ pub fn record_panel_moved(
             component_type: None,
             panel_name: Some(panel_name),
             file_path: None,
-            user_intent: Some(format!("Move panel from {} to {}", old_position, new_position)),
+            user_intent: Some(format!(
+                "Move panel from {} to {}",
+                old_position, new_position
+            )),
         },
         serde_json::json!({
             "old_position": old_position,
@@ -38,8 +41,10 @@ pub fn record_panel_resized(
             component_type: None,
             panel_name: Some(panel_name),
             file_path: None,
-            user_intent: Some(format!("Resize panel from ({:.1}, {:.1}) to ({:.1}, {:.1})", 
-                old_size.0, old_size.1, new_size.0, new_size.1)),
+            user_intent: Some(format!(
+                "Resize panel from ({:.1}, {:.1}) to ({:.1}, {:.1})",
+                old_size.0, old_size.1, new_size.0, new_size.1
+            )),
         },
         serde_json::json!({
             "old_size": {

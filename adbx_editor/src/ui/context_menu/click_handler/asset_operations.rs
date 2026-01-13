@@ -1,8 +1,8 @@
-use bevy::prelude::*;
 use super::super::{handle_asset_operations, AssetOperation};
 use crate::ui::asset_browser::AssetBrowser;
 use crate::ui::file_dialog::FileDialogRequest;
 use crate::ui::rename_dialog::RenameDialogRequest;
+use bevy::prelude::*;
 
 /// アセット操作のメニュー項目を処理
 pub fn handle_asset_operation_menu_item(
@@ -19,7 +19,7 @@ pub fn handle_asset_operation_menu_item(
         "ContextMenuShowInExplorer" => AssetOperation::ShowInExplorer,
         _ => return,
     };
-    
+
     handle_asset_operations(
         asset_browser,
         file_dialog_request,

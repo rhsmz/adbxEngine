@@ -1,7 +1,7 @@
+use crate::project::{create_project, load_project, Project};
+use crate::settings::editor_settings::SettingsPanel;
 use bevy::prelude::*;
 use bevy::ui::Interaction;
-use crate::project::{Project, create_project, load_project};
-use crate::settings::editor_settings::SettingsPanel;
 use std::path::PathBuf;
 
 /// プロジェクト管理のリクエスト（リソースベース）
@@ -25,19 +25,21 @@ pub fn handle_menu_click(
         for (interaction, name) in interaction_query.iter() {
             if *interaction == Interaction::Pressed {
                 let name_str = name.as_str();
-                
+
                 // 新規プロジェクト
                 if name_str == "MenuNewProject" {
                     // 簡易実装：デフォルトパスで新規プロジェクトを作成
                     let default_path = PathBuf::from("projects").join("NewProject");
-                    if let Ok(new_project) = create_project("New Project".to_string(), default_path.clone()) {
+                    if let Ok(new_project) =
+                        create_project("New Project".to_string(), default_path.clone())
+                    {
                         *project = new_project;
                         bevy::log::info!("New project created: {:?}", default_path);
                     } else {
                         bevy::log::error!("Failed to create new project");
                     }
                 }
-                
+
                 // プロジェクトを開く
                 if name_str == "MenuOpenProject" {
                     // プロジェクトフォルダを選択
@@ -46,12 +48,12 @@ pub fn handle_menu_click(
                         "プロジェクトを開く".to_string(),
                     );
                 }
-                
+
                 // 設定パネルを開く
                 if name_str == "MenuSettings" {
                     settings_panel.is_open = true;
                 }
-                
+
                 // ゲームをビルド
                 if name_str == "MenuBuildGame" {
                     build_game_request.requested = true;
@@ -60,7 +62,7 @@ pub fn handle_menu_click(
             }
         }
     }
-    
+
     // ファイルダイアログの結果を処理
     if let Some(result) = file_dialog_request.result.take() {
         match result {

@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use super::super::resource::GizmoHandle;
+use bevy::prelude::*;
 
 /// Gizmo操作に基づいてTransformを更新
 pub fn update_transform_from_gizmo(
@@ -9,7 +9,7 @@ pub fn update_transform_from_gizmo(
     _start_transform: Option<&Transform>,
 ) {
     let sensitivity = 0.01;
-    
+
     match handle {
         GizmoHandle::TranslateX => {
             transform.translation += transform.local_x() * mouse_delta.x * sensitivity;

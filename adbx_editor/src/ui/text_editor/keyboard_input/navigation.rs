@@ -3,7 +3,7 @@ pub fn get_char_position(text: &str, line: usize, col: usize) -> usize {
     let mut current_line = 0;
     let mut current_col = 0;
     let mut pos = 0;
-    
+
     for ch in text.chars() {
         if current_line == line && current_col == col {
             break;
@@ -19,13 +19,16 @@ pub fn get_char_position(text: &str, line: usize, col: usize) -> usize {
         }
         pos += 1; // 文字数でカウント
     }
-    
+
     pos
 }
 
 /// 指定行の長さを取得
 pub fn get_line_length(text: &str, line_index: usize) -> usize {
-    text.lines().nth(line_index).map(|line| line.chars().count()).unwrap_or(0)
+    text.lines()
+        .nth(line_index)
+        .map(|line| line.chars().count())
+        .unwrap_or(0)
 }
 
 /// カーソル位置を計算
@@ -33,7 +36,7 @@ pub fn get_cursor_position(text: &str, cursor_pos: usize) -> (usize, usize) {
     let mut line = 0;
     let mut col = 0;
     let mut pos = 0;
-    
+
     for ch in text.chars() {
         if pos >= cursor_pos {
             break;
@@ -46,6 +49,6 @@ pub fn get_cursor_position(text: &str, cursor_pos: usize) -> (usize, usize) {
         }
         pos += 1;
     }
-    
+
     (line, col)
 }

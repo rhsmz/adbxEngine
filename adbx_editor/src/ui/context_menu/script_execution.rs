@@ -1,6 +1,6 @@
-use bevy::prelude::*;
-use crate::communication::{EditorRuntimeCommunication, send_to_runtime};
+use crate::communication::{send_to_runtime, EditorRuntimeCommunication};
 use crate::ui::script_editor::ScriptEditor;
+use bevy::prelude::*;
 
 /// スクリプト実行処理
 pub fn handle_script_execution(
@@ -17,9 +17,7 @@ pub fn handle_script_execution(
             // ランタイムにスクリプト実行を送信
             if let Err(e) = send_to_runtime(
                 &mut communication,
-                adbx_shared::EditorMessage::ExecuteScript {
-                    script_content,
-                },
+                adbx_shared::EditorMessage::ExecuteScript { script_content },
             ) {
                 bevy::log::error!("Failed to send script execution request: {}", e);
             } else {
@@ -28,4 +26,3 @@ pub fn handle_script_execution(
         }
     }
 }
-

@@ -1,6 +1,6 @@
-use bevy::prelude::*;
 use crate::ui::code_editor::resource::CodeEditor;
 use crate::ui::code_editor::state::OpenFile;
+use bevy::prelude::*;
 
 /// ファイルを開く
 pub fn open_file_in_code_editor(
@@ -11,7 +11,11 @@ pub fn open_file_in_code_editor(
     match std::fs::read_to_string(&file_path) {
         Ok(content) => {
             // 既に開いているファイルかチェック
-            if let Some(index) = code_editor.open_files.iter().position(|f| f.path == file_path) {
+            if let Some(index) = code_editor
+                .open_files
+                .iter()
+                .position(|f| f.path == file_path)
+            {
                 code_editor.active_tab = index;
             } else {
                 code_editor.open_files.push(OpenFile {
@@ -48,7 +52,10 @@ pub fn save_active_file_in_code_editor(
             crate::ui::error_dialog::show_error_dialog(
                 error_dialog,
                 "ファイルを保存できませんでした".to_string(),
-                format!("ファイル '{}' を保存することができませんでした。", active_file.path),
+                format!(
+                    "ファイル '{}' を保存することができませんでした。",
+                    active_file.path
+                ),
                 Some(format!("エラー詳細: {}", e)),
             );
         } else {

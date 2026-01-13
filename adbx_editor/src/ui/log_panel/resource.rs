@@ -27,7 +27,7 @@ impl LogLevel {
             LogLevel::Debug => Color::srgb(0.5, 0.5, 0.5),
         }
     }
-    
+
     pub fn prefix(&self) -> &'static str {
         match self {
             LogLevel::Info => "[INFO]",
@@ -56,19 +56,19 @@ impl LogPanel {
             is_visible: false,
         }
     }
-    
+
     pub fn add_log(&mut self, level: LogLevel, message: String) {
         let timestamp = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        
+
         self.logs.push_back(LogEntry {
             level,
             message,
             timestamp,
         });
-        
+
         // 最大ログ数を超えた場合、古いログを削除
         while self.logs.len() > self.max_logs {
             self.logs.pop_front();

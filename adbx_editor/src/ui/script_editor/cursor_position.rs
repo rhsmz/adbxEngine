@@ -59,5 +59,8 @@ pub fn remove_char_at_position(text: &mut String, position: usize) {
 
 /// 指定行の長さを取得
 pub fn get_line_length(text: &str, line_index: usize) -> usize {
-    text.lines().nth(line_index).map(|line| line.len()).unwrap_or(0)
+    text.lines()
+        .nth(line_index)
+        .map(|line| line.len())
+        .unwrap_or(0)
 }

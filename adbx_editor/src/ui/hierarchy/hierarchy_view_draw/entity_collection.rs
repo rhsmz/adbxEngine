@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use super::super::hierarchy_view_resource::HierarchyView;
+use bevy::prelude::*;
 
 /// 表示可能なエンティティのリストを収集（展開された状態で）
 pub fn collect_expanded_hierarchy_entities(
@@ -9,7 +9,7 @@ pub fn collect_expanded_hierarchy_entities(
     name_query: &Query<&Name>,
 ) -> Vec<Entity> {
     let mut visible = Vec::new();
-    
+
     fn collect_recursive(
         entity: Entity,
         hierarchy_view: &HierarchyView,
@@ -21,7 +21,7 @@ pub fn collect_expanded_hierarchy_entities(
         if name_query.get(entity).is_ok() {
             visible.push(entity);
         }
-        
+
         // 展開されている場合、子エンティティも追加
         if hierarchy_view.expanded_entities.contains(&entity) {
             if let Ok(children) = children_query.get(entity) {
@@ -31,11 +31,17 @@ pub fn collect_expanded_hierarchy_entities(
             }
         }
     }
-    
+
     for root_entity in root_entities {
-        collect_recursive(*root_entity, hierarchy_view, children_query, name_query, &mut visible);
+        collect_recursive(
+            *root_entity,
+            hierarchy_view,
+            children_query,
+            name_query,
+            &mut visible,
+        );
     }
-    
+
     visible
 }
 
@@ -50,14 +56,14 @@ pub fn calculate_hierarchy_item_indent_level(
     if root_entities.contains(&entity) {
         return 0;
     }
-    
+
     // 親エンティティを探す
     for root in root_entities {
         if let Some(level) = find_entity_level(*root, entity, children_query, hierarchy_view, 0) {
             return level;
         }
     }
-    
+
     0
 }
 
@@ -72,16 +78,22 @@ fn find_entity_level(
     if current == target {
         return Some(current_level);
     }
-    
+
     if hierarchy_view.expanded_entities.contains(&current) {
         if let Ok(children) = children_query.get(current) {
             for child in children.iter() {
-                if let Some(level) = find_entity_level(child, target, children_query, hierarchy_view, current_level + 1) {
+                if let Some(level) = find_entity_level(
+                    child,
+                    target,
+                    children_query,
+                    hierarchy_view,
+                    current_level + 1,
+                ) {
                     return Some(level);
                 }
             }
         }
     }
-    
+
     None
 }

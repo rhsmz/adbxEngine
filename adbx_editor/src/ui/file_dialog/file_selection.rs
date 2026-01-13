@@ -1,5 +1,5 @@
+use super::resource::{FileDialogRequest, FileDialogResult, FileDialogType, FileFilter};
 use bevy::prelude::*;
-use super::resource::{FileDialogRequest, FileDialogType, FileDialogResult, FileFilter};
 
 /// ファイルダイアログを開く（ファイルを開く）
 pub fn open_file_dialog(
@@ -25,9 +25,6 @@ pub fn save_file_dialog(
 }
 
 /// フォルダ選択ダイアログを開く
-pub fn pick_folder_dialog(
-    file_dialog_request: &mut ResMut<FileDialogRequest>,
-    title: String,
-) {
+pub fn pick_folder_dialog(file_dialog_request: &mut ResMut<FileDialogRequest>, title: String) {
     file_dialog_request.dialog_type = Some(FileDialogType::PickFolder { title });
 }

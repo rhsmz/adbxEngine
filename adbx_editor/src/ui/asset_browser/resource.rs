@@ -9,12 +9,12 @@ pub struct AssetBrowser {
     pub asset_files: Vec<AssetFileInfo>,
     pub content_entity: Option<Entity>, // 現在のコンテンツエンティティ（再描画の最適化用）
     pub image_handles: std::collections::HashMap<PathBuf, Handle<Image>>, // 画像ハンドルのキャッシュ
-    pub pending_image_updates: bool, // 画像の読み込み待ちがあるか
-    pub is_export_pending: bool, // エクスポート処理待ちかどうか
-    pub scroll_offset: f32, // スクロール位置（ピクセル単位）
+    pub pending_image_updates: bool,   // 画像の読み込み待ちがあるか
+    pub is_export_pending: bool,       // エクスポート処理待ちかどうか
+    pub scroll_offset: f32,            // スクロール位置（ピクセル単位）
     pub visible_range: (usize, usize), // 表示範囲（開始インデックス、終了インデックス）
-    pub item_height: f32, // 1アイテムの高さ（ピクセル単位）
-    pub total_items: usize, // 総アイテム数
+    pub item_height: f32,              // 1アイテムの高さ（ピクセル単位）
+    pub total_items: usize,            // 総アイテム数
 }
 
 #[derive(Debug, Clone)]

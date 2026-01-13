@@ -5,7 +5,7 @@ pub fn calculate_cursor_line_and_column(text: &str, cursor_pos: usize) -> (usize
     let mut line = 0;
     let mut col = 0;
     let mut pos = 0;
-    
+
     for ch in text.chars() {
         if pos >= cursor_pos {
             break;
@@ -18,7 +18,7 @@ pub fn calculate_cursor_line_and_column(text: &str, cursor_pos: usize) -> (usize
         }
         pos += 1; // 文字数でカウント
     }
-    
+
     (line, col)
 }
 
@@ -27,7 +27,7 @@ pub fn calculate_char_position_from_line_column(text: &str, line: usize, col: us
     let mut current_line = 0;
     let mut current_col = 0;
     let mut pos = 0;
-    
+
     for ch in text.chars() {
         if current_line == line && current_col == col {
             break;
@@ -43,11 +43,14 @@ pub fn calculate_char_position_from_line_column(text: &str, line: usize, col: us
         }
         pos += ch.len_utf8();
     }
-    
+
     pos
 }
 
 /// 指定行の長さを取得
 pub fn get_line_length(text: &str, line_index: usize) -> usize {
-    text.lines().nth(line_index).map(|line| line.len()).unwrap_or(0)
+    text.lines()
+        .nth(line_index)
+        .map(|line| line.len())
+        .unwrap_or(0)
 }

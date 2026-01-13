@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 /// Luaのトークンタイプ
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum LuaTokenType {
     Keyword,
@@ -13,6 +14,7 @@ enum LuaTokenType {
 }
 
 /// Luaのトークン
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 struct LuaToken {
     text: String,
@@ -20,13 +22,14 @@ struct LuaToken {
 }
 
 /// Luaのキーワードリスト
+#[allow(dead_code)]
 const LUA_KEYWORDS: &[&str] = &[
-    "and", "break", "do", "else", "elseif", "end", "false", "for", "function",
-    "if", "in", "local", "nil", "not", "or", "repeat", "return", "then",
-    "true", "until", "while",
+    "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local",
+    "nil", "not", "or", "repeat", "return", "then", "true", "until", "while",
 ];
 
 /// 文字列をLuaトークンに分割
+#[allow(dead_code)]
 fn tokenize_lua_line(line: &str) -> Vec<LuaToken> {
     let mut tokens = Vec::new();
     let mut current = String::new();
@@ -35,16 +38,16 @@ fn tokenize_lua_line(line: &str) -> Vec<LuaToken> {
     let mut in_comment = false;
     let mut i = 0;
     let chars: Vec<char> = line.chars().collect();
-    
+
     while i < chars.len() {
         let ch = chars[i];
-        
+
         if in_comment {
             current.push(ch);
             i += 1;
             continue;
         }
-        
+
         if in_string {
             current.push(ch);
             if ch == string_char && (i == 0 || chars[i - 1] != '\\') {
@@ -58,7 +61,7 @@ fn tokenize_lua_line(line: &str) -> Vec<LuaToken> {
             i += 1;
             continue;
         }
-        
+
         match ch {
             '"' | '\'' => {
                 if !current.is_empty() {
@@ -99,7 +102,7 @@ fn tokenize_lua_line(line: &str) -> Vec<LuaToken> {
         }
         i += 1;
     }
-    
+
     if !current.is_empty() {
         if in_comment {
             tokens.push(LuaToken {
@@ -115,11 +118,12 @@ fn tokenize_lua_line(line: &str) -> Vec<LuaToken> {
             tokens.push(parse_token(&current));
         }
     }
-    
+
     tokens
 }
 
 /// トークンを解析してタイプを決定
+#[allow(dead_code)]
 fn parse_token(text: &str) -> LuaToken {
     if LUA_KEYWORDS.contains(&text) {
         LuaToken {
@@ -145,19 +149,42 @@ fn parse_token(text: &str) -> LuaToken {
 }
 
 /// 文字が演算子かどうか
+#[allow(dead_code)]
 fn is_operator(ch: char) -> bool {
-    matches!(ch, '+' | '-' | '*' | '/' | '%' | '^' | '#' | '=' | '<' | '>' | '(' | ')' | '{' | '}' | '[' | ']' | ';' | ':' | ',' | '.')
+    matches!(
+        ch,
+        '+' | '-'
+            | '*'
+            | '/'
+            | '%'
+            | '^'
+            | '#'
+            | '='
+            | '<'
+            | '>'
+            | '('
+            | ')'
+            | '{'
+            | '}'
+            | '['
+            | ']'
+            | ';'
+            | ':'
+            | ','
+            | '.'
+    )
 }
 
 /// トークンタイプに対応する色を取得
+#[allow(dead_code)]
 fn get_token_color(token_type: LuaTokenType) -> Color {
     match token_type {
-        LuaTokenType::Keyword => Color::srgb(0.8, 0.4, 0.8),      // 紫
-        LuaTokenType::String => Color::srgb(0.6, 0.8, 0.6),      // 緑
-        LuaTokenType::Comment => Color::srgb(0.5, 0.5, 0.5),     // グレー
-        LuaTokenType::Number => Color::srgb(0.8, 0.6, 0.4),      // オレンジ
-        LuaTokenType::Identifier => Color::srgb(0.9, 0.9, 0.9),  // 白
-        LuaTokenType::Operator => Color::srgb(0.7, 0.7, 0.7),    // ライトグレー
-        LuaTokenType::Normal => Color::srgb(0.9, 0.9, 0.9),      // 白
+        LuaTokenType::Keyword => Color::srgb(0.8, 0.4, 0.8), // 紫
+        LuaTokenType::String => Color::srgb(0.6, 0.8, 0.6),  // 緑
+        LuaTokenType::Comment => Color::srgb(0.5, 0.5, 0.5), // グレー
+        LuaTokenType::Number => Color::srgb(0.8, 0.6, 0.4),  // オレンジ
+        LuaTokenType::Identifier => Color::srgb(0.9, 0.9, 0.9), // 白
+        LuaTokenType::Operator => Color::srgb(0.7, 0.7, 0.7), // ライトグレー
+        LuaTokenType::Normal => Color::srgb(0.9, 0.9, 0.9),  // 白
     }
 }

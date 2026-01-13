@@ -20,7 +20,13 @@ pub fn code_files() -> Vec<FileFilter> {
         },
         FileFilter {
             name: "All Code Files".to_string(),
-            extensions: vec!["rs".to_string(), "lua".to_string(), "py".to_string(), "js".to_string(), "ts".to_string()],
+            extensions: vec![
+                "rs".to_string(),
+                "lua".to_string(),
+                "py".to_string(),
+                "js".to_string(),
+                "ts".to_string(),
+            ],
         },
         FileFilter {
             name: "All Files".to_string(),
@@ -33,7 +39,14 @@ pub fn image_files() -> Vec<FileFilter> {
     vec![
         FileFilter {
             name: "Image Files".to_string(),
-            extensions: vec!["png".to_string(), "jpg".to_string(), "jpeg".to_string(), "bmp".to_string(), "tga".to_string(), "dds".to_string()],
+            extensions: vec![
+                "png".to_string(),
+                "jpg".to_string(),
+                "jpeg".to_string(),
+                "bmp".to_string(),
+                "tga".to_string(),
+                "dds".to_string(),
+            ],
         },
         FileFilter {
             name: "All Files".to_string(),

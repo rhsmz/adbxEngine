@@ -1,5 +1,5 @@
+use super::super::editor_settings::resource::{EditorSettings, SettingsPanel};
 use bevy::prelude::*;
-use super::super::editor_settings::resource::{SettingsPanel, EditorSettings};
 
 /// 設定パネルのクリック処理（プロジェクト設定関連）
 pub fn handle_project_settings_panel_click(
@@ -11,7 +11,7 @@ pub fn handle_project_settings_panel_click(
     for (interaction, name) in interaction_query.iter() {
         if *interaction == bevy::ui::Interaction::Pressed {
             let name_str = name.as_str();
-            
+
             // 閉じるボタン
             if name_str == "SettingsPanelCloseButton" {
                 settings_panel.is_open = false;
@@ -23,14 +23,14 @@ pub fn handle_project_settings_panel_click(
                 }
                 return;
             }
-            
+
             // 保存ボタン
             if name_str == "SettingsPanelSaveButton" {
                 // 設定を保存する処理（実装は後で追加）
                 bevy::log::info!("Settings saved");
                 return;
             }
-            
+
             // キャンセルボタン
             if name_str == "SettingsPanelCancelButton" {
                 settings_panel.is_open = false;

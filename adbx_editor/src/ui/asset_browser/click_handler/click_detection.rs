@@ -7,7 +7,7 @@ pub fn detect_click_event(
     interaction_query: &Query<(&Interaction, &Name), Changed<Interaction>>,
 ) -> Vec<(String, Interaction)> {
     let mut clicked_items = Vec::new();
-    
+
     if mouse_input.just_pressed(MouseButton::Left) {
         for (interaction, name) in interaction_query.iter() {
             if *interaction == Interaction::Pressed {
@@ -15,6 +15,6 @@ pub fn detect_click_event(
             }
         }
     }
-    
+
     clicked_items
 }

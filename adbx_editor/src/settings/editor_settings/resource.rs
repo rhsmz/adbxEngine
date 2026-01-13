@@ -13,13 +13,13 @@ pub struct EditorSettings {
     pub ai_provider: String,
     pub ai_api_key: Option<String>,
     // 追加設定項目
-    pub tab_width: u32, // タブ幅（スペース数）
-    pub word_wrap: bool, // ワードラップ
-    pub show_minimap: bool, // ミニマップ表示
-    pub enable_auto_complete: bool, // 自動補完
+    pub tab_width: u32,                // タブ幅（スペース数）
+    pub word_wrap: bool,               // ワードラップ
+    pub show_minimap: bool,            // ミニマップ表示
+    pub enable_auto_complete: bool,    // 自動補完
     pub enable_syntax_highlight: bool, // シンタックスハイライト
-    pub editor_language: String, // エディタの言語（ja, enなど）
-    pub max_undo_history: usize, // Undo履歴の最大数
+    pub editor_language: String,       // エディタの言語（ja, enなど）
+    pub max_undo_history: usize,       // Undo履歴の最大数
 }
 
 impl Default for EditorSettings {

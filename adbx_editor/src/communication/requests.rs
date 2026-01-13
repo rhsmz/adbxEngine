@@ -1,6 +1,6 @@
-use adbx_shared::scene::SceneData;
-use super::EditorRuntimeCommunication;
 use super::message_sending::send_to_runtime;
+use super::EditorRuntimeCommunication;
+use adbx_shared::scene::SceneData;
 
 /// エディタからランタイムにシーン読み込みを要求
 pub fn request_scene_load(

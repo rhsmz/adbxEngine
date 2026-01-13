@@ -1,9 +1,8 @@
-use adbx_runtime::game_config::{load_build_config, BuildConfig, GameConfig};
+use adbx_runtime::game_config::{load_build_config, GameConfig};
 use adbx_runtime::scene_loader::load_initial_scene;
 use adbx_runtime::AdbxRuntimePlugin;
 use bevy::prelude::*;
 use std::env;
-use std::path::PathBuf;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -12,7 +11,7 @@ fn main() {
     let (scene_path, project_path, window_title, window_width, window_height) = parse_args(&args);
 
     // プロジェクトパスが指定されている場合、ビルド設定を読み込む
-    let mut game_config = if let Some(ref proj_path) = project_path {
+    let game_config = if let Some(proj_path) = project_path {
         match load_build_config(proj_path) {
             Ok(build_config) => {
                 // ビルド設定からGameConfigを作成
@@ -58,11 +57,9 @@ fn main() {
     };
 
     // アセットパスを設定（プロジェクトパスがある場合）
-    if let Some(ref proj_path) = game_config.project_path {
-        // Bevyのアセットパスをプロジェクトディレクトリに設定
-        // 注意: Bevy 0.17では、アセットパスは環境変数や設定で制御される
-        // ここでは、プロジェクトパスを基準にアセットを読み込む
-    }
+    // Bevyのアセットパスをプロジェクトディレクトリに設定
+    // 注意: Bevy 0.17では、アセットパスは環境変数や設定で制御される
+    // ここでは、プロジェクトパスを基準にアセットを読み込む
 
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
@@ -135,7 +132,7 @@ fn parse_args(
                     i += 1;
                 }
             }
-            "--height" | "-h" => {
+            "--height" => {
                 if i + 1 < args.len() {
                     if let Ok(height) = args[i + 1].parse::<u32>() {
                         window_height = Some(height);

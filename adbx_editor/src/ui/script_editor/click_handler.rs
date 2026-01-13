@@ -1,6 +1,6 @@
+use super::ScriptEditor;
 use bevy::prelude::*;
 use bevy::ui::Interaction;
-use super::ScriptEditor;
 
 /// スクリプトエディタのクリック処理
 pub fn handle_script_editor_click(
@@ -21,7 +21,9 @@ pub fn handle_script_editor_click(
                     if let Some(window) = windows.iter().next() {
                         if let Some(_cursor_pos) = window.cursor_position() {
                             // TODO: より正確なカーソル位置計算
-                            script_editor.cursor_position = script_editor.cursor_position.min(script_editor.content.len());
+                            script_editor.cursor_position = script_editor
+                                .cursor_position
+                                .min(script_editor.content.len());
                         }
                     }
                     script_editor.content_entity = None;

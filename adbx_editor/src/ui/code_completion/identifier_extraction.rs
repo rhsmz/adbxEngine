@@ -7,16 +7,19 @@ pub fn extract_identifiers_from_content(
     _cursor_position: usize,
 ) -> Vec<CompletionCandidate> {
     let mut candidates = Vec::new();
-    
+
     // 簡単な正規表現で識別子を抽出（関数定義、変数定義など）
     // 実際の実装では、より高度なパーサーを使用することを推奨
     let identifier_pattern = regex::Regex::new(r"\b[a-zA-Z_][a-zA-Z0-9_]*\b").unwrap();
-    
+
     for cap in identifier_pattern.find_iter(content) {
         let identifier = cap.as_str();
-        
+
         // プレフィックスに一致するかチェック
-        if identifier.to_lowercase().starts_with(&prefix.to_lowercase()) {
+        if identifier
+            .to_lowercase()
+            .starts_with(&prefix.to_lowercase())
+        {
             // キーワードは除外
             if !is_keyword(identifier) {
                 candidates.push(CompletionCandidate {
@@ -28,17 +31,41 @@ pub fn extract_identifiers_from_content(
             }
         }
     }
-    
+
     candidates
 }
 
 /// キーワードかどうかを判定
 fn is_keyword(word: &str) -> bool {
     let keywords = vec![
-        "if", "else", "for", "while", "return", "true", "false", "null", "undefined",
-        "fn", "let", "mut", "const", "static", "pub", "use", "mod", "struct", "enum",
-        "function", "var", "let", "const", "class", "def", "import", "from",
+        "if",
+        "else",
+        "for",
+        "while",
+        "return",
+        "true",
+        "false",
+        "null",
+        "undefined",
+        "fn",
+        "let",
+        "mut",
+        "const",
+        "static",
+        "pub",
+        "use",
+        "mod",
+        "struct",
+        "enum",
+        "function",
+        "var",
+        "let",
+        "const",
+        "class",
+        "def",
+        "import",
+        "from",
     ];
-    
+
     keywords.contains(&word)
 }

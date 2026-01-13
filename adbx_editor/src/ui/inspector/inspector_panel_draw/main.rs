@@ -1,9 +1,11 @@
-use bevy::prelude::*;
-use super::super::inspector_panel_resource::{InspectorPanel, InspectorContent, TransformInputValues};
 use super::super::component_editor_registry::ComponentEditorRegistry;
+use super::super::inspector_panel_resource::{
+    InspectorContent, InspectorPanel, TransformInputValues,
+};
+use super::component_editor::draw_component_editors;
 use super::header::{draw_entity_header, draw_no_selection};
 use super::transform_editor::draw_transform_editor;
-use super::component_editor::draw_component_editors;
+use bevy::prelude::*;
 
 /// インスペクターパネルのUI描画（編集可能版）
 pub fn draw_inspector_panel_ui(
@@ -30,15 +32,15 @@ pub fn draw_inspector_panel_ui(
             false
         }
     });
-    
+
     if let Some(panel) = panel_opt {
         // 選択されたエンティティを取得
         let selected_entity = selection.selected_entities.first().copied();
-        
+
         // 選択が変更された場合、またはTransformが変更された場合のみ更新
         let needs_update = inspector.selected_entity != selected_entity
             || (selected_entity.is_some() && transform_query.get(selected_entity.unwrap()).is_ok());
-        
+
         if needs_update {
             // 既存のコンテンツを削除
             if let Some(content_entity) = inspector.content_entity {
@@ -46,25 +48,27 @@ pub fn draw_inspector_panel_ui(
                     entity_commands.despawn();
                 }
             }
-            
+
             if let Some(entity) = selected_entity {
                 // エンティティ名を表示
-                let entity_name = name_query.get(entity)
+                let entity_name = name_query
+                    .get(entity)
                     .map(|n| n.as_str().to_string())
                     .unwrap_or_else(|_| format!("Entity {}", entity.index()));
-                
+
                 // Transformの現在の値を取得
-                let current_transform = transform_query.get(entity)
-                    .copied()
-                    .unwrap_or_default();
-                
+                let current_transform = transform_query.get(entity).copied().unwrap_or_default();
+
                 // 入力値を初期化または更新
                 if !inspector.transform_input_values.contains_key(&entity) {
-                    inspector.transform_input_values.insert(entity, TransformInputValues {
-                        translation: current_transform.translation,
-                        rotation: current_transform.rotation,
-                        scale: current_transform.scale,
-                    });
+                    inspector.transform_input_values.insert(
+                        entity,
+                        TransformInputValues {
+                            translation: current_transform.translation,
+                            rotation: current_transform.rotation,
+                            scale: current_transform.scale,
+                        },
+                    );
                 } else if transform_query.get(entity).is_ok() {
                     // Transformが変更された場合、入力値を更新
                     if let Some(input_values) = inspector.transform_input_values.get_mut(&entity) {
@@ -73,28 +77,31 @@ pub fn draw_inspector_panel_ui(
                         input_values.scale = current_transform.scale;
                     }
                 }
-                
-                let content_entity = commands.spawn((
-                    Node {
-                        width: Val::Percent(100.0),
-                        height: Val::Percent(100.0),
-                        flex_direction: FlexDirection::Column,
-                        padding: UiRect::all(Val::Px(5.0)),
-                        overflow: Overflow::clip(),
-                        ..default()
-                    },
-                    InspectorContent,
-                    Name::new("InspectorContent"),
-                )).with_children(|content| {
-                    // エンティティ名ヘッダー
-                    draw_entity_header(content, &entity_name);
-                    
-                    // Transformコンポーネントの表示と編集
-                    if let Ok(transform) = transform_query.get(entity) {
-                        draw_transform_editor(content, entity, transform);
-                    }
-                }).id();
-                
+
+                let content_entity = commands
+                    .spawn((
+                        Node {
+                            width: Val::Percent(100.0),
+                            height: Val::Percent(100.0),
+                            flex_direction: FlexDirection::Column,
+                            padding: UiRect::all(Val::Px(5.0)),
+                            overflow: Overflow::clip(),
+                            ..default()
+                        },
+                        InspectorContent,
+                        Name::new("InspectorContent"),
+                    ))
+                    .with_children(|content| {
+                        // エンティティ名ヘッダー
+                        draw_entity_header(content, &entity_name);
+
+                        // Transformコンポーネントの表示と編集
+                        if let Ok(transform) = transform_query.get(entity) {
+                            draw_transform_editor(content, entity, transform);
+                        }
+                    })
+                    .id();
+
                 // エディタレジストリを使用してコンポーネントを表示
                 draw_component_editors(
                     &mut commands,
@@ -110,29 +117,32 @@ pub fn draw_inspector_panel_ui(
                     &lua_script_state_query,
                     &transform_query,
                 );
-                
+
                 commands.entity(panel).add_child(content_entity);
                 inspector.content_entity = Some(content_entity);
             } else {
                 // 何も選択されていない場合
-                let content_entity = commands.spawn((
-                    Node {
-                        width: Val::Percent(100.0),
-                        height: Val::Percent(100.0),
-                        justify_content: JustifyContent::Center,
-                        align_items: AlignItems::Center,
-                        ..default()
-                    },
-                    InspectorContent,
-                    Name::new("InspectorContent"),
-                )).with_children(|content| {
-                    draw_no_selection(content);
-                }).id();
-                
+                let content_entity = commands
+                    .spawn((
+                        Node {
+                            width: Val::Percent(100.0),
+                            height: Val::Percent(100.0),
+                            justify_content: JustifyContent::Center,
+                            align_items: AlignItems::Center,
+                            ..default()
+                        },
+                        InspectorContent,
+                        Name::new("InspectorContent"),
+                    ))
+                    .with_children(|content| {
+                        draw_no_selection(content);
+                    })
+                    .id();
+
                 commands.entity(panel).add_child(content_entity);
                 inspector.content_entity = Some(content_entity);
             }
-            
+
             inspector.selected_entity = selected_entity;
         }
     }

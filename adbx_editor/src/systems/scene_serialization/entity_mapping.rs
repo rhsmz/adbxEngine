@@ -7,12 +7,12 @@ pub fn create_entity_id_mapping(
 ) -> HashMap<Entity, u32> {
     let mut entity_map: HashMap<Entity, u32> = HashMap::new();
     let mut next_id = 0u32;
-    
+
     for (entity, _) in entities.iter() {
         entity_map.insert(entity, next_id);
         next_id += 1;
     }
-    
+
     entity_map
 }
 
@@ -22,7 +22,7 @@ pub fn create_child_to_parent_map(
     children_query: &Query<&Children>,
 ) -> HashMap<Entity, Entity> {
     let mut child_to_parent: HashMap<Entity, Entity> = HashMap::new();
-    
+
     for (entity, _) in entities.iter() {
         if let Ok(children) = children_query.get(entity) {
             for child in children.iter() {
@@ -30,6 +30,6 @@ pub fn create_child_to_parent_map(
             }
         }
     }
-    
+
     child_to_parent
 }

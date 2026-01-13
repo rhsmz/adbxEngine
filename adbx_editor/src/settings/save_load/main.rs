@@ -1,7 +1,7 @@
-use bevy::prelude::*;
 use super::super::editor_settings::{EditorSettings, SettingsPanel};
 use super::manager::SettingsManager;
 use super::validation::validate_editor_settings;
+use bevy::prelude::*;
 
 /// 設定パネルのクリック処理
 pub fn handle_settings_panel_click(
@@ -14,13 +14,14 @@ pub fn handle_settings_panel_click(
         for (interaction, name) in interaction_query.iter() {
             if *interaction == bevy::ui::Interaction::Pressed {
                 let name_str = name.as_str();
-                
+
                 // 閉じるボタンまたはキャンセルボタン
-                if name_str == "SettingsPanelCloseButton" || name_str == "SettingsPanelCancelButton" {
+                if name_str == "SettingsPanelCloseButton" || name_str == "SettingsPanelCancelButton"
+                {
                     settings_panel.is_open = false;
                     settings_panel.content_entity = None;
                 }
-                
+
                 // 保存ボタン
                 if name_str == "SettingsPanelSaveButton" {
                     // 設定を保存
@@ -48,7 +49,7 @@ pub fn apply_settings_changes(
             let (width, height) = editor_settings.window_size;
             window.resolution.set(width as f32, height as f32);
         }
-        
+
         // 設定の検証
         if let Err(errors) = validate_editor_settings(&editor_settings) {
             for error in errors {
@@ -96,7 +97,7 @@ pub fn save_editor_settings_system(
             }
             return;
         }
-        
+
         // 自動保存が有効な場合、タイマーを設定
         if editor_settings.auto_save {
             if save_timer.is_none() {
@@ -114,7 +115,7 @@ pub fn save_editor_settings_system(
             }
         }
     }
-    
+
     // タイマーが設定されている場合、時間をチェック
     if let Some(ref mut timer) = *save_timer {
         timer.tick(time.delta());

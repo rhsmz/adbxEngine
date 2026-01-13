@@ -1,11 +1,9 @@
+use crate::ui::log_panel::{LogLevel, LogPanel};
 use bevy::prelude::*;
-use crate::ui::log_panel::{LogPanel, LogLevel};
 
 /// BevyのログをLogPanelに転送するシステム
 /// 注意: これは簡易実装です。実際の実装では、Bevyのカスタムログプラグインを使用する必要があります
-pub fn capture_bevy_logs(
-    _log_panel: ResMut<LogPanel>,
-) {
+pub fn capture_bevy_logs(_log_panel: ResMut<LogPanel>) {
     // Bevyのログシステムから直接ログを取得することは難しいため、
     // このシステムは他のシステムから呼び出されるヘルパー関数として使用されます
     // 実際の実装では、BevyのLogPluginを拡張してカスタムロガーを実装する必要があります

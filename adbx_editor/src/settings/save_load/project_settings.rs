@@ -1,6 +1,6 @@
-use std::path::PathBuf;
 use super::super::project_settings::ProjectSettings;
 use super::manager::SettingsManager;
+use std::path::PathBuf;
 
 /// プロジェクト設定を保存
 pub fn save_project_settings(

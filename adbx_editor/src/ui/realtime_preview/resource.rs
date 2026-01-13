@@ -8,7 +8,7 @@ pub struct RealtimePreview {
     pub is_enabled: bool,
     pub preview_window_entity: Option<Entity>,
     pub preview_content: HashMap<String, PreviewContent>, // ファイルパス -> プレビューコンテンツ
-    pub last_update_time: HashMap<String, Instant>, // ファイルパス -> 最終更新時刻
+    pub last_update_time: HashMap<String, Instant>,       // ファイルパス -> 最終更新時刻
     pub update_throttle: Duration, // 更新のスロットル時間（デフォルト: 100ms）
 }
 
@@ -24,10 +24,10 @@ pub struct PreviewContent {
 /// プレビューの種類
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PreviewType {
-    Code, // コードのプレビュー（シンタックスハイライト済み）
-    Html, // HTMLのプレビュー
-    Image, // 画像のプレビュー
-    Scene, // シーンのプレビュー
+    Code,   // コードのプレビュー（シンタックスハイライト済み）
+    Html,   // HTMLのプレビュー
+    Image,  // 画像のプレビュー
+    Scene,  // シーンのプレビュー
     Script, // スクリプトの実行結果
 }
 

@@ -1,18 +1,15 @@
+use super::RenameDialogRequest;
 use bevy::prelude::*;
 use std::path::PathBuf;
-use super::RenameDialogRequest;
 
 /// リネームダイアログを表示
-pub fn show_rename_dialog(
-    rename_dialog: &mut ResMut<RenameDialogRequest>,
-    target_path: PathBuf,
-) {
+pub fn show_rename_dialog(rename_dialog: &mut ResMut<RenameDialogRequest>, target_path: PathBuf) {
     let current_name = target_path
         .file_name()
         .and_then(|n| n.to_str())
         .map(|s| s.to_string())
         .unwrap_or_default();
-    
+
     rename_dialog.is_visible = true;
     rename_dialog.target_path = Some(target_path);
     rename_dialog.current_name = current_name.clone();

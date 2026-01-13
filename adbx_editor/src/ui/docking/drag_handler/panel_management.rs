@@ -1,11 +1,8 @@
-use bevy::prelude::*;
 use super::super::resource::{DockingSystem, PanelPosition};
+use bevy::prelude::*;
 
 /// パネルの表示/非表示を切り替え
-pub fn toggle_panel_visibility(
-    mut docking: ResMut<DockingSystem>,
-    panel_name: String,
-) {
+pub fn toggle_panel_visibility(mut docking: ResMut<DockingSystem>, panel_name: String) {
     if let Some(panel_state) = docking.panels.get_mut(&panel_name) {
         panel_state.is_visible = !panel_state.is_visible;
     }

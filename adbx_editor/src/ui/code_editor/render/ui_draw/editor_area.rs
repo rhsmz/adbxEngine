@@ -1,22 +1,24 @@
-use bevy::prelude::*;
 use super::super::super::resource::CodeEditor;
 use super::code_lines::{draw_code_lines, draw_cursor};
+use bevy::prelude::*;
 
 /// エディタエリアエンティティを作成
 pub fn create_editor_area_entity(commands: &mut Commands) -> Entity {
-    commands.spawn((
-        Node {
-            width: Val::Percent(100.0),
-            flex_grow: 1.0,
-            flex_direction: FlexDirection::Column,
-            padding: UiRect::all(Val::Px(5.0)),
-            overflow: Overflow::clip_y(),
-            margin: UiRect::top(Val::Px(5.0)),
-            ..default()
-        },
-        BackgroundColor(Color::srgb(0.1, 0.1, 0.1)),
-        Name::new("CodeEditorArea"),
-    )).id()
+    commands
+        .spawn((
+            Node {
+                width: Val::Percent(100.0),
+                flex_grow: 1.0,
+                flex_direction: FlexDirection::Column,
+                padding: UiRect::all(Val::Px(5.0)),
+                overflow: Overflow::clip_y(),
+                margin: UiRect::top(Val::Px(5.0)),
+                ..default()
+            },
+            BackgroundColor(Color::srgb(0.1, 0.1, 0.1)),
+            Name::new("CodeEditorArea"),
+        ))
+        .id()
 }
 
 /// テキストエリアの描画
@@ -32,10 +34,10 @@ pub fn draw_text_area(parent: &mut ChildSpawnerCommands, code_editor: &CodeEdito
         },
         BackgroundColor({
             let is_focused = code_editor.is_focused;
-            if is_focused { 
-                Color::srgb(0.12, 0.12, 0.12) 
-            } else { 
-                Color::srgb(0.1, 0.1, 0.1) 
+            if is_focused {
+                Color::srgb(0.12, 0.12, 0.12)
+            } else {
+                Color::srgb(0.1, 0.1, 0.1)
             }
         }),
         bevy::ui::Interaction::default(),
@@ -57,38 +59,60 @@ pub fn draw_text_area_content(
     } else {
         code_editor.content.clone()
     };
-    
+
     let viewport_height = 800.0;
     let line_height = code_editor.line_height;
     let visible_line_count = (viewport_height / line_height).ceil() as usize;
     code_editor.visible_lines = visible_line_count;
-    
+
     let scroll_offset = code_editor.scroll_offset;
-    let current_file_path = code_editor.open_files.get(active_tab)
+    let current_file_path = code_editor
+        .open_files
+        .get(active_tab)
         .map(|f| f.path.clone())
         .or_else(|| code_editor.current_file.clone());
-    
-    let language = current_file_path.as_ref()
-        .and_then(|p| super::super::super::syntax_highlight::detect_programming_language_from_file_path(p));
-    let highlighted_lines_vec = super::super::super::syntax_highlight::apply_syntax_highlighting_to_code(
-        &content_text,
-        language,
-        code_editor,
-    );
-    let highlighted_lines: std::collections::HashMap<usize, Vec<(String, Color)>> = highlighted_lines_vec
-        .iter()
-        .enumerate()
-        .map(|(i, line)| (i, line.clone()))
-        .collect();
-    
+
+    let language = current_file_path.as_ref().and_then(|p| {
+        super::super::super::syntax_highlight::detect_programming_language_from_file_path(p)
+    });
+    let highlighted_lines_vec =
+        super::super::super::syntax_highlight::apply_syntax_highlighting_to_code(
+            &content_text,
+            language,
+            code_editor,
+        );
+    let highlighted_lines: std::collections::HashMap<usize, Vec<(String, Color)>> =
+        highlighted_lines_vec
+            .iter()
+            .enumerate()
+            .map(|(i, line)| (i, line.clone()))
+            .collect();
+
     let line_height = code_editor.line_height;
     let cursor_pos = code_editor.cursor_position;
     let is_focused = code_editor.is_focused;
-    
+
     code_editor.text_area_entity = Some(text_area_entity);
-    
-    commands.entity(text_area_entity).with_children(|text_area_inner: &mut ChildSpawnerCommands| {
-        draw_code_lines(text_area_inner, &content_text, &highlighted_lines, scroll_offset, visible_line_count, line_height);
-        draw_cursor(text_area_inner, &content_text, cursor_pos, is_focused, scroll_offset, visible_line_count, line_height);
-    });
+
+    commands.entity(text_area_entity).with_children(
+        |text_area_inner: &mut ChildSpawnerCommands| {
+            draw_code_lines(
+                text_area_inner,
+                &content_text,
+                &highlighted_lines,
+                scroll_offset,
+                visible_line_count,
+                line_height,
+            );
+            draw_cursor(
+                text_area_inner,
+                &content_text,
+                cursor_pos,
+                is_focused,
+                scroll_offset,
+                visible_line_count,
+                line_height,
+            );
+        },
+    );
 }

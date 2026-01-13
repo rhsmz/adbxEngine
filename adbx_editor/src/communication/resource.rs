@@ -1,10 +1,10 @@
+use adbx_shared::{EditorMessage, RuntimeMessage};
 use bevy::prelude::*;
+use std::net::TcpStream;
+use std::process::Child;
 use std::sync::mpsc;
 use std::sync::Arc;
 use std::sync::Mutex;
-use std::process::Child;
-use std::net::TcpStream;
-use adbx_shared::{EditorMessage, RuntimeMessage};
 
 /// エディタ-ランタイム通信リソース
 #[derive(Resource)]
@@ -13,7 +13,7 @@ pub struct EditorRuntimeCommunication {
     pub runtime_rx: Option<Arc<Mutex<mpsc::Receiver<RuntimeMessage>>>>,
     pub runtime_process: Option<Child>,
     pub tcp_stream: Option<Arc<Mutex<TcpStream>>>,
-    pub is_separated: bool, // 分離実行モードかどうか
+    pub is_separated: bool,    // 分離実行モードかどうか
     pub tcp_port: Option<u16>, // TCP通信のポート番号
 }
 

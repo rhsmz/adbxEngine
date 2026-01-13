@@ -1,7 +1,7 @@
-use bevy::prelude::*;
-use crate::project::{Project, save_scene_with_format, load_scene, SerializationFormat};
-use crate::systems::scene_serialization::{serialize_scene, deserialize_scene};
+use crate::project::{load_scene, save_scene_with_format, Project, SerializationFormat};
 use crate::systems::operation_recording::record_scene_saved;
+use crate::systems::scene_serialization::{deserialize_scene, serialize_scene};
+use bevy::prelude::*;
 use std::collections::HashMap;
 
 /// シーンに属するエンティティをマークするコンポーネント
@@ -9,7 +9,6 @@ use std::collections::HashMap;
 pub struct SceneEntity {
     pub scene_name: String,
 }
-
 
 /// シーンを読み込むリクエスト（リソースベース）
 #[derive(Resource, Default)]
@@ -54,7 +53,7 @@ pub fn save_current_scene(
             transform_query,
             name_query,
         );
-        
+
         // プロジェクトの設定されたシリアライゼーション形式を使用
         let format = project.serialization_format;
         let scene_path: std::path::PathBuf = project_path.join("scenes").join(format!(
@@ -65,7 +64,7 @@ pub fn save_current_scene(
                 SerializationFormat::MessagePack => "msgpack",
             }
         ));
-        
+
         if let Err(e) = save_scene_with_format(&scene_data, project_path, format) {
             bevy::log::error!("Failed to save scene: {}", e);
         } else {
@@ -100,12 +99,12 @@ pub fn handle_load_scene_request(
                     // 現在は、新しいシーンを読み込む際に既存のエンティティを削除する処理を実装する必要があります
                     // 簡易実装として、SceneEntityコンポーネントを持つエンティティを削除
                     // 実際の実装では、より適切な方法でエンティティを管理する必要があります
-                    
+
                     // 新しいシーンをデシリアライズ
                     let entity_map = deserialize_scene(&scene_data, &mut commands, &scene_name);
                     scene_manager.entity_id_map = entity_map;
                     scene_manager.current_scene_name = scene_name.clone();
-                    
+
                     bevy::log::info!("Scene loaded: {}", scene_name);
                 }
                 Err(e) => {
@@ -128,11 +127,11 @@ pub fn list_available_scenes(project: &Project) -> Vec<String> {
                 let path = entry.path();
                 if path.is_file() {
                     if let Some(ext) = path.extension() {
-                    if ext == "json" || ext == "msgpack" || ext == "mp" {
-                        if let Some(name) = path.file_stem().and_then(|n| n.to_str()) {
-                            scenes.push(name.to_string());
+                        if ext == "json" || ext == "msgpack" || ext == "mp" {
+                            if let Some(name) = path.file_stem().and_then(|n| n.to_str()) {
+                                scenes.push(name.to_string());
+                            }
                         }
-                    }
                     }
                 }
             }

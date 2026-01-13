@@ -1,16 +1,13 @@
-use bevy::prelude::*;
-use crate::error::EditorError;
 use super::{ErrorDialog, ErrorType};
+use crate::error::EditorError;
+use bevy::prelude::*;
 
 /// エラーダイアログを表示（EditorErrorから）
-pub fn show_error_dialog_from_error(
-    error_dialog: &mut ResMut<ErrorDialog>,
-    error: EditorError,
-) {
+pub fn show_error_dialog_from_error(error_dialog: &mut ResMut<ErrorDialog>, error: EditorError) {
     let severity = error.severity();
     let user_message = error.user_friendly_message();
     let context = error.context();
-    
+
     error_dialog.is_visible = true;
     error_dialog.title = match severity {
         adbx_shared::ErrorSeverity::Critical => "致命的エラー".to_string(),

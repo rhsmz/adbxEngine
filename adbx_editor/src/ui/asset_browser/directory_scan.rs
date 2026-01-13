@@ -10,26 +10,27 @@ pub trait AssetBrowserExt {
 impl AssetBrowserExt for AssetBrowser {
     fn scan_directory(&mut self) {
         self.asset_files.clear();
-        
+
         if !self.current_path.exists() {
             return;
         }
-        
+
         if let Ok(entries) = std::fs::read_dir(&self.current_path) {
             for entry in entries.flatten() {
                 let path = entry.path();
-                let name = path.file_name()
+                let name = path
+                    .file_name()
                     .and_then(|n| n.to_str())
                     .unwrap_or("Unknown")
                     .to_string();
-                
+
                 let is_directory = path.is_dir();
                 let asset_type = if is_directory {
                     AssetType::Other
                 } else {
                     Self::detect_asset_type(&path)
                 };
-                
+
                 self.asset_files.push(AssetFileInfo {
                     path,
                     name,
@@ -38,7 +39,7 @@ impl AssetBrowserExt for AssetBrowser {
                 });
             }
         }
-        
+
         // 名前でソート
         self.asset_files.sort_by(|a, b| {
             // ディレクトリを先に
@@ -49,7 +50,7 @@ impl AssetBrowserExt for AssetBrowser {
             }
         });
     }
-    
+
     fn detect_asset_type(path: &Path) -> AssetType {
         if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
             match ext.to_lowercase().as_str() {

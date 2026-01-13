@@ -1,5 +1,5 @@
+use super::{PreviewContent, PreviewType, RealtimePreview};
 use std::time::Instant;
-use super::{RealtimePreview, PreviewContent, PreviewType};
 
 /// プレビューを更新
 pub fn update_preview(
@@ -14,7 +14,7 @@ pub fn update_preview(
             return; // スロットル時間内の場合は更新をスキップ
         }
     }
-    
+
     // プレビューコンテンツを生成
     let (rendered_content, error) = match preview_type {
         PreviewType::Code => {
@@ -24,7 +24,10 @@ pub fn update_preview(
             if let Some(err) = syntax_error {
                 (None, Some(err))
             } else {
-                (Some(format!("<pre><code>{}</code></pre>", html_escape(&content))), None)
+                (
+                    Some(format!("<pre><code>{}</code></pre>", html_escape(&content))),
+                    None,
+                )
             }
         }
         PreviewType::Html => {
@@ -34,12 +37,21 @@ pub fn update_preview(
         PreviewType::Image => {
             // 画像の場合は、base64エンコードされたデータURIを生成
             // 画像ファイルの読み込みは、実際のファイルシステムから行う必要がある
-            (Some("Image preview: File must be loaded from filesystem".to_string()), None)
+            (
+                Some("Image preview: File must be loaded from filesystem".to_string()),
+                None,
+            )
         }
         PreviewType::Scene => {
             // シーンの場合は、シーン情報を表示
             let entity_count = content.lines().filter(|l| l.contains("Entity")).count();
-            (Some(format!("Scene Preview:\n- {} entities detected\n- File: {}", entity_count, file_path)), None)
+            (
+                Some(format!(
+                    "Scene Preview:\n- {} entities detected\n- File: {}",
+                    entity_count, file_path
+                )),
+                None,
+            )
         }
         PreviewType::Script => {
             // スクリプトの場合は、実行結果を表示
@@ -52,14 +64,17 @@ pub fn update_preview(
             }
         }
     };
-    
-    preview.preview_content.insert(file_path.clone(), PreviewContent {
-        content,
-        rendered_content,
-        preview_type,
-        error,
-    });
-    
+
+    preview.preview_content.insert(
+        file_path.clone(),
+        PreviewContent {
+            content,
+            rendered_content,
+            preview_type,
+            error,
+        },
+    );
+
     preview.last_update_time.insert(file_path, Instant::now());
 }
 
@@ -94,7 +109,7 @@ fn check_syntax_errors(content: &str, preview_type: PreviewType) -> Option<Strin
             let mut paren_count = 0;
             let mut brace_count = 0;
             let mut bracket_count = 0;
-            
+
             for ch in content.chars() {
                 match ch {
                     '(' => paren_count += 1,
@@ -105,12 +120,12 @@ fn check_syntax_errors(content: &str, preview_type: PreviewType) -> Option<Strin
                     ']' => bracket_count -= 1,
                     _ => {}
                 }
-                
+
                 if paren_count < 0 || brace_count < 0 || bracket_count < 0 {
                     return Some("Mismatched brackets detected".to_string());
                 }
             }
-            
+
             if paren_count != 0 {
                 Some(format!("Unmatched parentheses: {} unclosed", paren_count))
             } else if brace_count != 0 {
@@ -132,7 +147,7 @@ pub fn detect_preview_type(file_path: &str) -> PreviewType {
         .and_then(|ext| ext.to_str())
         .unwrap_or("")
         .to_lowercase();
-    
+
     match extension.as_str() {
         "html" | "htm" => PreviewType::Html,
         "png" | "jpg" | "jpeg" | "gif" | "bmp" => PreviewType::Image,

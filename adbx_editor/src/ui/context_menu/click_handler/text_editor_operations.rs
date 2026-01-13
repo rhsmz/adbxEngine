@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::ui::code_editor::CodeEditor;
+use bevy::prelude::*;
 
 /// テキストエディタ操作のメニュー項目を処理
 pub fn handle_text_editor_operation_menu_item(

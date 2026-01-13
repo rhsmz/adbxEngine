@@ -1,25 +1,23 @@
-use bevy::prelude::*;
-use adbx_shared::RuntimeMessage;
 use super::EditorRuntimeCommunication;
+use adbx_shared::RuntimeMessage;
+use bevy::prelude::*;
 
 /// ランタイムからメッセージを受信
-pub fn receive_from_runtime(
-    communication: &mut EditorRuntimeCommunication,
-) -> Vec<RuntimeMessage> {
+pub fn receive_from_runtime(communication: &mut EditorRuntimeCommunication) -> Vec<RuntimeMessage> {
     let mut messages = Vec::new();
-    
+
     if communication.is_separated {
         // 分離実行モード：TCP通信を使用
         if let Some(ref stream) = communication.tcp_stream {
             let mut stream = stream.lock().unwrap();
             // ノンブロッキング読み取り
             stream.set_nonblocking(true).ok();
-            
+
             // メッセージ長を読み取り（4バイト）
             let mut len_bytes = [0u8; 4];
             if stream.read_exact(&mut len_bytes).is_ok() {
                 let len = u32::from_le_bytes(len_bytes) as usize;
-                
+
                 // メッセージ本体を読み取り
                 let mut message_bytes = vec![0u8; len];
                 if stream.read_exact(&mut message_bytes).is_ok() {
@@ -40,18 +38,16 @@ pub fn receive_from_runtime(
             }
         }
     }
-    
+
     messages
 }
 
 use std::io::Read;
 
 /// ランタイムからのメッセージを処理するシステム
-pub fn handle_runtime_messages(
-    mut communication: ResMut<EditorRuntimeCommunication>,
-) {
+pub fn handle_runtime_messages(mut communication: ResMut<EditorRuntimeCommunication>) {
     let messages = receive_from_runtime(communication.as_mut());
-    
+
     for message in messages {
         match message {
             RuntimeMessage::SceneLoaded { scene } => {
@@ -66,7 +62,10 @@ pub fn handle_runtime_messages(
             RuntimeMessage::HotReloaded { asset_path } => {
                 bevy::log::info!("Asset hot reloaded: {}", asset_path);
             }
-            RuntimeMessage::ScriptExecuted { success, error_message } => {
+            RuntimeMessage::ScriptExecuted {
+                success,
+                error_message,
+            } => {
                 if success {
                     bevy::log::info!("Script executed successfully");
                 } else {
@@ -74,7 +73,10 @@ pub fn handle_runtime_messages(
                     bevy::log::error!("Script execution failed: {}", error_msg);
                 }
             }
-            RuntimeMessage::ScriptAttached { entity_id, script_path } => {
+            RuntimeMessage::ScriptAttached {
+                entity_id,
+                script_path,
+            } => {
                 bevy::log::info!("Script attached to entity {}: {}", entity_id, script_path);
             }
             RuntimeMessage::ScriptDetached { entity_id } => {

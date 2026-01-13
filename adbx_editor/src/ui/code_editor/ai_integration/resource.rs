@@ -12,16 +12,16 @@ pub struct AiIntegration {
     #[cfg(not(feature = "ai"))]
     pub _client: Option<()>,
     pub pending_requests: HashMap<usize, AiRequestStatus>, // 進行中のリクエスト
-    pub next_request_id: usize, // 次のリクエストID
+    pub next_request_id: usize,                            // 次のリクエストID
 }
 
 /// AIリクエストの状態
 #[derive(Debug, Clone)]
 pub enum AiRequestStatus {
-    Pending, // 待機中
-    Processing, // 処理中
+    Pending,          // 待機中
+    Processing,       // 処理中
     Completed(usize), // 完了（レスポンスのインデックス）
-    Failed(String), // 失敗（エラーメッセージ）
+    Failed(String),   // 失敗（エラーメッセージ）
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

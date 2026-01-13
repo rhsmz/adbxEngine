@@ -1,6 +1,6 @@
-use bevy::prelude::*;
 use crate::project::Project;
-use crate::systems::build_game::{BuildGameRequest, BuildProgress, build_game};
+use crate::systems::build_game::{build_game, BuildGameRequest, BuildProgress};
+use bevy::prelude::*;
 
 /// ビルドゲームリクエスト（リソースベース）
 #[derive(Resource, Default)]
@@ -18,13 +18,9 @@ pub fn handle_build_game_request(
 ) {
     if build_game_request.requested {
         build_game_request.requested = false;
-        
+
         // ビルドを実行
-        match build_game(
-            project,
-            build_request,
-            build_progress,
-        ) {
+        match build_game(project, build_request, build_progress) {
             Ok(_) => {
                 bevy::log::info!("Game built successfully!");
             }

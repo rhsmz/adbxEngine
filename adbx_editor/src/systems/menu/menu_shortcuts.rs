@@ -1,6 +1,8 @@
-use bevy::prelude::*;
 use crate::project::Project;
-use crate::systems::scene_management::{save_current_scene, SceneManager, list_available_scenes, LoadSceneRequest};
+use crate::systems::scene_management::{
+    list_available_scenes, save_current_scene, LoadSceneRequest, SceneManager,
+};
+use bevy::prelude::*;
 
 /// メニューのキーボードショートカット処理
 pub fn handle_menu_shortcuts(
@@ -17,7 +19,8 @@ pub fn handle_menu_shortcuts(
     mut operation_recorder: Option<ResMut<crate::systems::operation_recording::OperationRecorder>>,
 ) {
     // Ctrl+S: シーンを保存
-    if keyboard_input.pressed(KeyCode::ControlLeft) || keyboard_input.pressed(KeyCode::ControlRight) {
+    if keyboard_input.pressed(KeyCode::ControlLeft) || keyboard_input.pressed(KeyCode::ControlRight)
+    {
         if keyboard_input.just_pressed(KeyCode::KeyS) {
             save_current_scene(
                 project.as_ref(),
@@ -44,9 +47,9 @@ pub fn handle_menu_shortcuts(
             bevy::log::info!("Build game shortcut pressed");
         }
     }
-    
+
     // Ctrl+,: 設定パネルを開く（handle_menu_shortcuts_settingsで処理）
-    
+
     // Gizmoモードの切り替え
     // T: Translate (移動)
     if keyboard_input.just_pressed(KeyCode::KeyT) {
@@ -57,7 +60,9 @@ pub fn handle_menu_shortcuts(
         scene_view.gizmo_mode = crate::ui::scene_view::GizmoMode::Rotate;
     }
     // S: Scale (スケール) - Ctrl+Sと競合しないように、Ctrlが押されていない場合のみ
-    if !keyboard_input.pressed(KeyCode::ControlLeft) && !keyboard_input.pressed(KeyCode::ControlRight) {
+    if !keyboard_input.pressed(KeyCode::ControlLeft)
+        && !keyboard_input.pressed(KeyCode::ControlRight)
+    {
         if keyboard_input.just_pressed(KeyCode::KeyS) {
             scene_view.gizmo_mode = crate::ui::scene_view::GizmoMode::Scale;
         }
@@ -74,7 +79,8 @@ pub fn handle_menu_shortcuts_settings(
     mut settings_panel: ResMut<crate::settings::SettingsPanel>,
 ) {
     // Ctrl+,: 設定パネルを開く
-    if keyboard_input.pressed(KeyCode::ControlLeft) || keyboard_input.pressed(KeyCode::ControlRight) {
+    if keyboard_input.pressed(KeyCode::ControlLeft) || keyboard_input.pressed(KeyCode::ControlRight)
+    {
         if keyboard_input.just_pressed(KeyCode::Comma) {
             settings_panel.is_open = !settings_panel.is_open;
         }

@@ -1,13 +1,10 @@
-use bevy::prelude::*;
+use super::event_handling::{
+    handle_button_click, handle_drag_end, handle_drag_event, handle_field_click,
+    handle_mouse_wheel_event,
+};
 use crate::systems::operation_recording::OperationRecorder;
 use crate::ui::inspector::inspector_panel_resource::{InspectorInputState, InspectorPanel};
-use super::event_handling::{
-    handle_mouse_wheel_event,
-    handle_drag_event,
-    handle_field_click,
-    handle_drag_end,
-    handle_button_click,
-};
+use bevy::prelude::*;
 
 /// インスペクター入力の処理（改善版：マウスホイールとドラッグ対応）
 pub fn handle_inspector_transform_input(
@@ -18,7 +15,13 @@ pub fn handle_inspector_transform_input(
     mouse_input: Res<ButtonInput<MouseButton>>,
     mut mouse_wheel_events: bevy::prelude::MessageReader<bevy::input::mouse::MouseWheel>,
     mut mouse_motion_events: bevy::prelude::MessageReader<bevy::input::mouse::MouseMotion>,
-    interaction_query: Query<(&Interaction, &crate::ui::inspector::inspector_panel_resource::TransformInputField), Changed<Interaction>>,
+    interaction_query: Query<
+        (
+            &Interaction,
+            &crate::ui::inspector::inspector_panel_resource::TransformInputField,
+        ),
+        Changed<Interaction>,
+    >,
     button_interaction_query: Query<(&Interaction, &Name), Changed<Interaction>>,
     communication: ResMut<crate::communication::EditorRuntimeCommunication>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
@@ -32,7 +35,7 @@ pub fn handle_inspector_transform_input(
             }
         }
     }
-    
+
     // マウスホイールで値を増減
     for wheel_event in mouse_wheel_events.read() {
         handle_mouse_wheel_event(
@@ -43,7 +46,7 @@ pub fn handle_inspector_transform_input(
             &mut *operation_recorder,
         );
     }
-    
+
     // ドラッグで値を変更
     if let Some((_entity, _field_type)) = input_state.editing_field {
         if mouse_input.pressed(MouseButton::Left) {
@@ -64,7 +67,7 @@ pub fn handle_inspector_transform_input(
             handle_drag_end(&mut *input_state);
         }
     }
-    
+
     // フィールドをクリックして編集開始
     if mouse_input.just_pressed(MouseButton::Left) {
         for (interaction, field) in interaction_query.iter() {

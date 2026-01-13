@@ -1,5 +1,5 @@
+use super::super::{OperationContext, OperationRecorder, OperationType};
 use bevy::prelude::*;
-use super::super::{OperationRecorder, OperationType, OperationContext};
 
 /// コード生成を記録
 pub fn record_code_generated(

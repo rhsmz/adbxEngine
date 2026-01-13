@@ -4,7 +4,7 @@ pub fn detect_programming_language_from_file_path(path: &str) -> Option<&str> {
         .extension()
         .and_then(|ext| ext.to_str())?
         .to_lowercase();
-    
+
     match extension.as_str() {
         "rs" => Some("Rust"),
         "lua" => Some("Lua"),

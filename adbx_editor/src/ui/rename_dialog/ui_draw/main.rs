@@ -1,7 +1,7 @@
-use bevy::prelude::*;
 use super::super::RenameDialogRequest;
 use super::dialog_display::draw_rename_dialog;
 use super::input_handling::handle_rename_dialog_input;
+use bevy::prelude::*;
 
 /// リネームダイアログのUI描画（メイン関数）
 pub fn draw_rename_dialog_main(

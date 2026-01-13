@@ -1,8 +1,8 @@
-use bevy::prelude::*;
-use bevy::input::keyboard::KeyboardInput;
-use crate::ui::text_editor::TextEditorState;
 use super::code_editor_handler::handle_code_editor_keyboard_input;
 use super::script_editor_handler::handle_script_editor_keyboard_input;
+use crate::ui::text_editor::TextEditorState;
+use bevy::input::keyboard::KeyboardInput;
+use bevy::prelude::*;
 
 /// テキストエディタのキーボード入力処理
 pub fn handle_text_editor_input(

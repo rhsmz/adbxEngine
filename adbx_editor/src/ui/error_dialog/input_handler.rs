@@ -1,6 +1,6 @@
-use bevy::prelude::*;
-use super::ErrorDialog;
 use super::show_functions::close_error_dialog;
+use super::ErrorDialog;
+use bevy::prelude::*;
 
 /// エラーダイアログの入力処理
 pub fn handle_error_dialog_input(
@@ -12,25 +12,25 @@ pub fn handle_error_dialog_input(
     if !error_dialog.is_visible {
         return;
     }
-    
+
     // ESCキーで閉じる
     if keyboard_input.just_pressed(KeyCode::Escape) {
         close_error_dialog(error_dialog.as_mut());
         return;
     }
-    
+
     // マウスクリックで閉じるボタンまたはOKボタンを処理
     if mouse_input.just_pressed(MouseButton::Left) {
         for (interaction, name) in interaction_query.iter() {
             if *interaction == bevy::ui::Interaction::Pressed {
                 let name_str = name.as_str();
-                
+
                 // 閉じるボタンまたはOKボタン
                 if name_str == "ErrorDialogCloseButton" || name_str == "ErrorDialogOkButton" {
                     close_error_dialog(error_dialog.as_mut());
                     return;
                 }
-                
+
                 // オーバーレイをクリックした場合（ダイアログ外）は閉じない
                 // （ユーザーが意図的に閉じる必要があるため）
             }

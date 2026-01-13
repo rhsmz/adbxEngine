@@ -1,16 +1,22 @@
-use bevy::prelude::*;
-use super::super::resource::GizmoInteraction;
 use super::super::resource::GizmoHandle;
+use super::super::resource::GizmoInteraction;
+use bevy::prelude::*;
 
 /// カメラ距離に応じたGizmoスケールを計算
 pub fn calculate_gizmo_scale(
     transform: &Transform,
-    camera_query: &Query<(&Camera, &GlobalTransform), (With<bevy::camera::Camera3d>, Without<bevy::camera::Camera2d>)>,
+    camera_query: &Query<
+        (&Camera, &GlobalTransform),
+        (
+            With<bevy::camera::Camera3d>,
+            Without<bevy::camera::Camera2d>,
+        ),
+    >,
 ) -> f32 {
     if let Ok((_, camera_transform)) = camera_query.single() {
         let camera_pos = camera_transform.translation();
         let distance = transform.translation.distance(camera_pos);
-        
+
         // 距離に応じてスケールを調整（基準距離: 10.0、最小スケール: 0.5、最大スケール: 2.0）
         let base_distance = 10.0;
         let scale = (distance / base_distance).clamp(0.5, 2.0);
@@ -33,7 +39,11 @@ pub fn get_handle_color(
         Color::srgb(1.0, 1.0, 0.0)
     } else if gizmo_interaction.hovered_handle == Some(handle) {
         // ホバー時：明るくする
-        Color::srgb((base_r * 1.5).min(1.0), (base_g * 1.5).min(1.0), (base_b * 1.5).min(1.0))
+        Color::srgb(
+            (base_r * 1.5).min(1.0),
+            (base_g * 1.5).min(1.0),
+            (base_b * 1.5).min(1.0),
+        )
     } else {
         Color::srgb(base_r, base_g, base_b)
     }
@@ -42,12 +52,8 @@ pub fn get_handle_color(
 /// 基本的な軸Gizmoの描画
 pub fn draw_axis_gizmo(gizmos: &mut Gizmos, transform: &Transform) {
     // 位置を示すGizmo
-    gizmos.sphere(
-        transform.translation,
-        0.1,
-        Color::srgb(1.0, 1.0, 1.0),
-    );
-    
+    gizmos.sphere(transform.translation, 0.1, Color::srgb(1.0, 1.0, 1.0));
+
     // 軸を示す線
     let axis_length = 0.5;
     gizmos.line(

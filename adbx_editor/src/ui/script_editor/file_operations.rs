@@ -1,6 +1,6 @@
+use super::ScriptEditor;
 use bevy::prelude::*;
 use std::path::PathBuf;
-use super::ScriptEditor;
 
 /// スクリプトファイルを読み込む
 pub fn load_script_file(script_path: PathBuf, script_editor: &mut ScriptEditor) {

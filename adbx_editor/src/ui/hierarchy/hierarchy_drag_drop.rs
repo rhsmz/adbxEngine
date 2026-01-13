@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::ui::hierarchy::hierarchy_view_resource::{HierarchyDragState, HierarchyItem};
+use bevy::prelude::*;
 
 /// エンティティが別のエンティティの子孫かどうかを判定
 pub fn is_entity_descendant_of_entity(
@@ -36,7 +36,7 @@ pub fn handle_hierarchy_view_drag_and_drop(
                 if window.cursor_position().is_some() {
                     let mut closest_target: Option<Entity> = None;
                     let _closest_distance = f32::MAX;
-                    
+
                     // マウス位置がHierarchyItemの範囲内にあるかチェック
                     // 簡易実装: すべてのHierarchyItemをドロップ先候補とする
                     for hierarchy_item in hierarchy_item_query.iter() {
@@ -44,17 +44,21 @@ pub fn handle_hierarchy_view_drag_and_drop(
                         if hierarchy_item.entity == dragging_entity {
                             continue;
                         }
-                        
+
                         // 子孫エンティティはドロップ先にしない（循環参照を防ぐ）
-                        if is_entity_descendant_of_entity(hierarchy_item.entity, dragging_entity, &children_query) {
+                        if is_entity_descendant_of_entity(
+                            hierarchy_item.entity,
+                            dragging_entity,
+                            &children_query,
+                        ) {
                             continue;
                         }
-                        
+
                         // 簡易実装: 最初に見つかった有効なエンティティをドロップ先とする
                         closest_target = Some(hierarchy_item.entity);
                         break;
                     }
-                    
+
                     drag_state.hovered_drop_target = closest_target;
                 }
             }
@@ -65,7 +69,7 @@ pub fn handle_hierarchy_view_drag_and_drop(
                 // 注意: Bevyは自動的に既存の親子関係を解除してから新しい親子関係を設定します
                 commands.entity(drop_target).add_child(dragging_entity);
             }
-            
+
             drag_state.dragging_entity = None;
             drag_state.drag_start_pos = None;
             drag_state.hovered_drop_target = None;

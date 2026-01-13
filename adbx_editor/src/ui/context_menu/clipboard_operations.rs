@@ -1,7 +1,7 @@
-use bevy::prelude::*;
 use crate::systems::selection::Selection;
 use crate::ui::clipboard::{Clipboard, EntityClipboardData, SerializedEntity, SerializedTransform};
 use crate::ui::context_menu::EntityClipboardOperation;
+use bevy::prelude::*;
 
 /// エンティティのクリップボード操作（カット、コピー、ペースト）
 pub fn handle_entity_clipboard_operations(
@@ -19,9 +19,11 @@ pub fn handle_entity_clipboard_operations(
                 let mut entity_data = EntityClipboardData {
                     entities: Vec::new(),
                 };
-                
+
                 for entity in selection.selected_entities.iter() {
-                    if let (Ok(name), Ok(transform)) = (name_query.get(*entity), transform_query.get(*entity)) {
+                    if let (Ok(name), Ok(transform)) =
+                        (name_query.get(*entity), transform_query.get(*entity))
+                    {
                         entity_data.entities.push(SerializedEntity {
                             name: name.as_str().to_string(),
                             transform: SerializedTransform {
@@ -36,21 +38,18 @@ pub fn handle_entity_clipboard_operations(
                                     transform.rotation.z,
                                     transform.rotation.w,
                                 ],
-                                scale: [
-                                    transform.scale.x,
-                                    transform.scale.y,
-                                    transform.scale.z,
-                                ],
+                                scale: [transform.scale.x, transform.scale.y, transform.scale.z],
                             },
                             components: Vec::new(), // 簡易実装
                         });
                     }
                 }
-                
+
                 clipboard.set_entity_data(entity_data);
-                
+
                 // Entityを削除
-                let entities_to_delete: Vec<Entity> = selection.selected_entities.iter().copied().collect();
+                let entities_to_delete: Vec<Entity> =
+                    selection.selected_entities.iter().copied().collect();
                 for entity in entities_to_delete {
                     if let Ok(mut entity_commands) = commands.get_entity(entity) {
                         entity_commands.despawn();
@@ -64,9 +63,11 @@ pub fn handle_entity_clipboard_operations(
                 let mut entity_data = EntityClipboardData {
                     entities: Vec::new(),
                 };
-                
+
                 for entity in selection.selected_entities.iter() {
-                    if let (Ok(name), Ok(transform)) = (name_query.get(*entity), transform_query.get(*entity)) {
+                    if let (Ok(name), Ok(transform)) =
+                        (name_query.get(*entity), transform_query.get(*entity))
+                    {
                         entity_data.entities.push(SerializedEntity {
                             name: name.as_str().to_string(),
                             transform: SerializedTransform {
@@ -81,17 +82,13 @@ pub fn handle_entity_clipboard_operations(
                                     transform.rotation.z,
                                     transform.rotation.w,
                                 ],
-                                scale: [
-                                    transform.scale.x,
-                                    transform.scale.y,
-                                    transform.scale.z,
-                                ],
+                                scale: [transform.scale.x, transform.scale.y, transform.scale.z],
                             },
                             components: Vec::new(), // 簡易実装
                         });
                     }
                 }
-                
+
                 let entity_count = entity_data.entities.len();
                 clipboard.set_entity_data(entity_data);
                 bevy::log::info!("Copied {} entities", entity_count);
@@ -100,37 +97,34 @@ pub fn handle_entity_clipboard_operations(
         EntityClipboardOperation::Paste => {
             if let Some(entity_data) = clipboard.get_entity_data() {
                 let mut new_entities = Vec::new();
-                
+
                 for serialized_entity in &entity_data.entities {
-                    let transform = Transform::from_translation(
-                        Vec3::new(
-                            serialized_entity.transform.translation[0],
-                            serialized_entity.transform.translation[1],
-                            serialized_entity.transform.translation[2],
-                        )
-                    )
-                        .with_rotation(Quat::from_xyzw(
-                            serialized_entity.transform.rotation[0],
-                            serialized_entity.transform.rotation[1],
-                            serialized_entity.transform.rotation[2],
-                            serialized_entity.transform.rotation[3],
-                        ))
-                        .with_scale(Vec3::new(
-                            serialized_entity.transform.scale[0],
-                            serialized_entity.transform.scale[1],
-                            serialized_entity.transform.scale[2],
-                        ));
-                    
+                    let transform = Transform::from_translation(Vec3::new(
+                        serialized_entity.transform.translation[0],
+                        serialized_entity.transform.translation[1],
+                        serialized_entity.transform.translation[2],
+                    ))
+                    .with_rotation(Quat::from_xyzw(
+                        serialized_entity.transform.rotation[0],
+                        serialized_entity.transform.rotation[1],
+                        serialized_entity.transform.rotation[2],
+                        serialized_entity.transform.rotation[3],
+                    ))
+                    .with_scale(Vec3::new(
+                        serialized_entity.transform.scale[0],
+                        serialized_entity.transform.scale[1],
+                        serialized_entity.transform.scale[2],
+                    ));
+
                     let new_name = format!("{}_Copy", serialized_entity.name);
-                    let new_entity = commands.spawn((
-                        Name::new(new_name.clone()),
-                        transform,
-                    )).id();
-                    
+                    let new_entity = commands
+                        .spawn((Name::new(new_name.clone()), transform))
+                        .id();
+
                     new_entities.push(new_entity);
                     bevy::log::info!("Pasted entity: {}", new_name);
                 }
-                
+
                 if !new_entities.is_empty() {
                     selection.selected_entities = new_entities;
                 }

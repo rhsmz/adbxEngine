@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::ui::script_editor::ScriptEditor;
+use bevy::prelude::*;
 
 /// スクリプト操作のメニュー項目を処理
 pub fn handle_script_operation_menu_item(

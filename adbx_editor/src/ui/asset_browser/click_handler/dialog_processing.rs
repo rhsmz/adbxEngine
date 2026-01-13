@@ -1,5 +1,8 @@
+use super::super::{
+    import_export::{export_asset, import_asset},
+    AssetBrowser,
+};
 use bevy::prelude::*;
-use super::super::{AssetBrowser, import_export::{import_asset, export_asset}};
 
 /// ファイルダイアログの結果を処理
 pub fn process_file_dialog_result(
@@ -40,7 +43,7 @@ pub fn process_file_dialog_result(
                     Ok(imported_path) => {
                         bevy::log::info!("Asset imported successfully to: {:?}", imported_path);
                         crate::ui::error_dialog::show_info_dialog(
-                                error_dialog,
+                            error_dialog,
                             "インポート成功".to_string(),
                             format!("アセットをインポートしました: {}", imported_path.display()),
                             None,
@@ -51,7 +54,7 @@ pub fn process_file_dialog_result(
                     Err(e) => {
                         bevy::log::error!("Failed to import asset: {}", e);
                         crate::ui::error_dialog::show_error_dialog(
-                                error_dialog,
+                            error_dialog,
                             "インポートエラー".to_string(),
                             format!("アセットのインポートに失敗しました: {}", e),
                             None,

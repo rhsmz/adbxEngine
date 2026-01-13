@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -61,7 +61,7 @@ impl OperationRecorder {
             is_recording: true,
         }
     }
-    
+
     /// 操作を記録
     pub fn record_operation(
         &mut self,
@@ -72,27 +72,27 @@ impl OperationRecorder {
         if !self.is_recording {
             return;
         }
-        
+
         let timestamp = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        
+
         let operation = RecordedOperation {
             timestamp,
             operation_type,
             context,
             details,
         };
-        
+
         self.operations.push_back(operation);
-        
+
         // 最大履歴数を超えた場合、古い操作を削除
         while self.operations.len() > self.max_history {
             self.operations.pop_front();
         }
     }
-    
+
     /// 操作履歴をクリア
     pub fn clear_history(&mut self) {
         self.operations.clear();

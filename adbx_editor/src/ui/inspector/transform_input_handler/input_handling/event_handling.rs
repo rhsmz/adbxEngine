@@ -1,7 +1,11 @@
-use bevy::prelude::*;
-use crate::ui::inspector::inspector_panel_resource::{InspectorInputState, TransformFieldType, InspectorPanel};
 use super::super::field_access::get_transform_field_value;
-use super::value_update::{update_value_with_wheel, update_value_with_drag, update_value_with_click};
+use super::value_update::{
+    update_value_with_click, update_value_with_drag, update_value_with_wheel,
+};
+use crate::ui::inspector::inspector_panel_resource::{
+    InspectorInputState, InspectorPanel, TransformFieldType,
+};
+use bevy::prelude::*;
 
 /// マウスホイールイベントの処理
 pub fn handle_mouse_wheel_event(
@@ -12,12 +16,14 @@ pub fn handle_mouse_wheel_event(
     operation_recorder: &mut crate::systems::operation_recording::OperationRecorder,
 ) {
     if let Some((_entity, _field_type)) = input_state.editing_field {
-        let sensitivity = if keyboard_input.pressed(KeyCode::ShiftLeft) || keyboard_input.pressed(KeyCode::ShiftRight) {
+        let sensitivity = if keyboard_input.pressed(KeyCode::ShiftLeft)
+            || keyboard_input.pressed(KeyCode::ShiftRight)
+        {
             0.1
         } else {
             0.01
         };
-        
+
         update_value_with_wheel(
             transform_query,
             input_state,
@@ -38,12 +44,14 @@ pub fn handle_drag_event(
 ) {
     if let Some(start_pos) = input_state.drag_start_mouse_pos {
         let delta_x = current_pos.x - start_pos.x;
-        let sensitivity = if keyboard_input.pressed(KeyCode::ShiftLeft) || keyboard_input.pressed(KeyCode::ShiftRight) {
+        let sensitivity = if keyboard_input.pressed(KeyCode::ShiftLeft)
+            || keyboard_input.pressed(KeyCode::ShiftRight)
+        {
             0.1
         } else {
             0.01
         };
-        
+
         update_value_with_drag(
             transform_query,
             input_state,
@@ -51,7 +59,7 @@ pub fn handle_drag_event(
             sensitivity,
             operation_recorder,
         );
-        
+
         input_state.drag_start_mouse_pos = Some(current_pos);
     }
 }
@@ -67,19 +75,22 @@ pub fn handle_field_click(
 ) {
     input_state.editing_field = Some((entity, field_type));
     input_state.drag_start_mouse_pos = Some(cursor_pos);
-    
+
     if let Ok(transform) = transform_query.get(entity) {
         input_state.drag_start_value = Some(get_transform_field_value(&transform, field_type));
     }
-    
+
     // Ctrl+クリックで小さな増減
-    if keyboard_input.pressed(KeyCode::ControlLeft) || keyboard_input.pressed(KeyCode::ControlRight) {
-        let delta = if keyboard_input.pressed(KeyCode::ShiftLeft) || keyboard_input.pressed(KeyCode::ShiftRight) {
+    if keyboard_input.pressed(KeyCode::ControlLeft) || keyboard_input.pressed(KeyCode::ControlRight)
+    {
+        let delta = if keyboard_input.pressed(KeyCode::ShiftLeft)
+            || keyboard_input.pressed(KeyCode::ShiftRight)
+        {
             0.1
         } else {
             0.01
         };
-        
+
         update_value_with_click(transform_query, entity, field_type, delta);
     }
 }

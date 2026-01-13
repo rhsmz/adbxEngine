@@ -1,13 +1,12 @@
-use bevy::prelude::*;
 use super::resource::{AiIntegration, AiRequestStatus, AiResponse};
+use bevy::prelude::*;
 
 /// AIリクエストを処理するシステム（非同期処理）
 pub fn process_pending_ai_code_generation_requests(
     mut code_editor: ResMut<crate::ui::code_editor::resource::CodeEditor>,
     _ai_integration: ResMut<AiIntegration>,
     _operation_recorder: Option<ResMut<crate::systems::operation_recording::OperationRecorder>>,
-    #[cfg(feature = "ai")]
-    ai_async: ResMut<crate::ui::ai_async::AiAsyncProcessor>,
+    #[cfg(feature = "ai")] ai_async: ResMut<crate::ui::ai_async::AiAsyncProcessor>,
 ) {
     #[cfg(feature = "ai")]
     {
@@ -19,33 +18,49 @@ pub fn process_pending_ai_code_generation_requests(
                     if let Some(status) = ai_integration.pending_requests.get_mut(&request_id) {
                         if response.success {
                             *status = AiRequestStatus::Completed(code_editor.ai_responses.len());
-                            code_editor.ai_progress = Some(format!("AI request {} completed successfully", request_id));
+                            code_editor.ai_progress =
+                                Some(format!("AI request {} completed successfully", request_id));
                         } else {
                             *status = AiRequestStatus::Failed(
-                                response.error.clone().unwrap_or_else(|| "Unknown error".to_string())
+                                response
+                                    .error
+                                    .clone()
+                                    .unwrap_or_else(|| "Unknown error".to_string()),
                             );
-                            code_editor.ai_progress = Some(format!("AI request {} failed: {}", 
-                                request_id, 
-                                response.error.as_ref().unwrap_or(&"Unknown error".to_string())
+                            code_editor.ai_progress = Some(format!(
+                                "AI request {} failed: {}",
+                                request_id,
+                                response
+                                    .error
+                                    .as_ref()
+                                    .unwrap_or(&"Unknown error".to_string())
                             ));
                         }
                     }
-                    
+
                     // レスポンスを追加
                     code_editor.ai_responses.push_back(response);
                 }
             }
         }
-        
+
         // 進行中のリクエスト数を表示
-        let processing_count = ai_integration.pending_requests.values()
-            .filter(|status| matches!(status, AiRequestStatus::Pending | AiRequestStatus::Processing))
+        let processing_count = ai_integration
+            .pending_requests
+            .values()
+            .filter(|status| {
+                matches!(
+                    status,
+                    AiRequestStatus::Pending | AiRequestStatus::Processing
+                )
+            })
             .count();
-        
+
         if processing_count > 0 && code_editor.ai_progress.is_none() {
-            code_editor.ai_progress = Some(format!("Processing {} AI request(s)...", processing_count));
+            code_editor.ai_progress =
+                Some(format!("Processing {} AI request(s)...", processing_count));
         }
-        
+
         // 新しいリクエストを処理
         while let Some(request) = code_editor.ai_requests.pop_front() {
             if let Some(ref client) = ai_integration.client {
@@ -53,13 +68,16 @@ pub fn process_pending_ai_code_generation_requests(
                     // リクエストIDを割り当て
                     let request_id = ai_integration.next_request_id;
                     ai_integration.next_request_id += 1;
-                    
+
                     // リクエストを待機中としてマーク
-                    ai_integration.pending_requests.insert(request_id, AiRequestStatus::Pending);
-                    
+                    ai_integration
+                        .pending_requests
+                        .insert(request_id, AiRequestStatus::Pending);
+
                     // 進行状況を表示
-                    code_editor.ai_progress = Some(format!("AI request {} is processing...", request_id));
-                    
+                    code_editor.ai_progress =
+                        Some(format!("AI request {} is processing...", request_id));
+
                     // 操作を記録
                     if let Some(ref mut recorder) = _operation_recorder {
                         let current_file = code_editor.current_file.clone();
@@ -71,16 +89,16 @@ pub fn process_pending_ai_code_generation_requests(
                             current_file,
                         );
                     }
-                    
+
                     // 非同期処理を開始
                     let client_clone = client.clone();
                     let api_key_clone = api_key.clone();
                     let provider = ai_integration.provider;
                     let request_clone = request.clone();
-                    
+
                     if let Some(ref sender) = ai_async.response_sender {
                         let sender_clone = sender.clone();
-                        
+
                         // tokio::spawnを使用して非同期処理を開始
                         tokio::spawn(async move {
                             crate::ui::ai_async::process_ai_request_async(
@@ -93,9 +111,11 @@ pub fn process_pending_ai_code_generation_requests(
                             );
                         });
                     }
-                    
+
                     // リクエストを処理中としてマーク
-                    ai_integration.pending_requests.insert(request_id, AiRequestStatus::Processing);
+                    ai_integration
+                        .pending_requests
+                        .insert(request_id, AiRequestStatus::Processing);
                 } else {
                     code_editor.ai_responses.push_back(AiResponse {
                         content: String::new(),
@@ -118,7 +138,9 @@ pub fn process_pending_ai_code_generation_requests(
             code_editor.ai_responses.push_back(AiResponse {
                 content: String::new(),
                 success: false,
-                error: Some("AI feature not enabled. Build with --features ai to enable.".to_string()),
+                error: Some(
+                    "AI feature not enabled. Build with --features ai to enable.".to_string(),
+                ),
             });
         }
     }

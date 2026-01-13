@@ -1,8 +1,8 @@
-use bevy::prelude::*;
 use crate::ui::asset_browser::AssetBrowser;
+use crate::ui::context_menu::AssetOperation;
 use crate::ui::file_dialog::FileDialogRequest;
 use crate::ui::rename_dialog::RenameDialogRequest;
-use crate::ui::context_menu::AssetOperation;
+use bevy::prelude::*;
 
 pub fn handle_asset_operations(
     asset_browser: &mut ResMut<AssetBrowser>,
@@ -20,7 +20,8 @@ pub fn handle_asset_operations(
         }
         AssetOperation::Export => {
             if let Some(selected_asset) = &asset_browser.selected_asset {
-                let default_name = selected_asset.file_name()
+                let default_name = selected_asset
+                    .file_name()
                     .and_then(|n| n.to_str())
                     .map(|s| s.to_string());
                 crate::ui::file_dialog::save_file_dialog(
@@ -76,18 +77,13 @@ pub fn handle_asset_operations(
                             .arg(selected_asset)
                             .spawn();
                     } else {
-                        let _ = Command::new("explorer")
-                            .arg(selected_asset)
-                            .spawn();
+                        let _ = Command::new("explorer").arg(selected_asset).spawn();
                     }
                 }
                 #[cfg(target_os = "macos")]
                 {
                     use std::process::Command;
-                    let _ = Command::new("open")
-                        .arg("-R")
-                        .arg(selected_asset)
-                        .spawn();
+                    let _ = Command::new("open").arg("-R").arg(selected_asset).spawn();
                 }
                 #[cfg(target_os = "linux")]
                 {
@@ -103,4 +99,3 @@ pub fn handle_asset_operations(
         }
     }
 }
-

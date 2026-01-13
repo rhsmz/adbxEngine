@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::ui::rename_dialog::hide_rename_dialog;
+use bevy::prelude::*;
 
 /// リネームダイアログの入力処理
 pub fn handle_rename_dialog_input(

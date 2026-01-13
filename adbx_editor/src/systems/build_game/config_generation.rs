@@ -14,17 +14,17 @@ pub struct BuildConfig {
 
 /// ビルド設定ファイルを生成
 pub fn generate_build_config(project_path: &PathBuf, project: &Project) -> Result<(), String> {
-    
     // 利用可能なシーンを取得
     let scenes = crate::project::list_scenes(project_path)?;
-    let main_scene = scenes.first()
+    let main_scene = scenes
+        .first()
         .cloned()
         .unwrap_or_else(|| "MainScene".to_string());
-    
+
     // アセットディレクトリを取得
     let assets_dir = project_path.join("assets");
     let mut assets = Vec::new();
-    
+
     if assets_dir.exists() {
         if let Ok(entries) = std::fs::read_dir(&assets_dir) {
             for entry in entries.flatten() {
@@ -37,7 +37,7 @@ pub fn generate_build_config(project_path: &PathBuf, project: &Project) -> Resul
             }
         }
     }
-    
+
     let build_config = BuildConfig {
         game_name: project.name.clone(),
         main_scene,
@@ -46,13 +46,13 @@ pub fn generate_build_config(project_path: &PathBuf, project: &Project) -> Resul
         window_height: 1080,
         assets,
     };
-    
+
     let config_path = project_path.join("build_config.json");
     let config_json = serde_json::to_string_pretty(&build_config)
         .map_err(|e| format!("Failed to serialize build config: {}", e))?;
-    
+
     std::fs::write(&config_path, config_json)
         .map_err(|e| format!("Failed to write build config: {}", e))?;
-    
+
     Ok(())
 }

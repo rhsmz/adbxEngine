@@ -14,7 +14,7 @@ pub fn handle_backspace_script_editor(script_editor: &mut ScriptEditor) {
             }
             script_editor.edit_history.push(content.clone());
             script_editor.history_index = script_editor.edit_history.len();
-            
+
             chars.remove(cursor_pos - 1);
             script_editor.content = chars.into_iter().collect();
             script_editor.cursor_position = cursor_pos - 1;
@@ -35,7 +35,7 @@ pub fn handle_delete_script_editor(script_editor: &mut ScriptEditor) {
         }
         script_editor.edit_history.push(content.clone());
         script_editor.history_index = script_editor.edit_history.len();
-        
+
         chars.remove(script_editor.cursor_position);
         script_editor.content = chars.into_iter().collect();
         script_editor.content_entity = None;
@@ -46,7 +46,8 @@ pub fn handle_delete_script_editor(script_editor: &mut ScriptEditor) {
 pub fn undo_edit(script_editor: &mut ScriptEditor) {
     if script_editor.history_index > 0 {
         script_editor.history_index -= 1;
-        if let Some(previous_content) = script_editor.edit_history.get(script_editor.history_index) {
+        if let Some(previous_content) = script_editor.edit_history.get(script_editor.history_index)
+        {
             script_editor.content = previous_content.clone();
             script_editor.content_entity = None;
         }
@@ -57,7 +58,10 @@ pub fn undo_edit(script_editor: &mut ScriptEditor) {
 pub fn redo_edit(script_editor: &mut ScriptEditor) {
     if script_editor.history_index < script_editor.edit_history.len() {
         script_editor.history_index += 1;
-        if let Some(next_content) = script_editor.edit_history.get(script_editor.history_index - 1) {
+        if let Some(next_content) = script_editor
+            .edit_history
+            .get(script_editor.history_index - 1)
+        {
             script_editor.content = next_content.clone();
             script_editor.content_entity = None;
         }

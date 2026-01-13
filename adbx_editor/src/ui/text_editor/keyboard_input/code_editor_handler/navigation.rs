@@ -1,5 +1,5 @@
+use super::super::navigation::{get_char_position, get_cursor_position, get_line_length};
 use crate::ui::code_editor::CodeEditor;
-use super::super::navigation::{get_cursor_position, get_line_length, get_char_position};
 
 /// 左矢印処理
 pub fn handle_arrow_left_code_editor(code_editor: &mut CodeEditor) {

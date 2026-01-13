@@ -1,5 +1,5 @@
-use super::super::resource::CodeEditor;
 use super::super::cursor_position::calculate_char_position_from_line_column;
+use super::super::resource::CodeEditor;
 
 /// 指定位置に文字を挿入
 pub fn insert_char_at_position(text: &mut String, position: usize, ch: char) {
@@ -18,15 +18,16 @@ pub fn handle_backspace(code_editor: &mut CodeEditor) {
     let cursor_pos = code_editor.cursor_position;
     if cursor_pos > 0 {
         let active_tab = code_editor.active_tab;
-        let current_content = if let Some(active_file) = code_editor.open_files.get_mut(active_tab) {
+        let current_content = if let Some(active_file) = code_editor.open_files.get_mut(active_tab)
+        {
             &mut active_file.content
         } else {
             &mut code_editor.content
         };
-        
+
         remove_char_at_position(current_content, cursor_pos - 1);
-        drop(current_content);
-        
+        let _ = current_content;
+
         code_editor.cursor_position = cursor_pos - 1;
 
         if let Some(active_file) = code_editor.open_files.get_mut(active_tab) {
@@ -46,12 +47,12 @@ pub fn handle_delete(code_editor: &mut CodeEditor) {
     } else {
         &mut code_editor.content
     };
-    
+
     let content_len = current_content.len();
     if cursor_pos < content_len {
         remove_char_at_position(current_content, cursor_pos);
     }
-    drop(current_content);
+    let _ = current_content;
 
     if cursor_pos < content_len {
         if let Some(active_file) = code_editor.open_files.get_mut(active_tab) {
@@ -70,10 +71,10 @@ pub fn handle_enter(code_editor: &mut CodeEditor) {
     } else {
         &mut code_editor.content
     };
-    
+
     insert_char_at_position(current_content, cursor_pos, '\n');
-    drop(current_content);
-    
+    let _ = current_content;
+
     code_editor.cursor_position = cursor_pos + 1;
 
     if let Some(active_file) = code_editor.open_files.get_mut(active_tab) {
@@ -92,14 +93,14 @@ pub fn handle_tab(code_editor: &mut CodeEditor) {
     } else {
         &mut code_editor.content
     };
-    
+
     // タブ文字を挿入（スペース4つ）
     for _ in 0..4 {
         insert_char_at_position(current_content, cursor_pos, ' ');
         cursor_pos += 1;
     }
-    drop(current_content);
-    
+    let _ = current_content;
+
     code_editor.cursor_position = cursor_pos;
 
     if let Some(active_file) = code_editor.open_files.get_mut(active_tab) {

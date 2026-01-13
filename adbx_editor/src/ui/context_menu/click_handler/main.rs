@@ -1,24 +1,24 @@
-use bevy::prelude::*;
+use super::super::hide_context_menu;
 use super::super::resources::types::ContextMenu;
 use super::super::EntityOperation;
-use super::super::hide_context_menu;
-use super::entity_operations::handle_entity_operation_menu_item;
-use super::clipboard_operations::handle_clipboard_operation_menu_item;
-use super::text_editor_operations::handle_text_editor_operation_menu_item;
-use super::search_replace_operations::handle_search_replace_operation_menu_item;
-use super::script_operations::handle_script_operation_menu_item;
 use super::asset_operations::handle_asset_operation_menu_item;
+use super::clipboard_operations::handle_clipboard_operation_menu_item;
+use super::entity_operations::handle_entity_operation_menu_item;
 use super::scene_operations::handle_scene_operation_menu_item;
-use crate::ui::code_editor::CodeEditor;
-use crate::ui::script_editor::ScriptEditor;
-use crate::ui::search_replace::SearchReplace;
+use super::script_operations::handle_script_operation_menu_item;
+use super::search_replace_operations::handle_search_replace_operation_menu_item;
+use super::text_editor_operations::handle_text_editor_operation_menu_item;
 use crate::systems::selection::Selection;
-use crate::ui::clipboard::Clipboard;
-use crate::ui::text_editor::TextEditorState;
 use crate::ui::asset_browser::AssetBrowser;
+use crate::ui::clipboard::Clipboard;
+use crate::ui::code_editor::CodeEditor;
+use crate::ui::context_menu::TextEditorClipboardOperation;
 use crate::ui::file_dialog::FileDialogRequest;
 use crate::ui::rename_dialog::RenameDialogRequest;
-use crate::ui::context_menu::TextEditorClipboardOperation;
+use crate::ui::script_editor::ScriptEditor;
+use crate::ui::search_replace::SearchReplace;
+use crate::ui::text_editor::TextEditorState;
+use bevy::prelude::*;
 
 /// コンテキストメニューのクリック処理
 pub fn handle_context_menu_item_click(
@@ -49,7 +49,7 @@ pub fn handle_context_menu_item_click(
                     let name_str = name.as_str();
                     if name_str.starts_with("ContextMenu") {
                         menu_item_clicked = true;
-                        
+
                         // メニュー項目の処理
                         match name_str {
                             "ContextMenuCreateEntity" => {
@@ -125,12 +125,19 @@ pub fn handle_context_menu_item_click(
                                 handle_text_editor_operation_menu_item(&mut code_editor, name_str);
                             }
                             "ContextMenuFind" | "ContextMenuReplace" => {
-                                handle_search_replace_operation_menu_item(&mut search_replace, name_str);
+                                handle_search_replace_operation_menu_item(
+                                    &mut search_replace,
+                                    name_str,
+                                );
                             }
                             "ContextMenuRunScript" | "ContextMenuValidateScript" => {
                                 handle_script_operation_menu_item(&mut script_editor, name_str);
                             }
-                            "ContextMenuImportAsset" | "ContextMenuExportAsset" | "ContextMenuDeleteAsset" | "ContextMenuRenameAsset" | "ContextMenuShowInExplorer" => {
+                            "ContextMenuImportAsset"
+                            | "ContextMenuExportAsset"
+                            | "ContextMenuDeleteAsset"
+                            | "ContextMenuRenameAsset"
+                            | "ContextMenuShowInExplorer" => {
                                 handle_asset_operation_menu_item(
                                     &mut asset_browser,
                                     &mut file_dialog_request,
@@ -139,14 +146,18 @@ pub fn handle_context_menu_item_click(
                                 );
                             }
                             "ContextMenuFocusSelection" => {
-                                handle_scene_operation_menu_item(&selection, &transform_query, name_str);
+                                handle_scene_operation_menu_item(
+                                    &selection,
+                                    &transform_query,
+                                    name_str,
+                                );
                             }
                             _ => {}
                         }
                     }
                 }
             }
-            
+
             // メニュー外をクリックした場合はメニューを閉じる
             if !menu_item_clicked {
                 hide_context_menu(commands, context_menu);

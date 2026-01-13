@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use super::RealtimePreview;
+use bevy::prelude::*;
 
 /// プレビューウィンドウのクリック処理
 pub fn handle_preview_window_click(
@@ -11,7 +11,7 @@ pub fn handle_preview_window_click(
         for (interaction, name) in interaction_query.iter() {
             if *interaction == bevy::ui::Interaction::Pressed {
                 let name_str = name.as_str();
-                
+
                 // 閉じるボタン
                 if name_str == "PreviewWindowCloseButton" {
                     preview.is_enabled = false;

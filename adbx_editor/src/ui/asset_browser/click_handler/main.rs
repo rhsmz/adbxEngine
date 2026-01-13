@@ -1,10 +1,12 @@
-use bevy::prelude::*;
-use bevy::ui::Interaction;
 use super::super::AssetBrowser;
 use super::click_detection::detect_click_event;
-use super::file_selection::{handle_file_selection, handle_import_button_click, handle_export_button_click};
-use super::folder_navigation::{handle_folder_navigation, handle_back_button_click};
 use super::dialog_processing::process_file_dialog_result;
+use super::file_selection::{
+    handle_export_button_click, handle_file_selection, handle_import_button_click,
+};
+use super::folder_navigation::{handle_back_button_click, handle_folder_navigation};
+use bevy::prelude::*;
+use bevy::ui::Interaction;
 
 /// アセットブラウザーのクリック処理
 pub fn handle_asset_browser_click(
@@ -17,7 +19,7 @@ pub fn handle_asset_browser_click(
 ) {
     // クリックイベントの検出
     let clicked_items = detect_click_event(&mouse_input, &interaction_query);
-    
+
     for (name_str, _interaction) in clicked_items {
         // 戻るボタン
         if name_str == "AssetBrowserBackButton" {
@@ -31,7 +33,11 @@ pub fn handle_asset_browser_click(
 
         // エクスポートボタン
         if name_str == "AssetBrowserExportButton" {
-            handle_export_button_click(&mut asset_browser, &mut file_dialog_request, &mut error_dialog);
+            handle_export_button_click(
+                &mut asset_browser,
+                &mut file_dialog_request,
+                &mut error_dialog,
+            );
         }
 
         // アセットアイテムがクリックされた場合
@@ -45,7 +51,7 @@ pub fn handle_asset_browser_click(
             handle_file_selection(&mut asset_browser, &mut script_editor, file_name);
         }
     }
-    
+
     // ファイルダイアログの結果を処理
     if let Some(result) = file_dialog_request.result.take() {
         process_file_dialog_result(&mut asset_browser, &mut error_dialog, result);

@@ -1,11 +1,13 @@
-use bevy::prelude::*;
-use crate::ui::context_menu::{handle_text_editor_clipboard_operations, TextEditorClipboardOperation};
 use super::super::{handle_entity_clipboard_operations, EntityClipboardOperation};
 use crate::systems::selection::Selection;
+use crate::ui::clipboard::Clipboard;
 use crate::ui::code_editor::CodeEditor;
+use crate::ui::context_menu::{
+    handle_text_editor_clipboard_operations, TextEditorClipboardOperation,
+};
 use crate::ui::script_editor::ScriptEditor;
 use crate::ui::text_editor::TextEditorState;
-use crate::ui::clipboard::Clipboard;
+use bevy::prelude::*;
 
 /// クリップボード操作のメニュー項目を処理
 pub fn handle_clipboard_operation_menu_item(

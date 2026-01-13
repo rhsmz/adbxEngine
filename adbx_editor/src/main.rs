@@ -1,11 +1,11 @@
+mod communication;
 mod editor_app;
 mod editor_main;
-mod ui;
-mod systems;
-mod project;
-mod communication;
 mod error;
+mod project;
 mod settings;
+mod systems;
+mod ui;
 
 use crate::editor_main::app_initialization::initialize_app;
 use crate::editor_main::system_registration::register_systems;

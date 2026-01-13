@@ -1,7 +1,5 @@
+use adbx_shared::scene::{ComponentData, EntityData, SceneData};
 use bevy::prelude::*;
-use adbx_shared::scene::{SceneData, EntityData, ComponentData};
-use std::collections::HashMap;
-use super::entity_mapping::{create_entity_id_mapping, create_child_to_parent_map};
 
 /// 現在のシーンをSceneDataにシリアライズ
 pub fn serialize_scene(
@@ -14,20 +12,21 @@ pub fn serialize_scene(
 ) -> SceneData {
     // Entity IDのマッピングを作成
     let entity_map = create_entity_id_mapping(entities);
-    
+
     // 親子関係の逆引きマップを作成
     let child_to_parent = create_child_to_parent_map(entities, children_query);
-    
+
     let mut entity_data_list: Vec<EntityData> = Vec::new();
-    
+
     // 各Entityのデータを収集
     for (entity, entity_name) in entities.iter() {
         let entity_id = entity_map[&entity];
-        let parent_id = child_to_parent.get(&entity)
+        let parent_id = child_to_parent
+            .get(&entity)
             .and_then(|p| entity_map.get(p).copied());
-        
+
         let mut components = Vec::new();
-        
+
         // Transformコンポーネントをシリアライズ
         if let Ok(transform) = transform_query.get(entity) {
             components.push(ComponentData {
@@ -52,9 +51,9 @@ pub fn serialize_scene(
                 }),
             });
         }
-        
+
         // NameコンポーネントはEntityDataに含まれているので、ここでは追加しない
-        
+
         entity_data_list.push(EntityData {
             id: entity_id,
             name: entity_name.to_string(),
@@ -62,7 +61,7 @@ pub fn serialize_scene(
             components,
         });
     }
-    
+
     SceneData {
         name,
         entities: entity_data_list,

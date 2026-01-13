@@ -1,9 +1,9 @@
-use bevy::prelude::*;
-use crate::systems::selection::Selection;
-use crate::ui::scene_view::{SceneView, is_cursor_in_scene_view_area};
 use super::super::resource::GizmoInteraction;
 use super::handle_detection::detect_gizmo_handle_click;
 use super::transform_update::update_transform_from_gizmo;
+use crate::systems::selection::Selection;
+use crate::ui::scene_view::{is_cursor_in_scene_view_area, SceneView};
+use bevy::prelude::*;
 
 /// Gizmoハンドルの選択とドラッグ処理
 pub fn handle_gizmo_interaction(
@@ -13,11 +13,14 @@ pub fn handle_gizmo_interaction(
     mouse_input: Res<ButtonInput<MouseButton>>,
     _mouse_motion_events: bevy::prelude::MessageReader<bevy::input::mouse::MouseMotion>,
     windows: Query<&Window>,
-    camera_query: Query<(&Camera, &GlobalTransform), (With<bevy::camera::Camera3d>, Without<bevy::camera::Camera2d>)>,
-    mut transform_queries: ParamSet<(
-        Query<&Transform>,
-        Query<&mut Transform>,
-    )>,
+    camera_query: Query<
+        (&Camera, &GlobalTransform),
+        (
+            With<bevy::camera::Camera3d>,
+            Without<bevy::camera::Camera2d>,
+        ),
+    >,
+    mut transform_queries: ParamSet<(Query<&Transform>, Query<&mut Transform>)>,
 ) {
     // シーンビューエリア内でのみGizmo操作を有効にする
     if !is_cursor_in_scene_view_area(&windows, &camera_query) {
@@ -33,7 +36,7 @@ pub fn handle_gizmo_interaction(
                 if let Some(cursor_pos) = window.cursor_position() {
                     if let Some(start_pos) = gizmo_interaction.drag_start_pos {
                         let delta = cursor_pos - start_pos;
-                        
+
                         // 選択されたエンティティのTransformを更新
                         // ミュータブルクエリを使用
                         for &entity in selection.selected_entities.iter() {
@@ -66,7 +69,7 @@ pub fn handle_gizmo_interaction(
                 camera_query,
                 transform_queries.p0(),
             );
-            
+
             if let Some(handle) = handle {
                 gizmo_interaction.active_handle = Some(handle);
                 if let Some(window) = windows.iter().next() {
@@ -81,7 +84,7 @@ pub fn handle_gizmo_interaction(
             }
         }
     }
-    
+
     // ホバー中のハンドルを検出（ドラッグ中でない場合のみ）
     if gizmo_interaction.active_handle.is_none() {
         // 読み取り専用クエリを使用

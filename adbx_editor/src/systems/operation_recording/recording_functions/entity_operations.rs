@@ -1,5 +1,5 @@
+use super::super::{OperationContext, OperationRecorder, OperationType};
 use bevy::prelude::*;
-use super::super::{OperationRecorder, OperationType, OperationContext};
 
 /// 操作を記録するヘルパー関数
 pub fn record_entity_created(
@@ -14,7 +14,10 @@ pub fn record_entity_created(
             component_type: None,
             panel_name: None,
             file_path: None,
-            user_intent: Some(format!("Create new entity: {}", entity_name.as_deref().unwrap_or("Unnamed"))),
+            user_intent: Some(format!(
+                "Create new entity: {}",
+                entity_name.as_deref().unwrap_or("Unnamed")
+            )),
         },
         serde_json::json!({
             "entity_name": entity_name,
