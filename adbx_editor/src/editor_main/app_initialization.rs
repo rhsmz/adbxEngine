@@ -52,5 +52,6 @@ pub fn initialize_app() -> App {
     app.init_resource::<crate::ui::clipboard::Clipboard>();
     app.init_resource::<crate::systems::build_game::BuildGameRequest>();
     app.init_resource::<crate::systems::build_game::BuildProgress>();
+    app.init_resource::<crate::systems::menu::build_game_menu::BuildGameMenuRequest>();
     app
 }

@@ -55,20 +55,14 @@ thread 'main' (7000) panicked at C:\Users\rsmz\.cargo\registry\src\index.crates.
 Encountered an error in system `adbx_editor::systems::menu::build_game_menu::handle_build_game_request`: Parameter `ResMut<'_, BuildGameMenuRequest>` failed validation: Resource does not exist
 ```
 
-**現在の状況:**
-この問題はコードベースの不具合であり、`app_initialization.rs`でリソースが初期化されていません。ビルド機能を使用する場合は、以下の回避策を検討してください：
+**修正状況:**
+この問題はv0.1.0で修正されました。`app_initialization.rs`の`initialize_app`関数に以下の行が追加されています：
 
-1. **一時的な回避策:**
-   ```rust
-   // app_initialization.rsのinitialize_app関数に追加
-   app.init_resource::<crate::systems::menu::build_game_menu::BuildGameMenuRequest>();
-   ```
+```rust
+app.init_resource::<crate::systems::menu::build_game_menu::BuildGameMenuRequest>();
+```
 
-2. **推奨される対処:**
-   ビルド機能を使用せず、直接`cargo build --bin adbx_runtime`でランタイムをビルドしてください。
-
-**修正予定:**
-この問題は今後のバージョンで修正される予定です。
+ビルド機能が正常に動作するようになりました。
 
 ## アセットディレクトリの警告
 

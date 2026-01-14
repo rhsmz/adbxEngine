@@ -96,8 +96,6 @@ cargo run --bin adbx_editor --release
 
 ### ゲームのビルド
 
-**注意**: 現在のバージョンでは、`BuildGameMenuRequest`リソースの初期化が不足しているため、ビルド機能が正常に動作しない可能性があります。この問題は今後の更新で修正される予定です。
-
 1. メニューバーから「Build」→「Build Game」を選択
 2. ビルド進捗が表示されます
 3. ビルド完了後、`target/release/game_package/`にパッケージ化されたゲームが生成されます
