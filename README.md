@@ -212,10 +212,12 @@ task run-runtime -- --project ./my_project
 
 詳細なドキュメントは`docs/`ディレクトリにあります：
 
-- [APIリファレンス](docs/api/) - すべてのAPIの詳細な説明
+- [アーキテクチャ概要](docs/architecture.md) - アーキテクチャ全体像と図一覧
 - [アーキテクチャドキュメント](docs/architecture/) - システムアーキテクチャと設計（Krokiダイアグラム含む）
-- [ユーザーガイド](docs/user-guide/) - エディタの使い方
-- [開発者ガイド](docs/developer-guide/) - エディタの拡張方法
+- [ユーザーガイド](docs/user-guide/) - エディタの使い方と機能説明
+- [開発者ガイド](docs/developer-guide/) - エディタの拡張方法とAPI
+- [設定ファイル](docs/configuration.md) - 設定ファイルと構成の詳細
+- [APIリファレンス](docs/api/) - すべてのAPIの詳細な説明
 - [コントリビューションガイド](docs/CONTRIBUTING.md) - ドキュメントの更新方法と責務
 - [既知の問題](docs/developer-guide/known-issues.md) - 既知の警告と未使用機能
 
