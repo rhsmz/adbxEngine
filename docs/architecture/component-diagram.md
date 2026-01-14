@@ -4,7 +4,7 @@ Adbx Engine Editorの主要コンポーネントの関係を説明します。
 
 ## UIコンポーネント階層
 
-```plantuml
+```kroki-plantuml
 @startuml
 class EditorApp {
     + UI Components
@@ -19,6 +19,8 @@ class HierarchyView {
 class InspectorPanel {
     + selected_entity
     + update_throttle
+    + last_update_time
+    + pending_update
 }
 
 class AssetBrowser {
@@ -31,16 +33,29 @@ class CodeEditor {
     + cursor_position
 }
 
+class ScriptEditor {
+    + script_path
+    + errors
+}
+
+class LogPanel {
+    + logs
+    + max_logs
+    + is_visible
+}
+
 EditorApp --> HierarchyView
 EditorApp --> InspectorPanel
 EditorApp --> AssetBrowser
 EditorApp --> CodeEditor
+EditorApp --> ScriptEditor
+EditorApp --> LogPanel
 @enduml
 ```
 
 ## システム依存関係
 
-```plantuml
+```kroki-plantuml
 @startuml
 class Selection {
     + selected_entities
@@ -61,10 +76,41 @@ class RealtimeSync {
     + sync_transform_changes()
 }
 
+class BuildGameSystem {
+    + build_game()
+    + BuildGameRequest
+    + BuildProgress
+}
+
+class ComponentEditorRegistry {
+    + register()
+    + get()
+}
+
 Selection --> SceneManager
 SceneManager --> OperationRecorder
 RealtimeSync --> Selection
 RealtimeSync --> SceneManager
+BuildGameSystem --> SceneManager
+ComponentEditorRegistry --> InspectorPanel
+@enduml
+```
+
+## リソース初期化フロー
+
+```kroki-plantuml
+@startuml
+participant AppInitialization
+participant EditorApp
+participant Systems
+participant UI
+participant Communication
+
+AppInitialization -> EditorApp: init_resource()
+AppInitialization -> Systems: init_resource()
+AppInitialization -> UI: init_resource()
+AppInitialization -> Communication: init_resource()
+AppInitialization -> AppInitialization: init_resource(BuildGameMenuRequest)
 @enduml
 ```
 

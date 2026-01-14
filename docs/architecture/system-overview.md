@@ -4,7 +4,7 @@ Adbx Engine Editorのシステムアーキテクチャの概要です。
 
 ## アーキテクチャ図
 
-```plantuml
+```kroki-plantuml
 @startuml
 !define RECTANGLE class
 

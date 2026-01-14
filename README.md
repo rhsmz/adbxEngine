@@ -213,9 +213,11 @@ task run-runtime -- --project ./my_project
 詳細なドキュメントは`docs/`ディレクトリにあります：
 
 - [APIリファレンス](docs/api/) - すべてのAPIの詳細な説明
-- [アーキテクチャドキュメント](docs/architecture/) - システムアーキテクチャと設計
+- [アーキテクチャドキュメント](docs/architecture/) - システムアーキテクチャと設計（Krokiダイアグラム含む）
 - [ユーザーガイド](docs/user-guide/) - エディタの使い方
 - [開発者ガイド](docs/developer-guide/) - エディタの拡張方法
+- [コントリビューションガイド](docs/CONTRIBUTING.md) - ドキュメントの更新方法と責務
+- [既知の問題](docs/developer-guide/known-issues.md) - 既知の警告と未使用機能
 
 ## 依存関係
 
@@ -228,4 +230,76 @@ task run-runtime -- --project ./my_project
 
 ## ライセンス
 
-MIT OR Apache-2.0
+このプロジェクトはMIT OR Apache-2.0ライセンスの下で公開されています。
+
+### サードパーティライセンス
+
+このプロジェクトは以下のオープンソースライブラリを使用しています：
+
+#### コアライブラリ
+
+- **Bevy 0.17**: MIT OR Apache-2.0ライセンス
+  - BevyはMITライセンスまたはApache-2.0ライセンスのいずれかを選択できます
+  - 詳細は[Bevyのライセンス](https://github.com/bevyengine/bevy/blob/main/LICENSE-MIT)を参照してください
+
+- **mlua 0.9**: MITライセンス
+  - Lua統合ライブラリ
+  - 詳細は[mluaのライセンス](https://github.com/khvzak/mlua/blob/master/LICENSE)を参照してください
+
+- **serde 1.0**: MIT OR Apache-2.0ライセンス
+  - シリアライゼーションフレームワーク
+  - 詳細は[serdeのライセンス](https://github.com/serde-rs/serde/blob/main/LICENSE-MIT)を参照してください
+
+- **serde_json 1.0**: MIT OR Apache-2.0ライセンス
+  - JSONシリアライゼーション
+  - 詳細は[serde_jsonのライセンス](https://github.com/serde-rs/json/blob/main/LICENSE-MIT)を参照してください
+
+- **rmp-serde 1.1**: MIT OR Apache-2.0ライセンス
+  - MessagePackシリアライゼーション
+  - 詳細は[rmp-serdeのライセンス](https://github.com/3Hren/msgpack-rust/blob/master/LICENSE)を参照してください
+
+- **thiserror 1.0**: MIT OR Apache-2.0ライセンス
+  - エラーハンドリングライブラリ
+  - 詳細は[thiserrorのライセンス](https://github.com/dtolnay/thiserror/blob/master/LICENSE-APACHE)を参照してください
+
+- **anyhow 1.0**: MIT OR Apache-2.0ライセンス
+  - エラーハンドリングライブラリ
+  - 詳細は[anyhowのライセンス](https://github.com/dtolnay/anyhow/blob/master/LICENSE-APACHE)を参照してください
+
+#### UI・エディタ関連
+
+- **syntect 5.3**: MIT OR Apache-2.0ライセンス
+  - シンタックスハイライトライブラリ
+  - 詳細は[syntectのライセンス](https://github.com/trishume/syntect/blob/master/LICENSE)を参照してください
+
+- **rfd 0.14**: MIT OR Apache-2.0ライセンス
+  - ファイルダイアログライブラリ
+  - 詳細は[rfdのライセンス](https://github.com/PolyMeilex/rfd/blob/master/LICENSE)を参照してください
+
+- **arboard 3.3**: MIT OR Apache-2.0ライセンス
+  - クリップボード操作ライブラリ
+  - 詳細は[arboardのライセンス](https://github.com/1Password/arboard/blob/main/LICENSE)を参照してください
+
+#### ネットワーク・非同期処理
+
+- **reqwest 0.12**: MIT OR Apache-2.0ライセンス
+  - HTTPクライアントライブラリ（`ai` feature使用時）
+  - 詳細は[reqwestのライセンス](https://github.com/seanmonstar/reqwest/blob/main/LICENSE-MIT)を参照してください
+
+- **tokio 1.0**: MIT OR Apache-2.0ライセンス
+  - 非同期ランタイム（`ai` feature使用時）
+  - 詳細は[tokioのライセンス](https://github.com/tokio-rs/tokio/blob/master/LICENSE)を参照してください
+
+#### ユーティリティ
+
+- **regex 1.11**: MIT OR Apache-2.0ライセンス
+  - 正規表現ライブラリ
+  - 詳細は[regexのライセンス](https://github.com/rust-lang/regex/blob/master/LICENSE-MIT)を参照してください
+
+- **dirs 5.0**: MIT OR Apache-2.0ライセンス
+  - ディレクトリパス取得ライブラリ
+  - 詳細は[dirsのライセンス](https://github.com/dirs-dev/dirs-rs/blob/main/LICENSE-MIT)を参照してください
+
+#### ライセンス表記について
+
+上記のライブラリはすべてMITライセンスまたはApache-2.0ライセンスのいずれか、または両方のデュアルライセンスの下で公開されています。各ライブラリの完全なライセンス条項は、それぞれのGitHubリポジトリまたはcrates.ioページで確認できます。

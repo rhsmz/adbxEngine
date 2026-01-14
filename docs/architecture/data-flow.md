@@ -4,7 +4,7 @@ Adbx Engine Editorの主要なデータフローを説明します。
 
 ## エディタ-ランタイム通信フロー
 
-```plantuml
+```kroki-plantuml
 @startuml
 participant Editor
 participant Communication
@@ -19,7 +19,7 @@ Communication -> Editor: TCP / mpsc
 
 ## シーン読み込み/保存フロー
 
-```plantuml
+```kroki-plantuml
 @startuml
 participant Editor
 participant SceneManager
@@ -36,7 +36,7 @@ Runtime -> Editor: SceneLoaded message
 
 ## ホットリロードフロー
 
-```plantuml
+```kroki-plantuml
 @startuml
 participant FileWatcher
 participant HotReload
@@ -48,6 +48,26 @@ HotReload -> AssetRegistry: get loader
 AssetRegistry -> HotReload: loader
 HotReload -> Runtime: reload asset
 Runtime -> Editor: HotReloaded message
+@enduml
+```
+
+## アプリケーション初期化フロー
+
+```kroki-plantuml
+@startuml
+participant Main
+participant AppInitialization
+participant SystemRegistration
+participant EditorPlugin
+participant RuntimePlugin
+
+Main -> AppInitialization: initialize_app()
+AppInitialization -> AppInitialization: init resources
+AppInitialization -> RuntimePlugin: add_plugins()
+AppInitialization -> EditorPlugin: add_plugins()
+Main -> SystemRegistration: register_systems()
+SystemRegistration -> SystemRegistration: add_systems()
+Main -> Main: app.run()
 @enduml
 ```
 
