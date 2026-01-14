@@ -94,6 +94,7 @@ impl OperationRecorder {
     }
 
     /// 操作履歴をクリア
+    #[allow(dead_code)]
     pub fn clear_history(&mut self) {
         self.operations.clear();
     }

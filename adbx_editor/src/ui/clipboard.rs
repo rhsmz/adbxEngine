@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 
 /// クリップボードリソース
 #[derive(Resource, Default)]
+#[allow(dead_code)]
 pub struct Clipboard {
     pub text_content: String, // テキストコンテンツ（コードエディタ用）
     pub entity_data: Option<EntityClipboardData>, // Entityデータ（Entityコピー/ペースト用）
@@ -37,6 +38,7 @@ pub struct ComponentData {
     pub data: serde_json::Value,
 }
 
+#[allow(dead_code)]
 impl Clipboard {
     pub fn new() -> Self {
         Self {

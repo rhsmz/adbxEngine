@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 /// プロジェクト設定
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(dead_code)]
 pub struct ProjectSettings {
     pub name: String,
     pub version: String,
@@ -29,6 +30,7 @@ impl Default for ProjectSettings {
 
 /// ビルド設定
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(dead_code)]
 pub struct BuildSettings {
     pub game_name: String,
     pub main_scene: String,

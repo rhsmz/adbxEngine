@@ -1,4 +1,4 @@
-use super::super::resource::{SearchReplace, SearchResult};
+use super::super::resource::SearchReplace;
 use bevy::prelude::*;
 
 /// 置換を実行

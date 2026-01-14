@@ -43,6 +43,7 @@ pub fn validate_editor_settings(settings: &EditorSettings) -> Result<(), Vec<Str
 }
 
 /// プロジェクト設定の検証
+#[allow(dead_code)]
 pub fn validate_project_settings(settings: &ProjectSettings) -> Result<(), Vec<String>> {
     let mut errors = Vec::new();
 

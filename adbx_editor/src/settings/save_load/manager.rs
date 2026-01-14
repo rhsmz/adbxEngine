@@ -5,6 +5,7 @@ use std::path::PathBuf;
 /// 設定管理システム
 pub struct SettingsManager;
 
+#[allow(dead_code)]
 impl SettingsManager {
     /// エディタ設定を保存
     pub fn save_editor_settings(settings: &EditorSettings) -> Result<(), String> {

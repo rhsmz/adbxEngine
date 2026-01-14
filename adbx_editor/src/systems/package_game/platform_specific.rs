@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 /// プラットフォーム
 #[derive(Debug, Clone, Copy)]
+#[allow(dead_code)]
 pub enum Platform {
     Windows,
     Linux,
@@ -12,6 +13,7 @@ pub enum Platform {
 }
 
 /// プラットフォーム別のパッケージ化
+#[allow(dead_code)]
 pub fn package_game_platform(
     project_path: &PathBuf,
     build_output_path: &PathBuf,
@@ -39,6 +41,7 @@ pub fn package_game_platform(
 }
 
 /// tar.gzを作成（Linux用）
+#[allow(dead_code)]
 fn create_tar_gz(package_dir: &PathBuf) -> Result<PathBuf, String> {
     // 簡易実装: tarコマンドを使用（実際の実装では、tarライブラリを使用することを推奨）
     let tar_path = package_dir
@@ -79,6 +82,7 @@ fn create_tar_gz(package_dir: &PathBuf) -> Result<PathBuf, String> {
 }
 
 /// .appバンドルを作成（macOS用）
+#[allow(dead_code)]
 fn create_app_bundle(package_dir: &PathBuf) -> Result<PathBuf, String> {
     // 簡易実装: .appディレクトリ構造を作成
     let app_name = package_dir

@@ -2,6 +2,7 @@ use super::resource::{AiRequest, AiRequestType};
 use bevy::prelude::*;
 
 /// AIによるコード生成（非同期処理のためのリクエストキューに追加）
+#[allow(dead_code)]
 pub fn request_ai_code_generation(
     mut code_editor: ResMut<crate::ui::code_editor::resource::CodeEditor>,
     prompt: String,
@@ -15,6 +16,7 @@ pub fn request_ai_code_generation(
 }
 
 /// AIによるコード補完（非同期処理のためのリクエストキューに追加）
+#[allow(dead_code)]
 pub fn request_ai_code_completion(
     mut code_editor: ResMut<crate::ui::code_editor::resource::CodeEditor>,
     prompt: String,
@@ -28,6 +30,7 @@ pub fn request_ai_code_completion(
 }
 
 /// AIによるコードリファクタリング（非同期処理のためのリクエストキューに追加）
+#[allow(dead_code)]
 pub fn request_ai_code_refactor(
     mut code_editor: ResMut<crate::ui::code_editor::resource::CodeEditor>,
     prompt: String,

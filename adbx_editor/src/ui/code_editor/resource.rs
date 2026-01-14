@@ -5,6 +5,7 @@ use std::collections::VecDeque;
 
 /// ハイブコーディングエディタのリソース
 #[derive(Resource, Default)]
+#[allow(dead_code)]
 pub struct CodeEditor {
     pub current_file: Option<String>,
     pub content: String,

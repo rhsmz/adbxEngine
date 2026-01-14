@@ -81,6 +81,7 @@ pub fn apply_runtime_entity_updates(
 }
 
 /// シーン変更をランタイムに同期
+#[allow(dead_code)]
 pub fn sync_scene_changes(
     _communication: Res<EditorRuntimeCommunication>,
     _scene_manager: Res<crate::systems::scene_management::SceneManager>,

@@ -40,6 +40,7 @@ pub fn notify_component_update(
 }
 
 /// エディタからランタイムにホットリロードを通知
+#[allow(dead_code)]
 pub fn notify_hot_reload(
     communication: &EditorRuntimeCommunication,
     asset_path: String,

@@ -6,6 +6,7 @@ use std::collections::HashMap;
 
 /// シーンに属するエンティティをマークするコンポーネント
 #[derive(Component, Debug)]
+#[allow(dead_code)]
 pub struct SceneEntity {
     pub scene_name: String,
 }

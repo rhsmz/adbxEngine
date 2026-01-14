@@ -4,6 +4,7 @@ use std::collections::HashMap;
 
 /// AI統合のリソース
 #[derive(Resource)]
+#[allow(dead_code)]
 pub struct AiIntegration {
     pub api_key: Option<String>,
     pub provider: AiProvider,
@@ -17,6 +18,7 @@ pub struct AiIntegration {
 
 /// AIリクエストの状態
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub enum AiRequestStatus {
     Pending,          // 待機中
     Processing,       // 処理中
@@ -25,6 +27,7 @@ pub enum AiRequestStatus {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)]
 pub enum AiProvider {
     OpenAI,
     Claude,

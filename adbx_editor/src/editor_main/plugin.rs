@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 #[derive(States, Debug, Clone, PartialEq, Eq, Hash, Default)]
+#[allow(dead_code)]
 pub enum EditorState {
     #[default]
     Editing,

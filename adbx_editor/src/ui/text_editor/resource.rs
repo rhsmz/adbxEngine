@@ -1,4 +1,3 @@
-use bevy::input::keyboard::{Key, KeyboardInput};
 use bevy::prelude::*;
 
 /// テキストエディタの状態管理

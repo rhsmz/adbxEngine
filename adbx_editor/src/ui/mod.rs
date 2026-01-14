@@ -22,6 +22,4 @@ pub mod text_editor;
 
 pub use asset_browser::*;
 pub use editor_layout::*;
-pub use hierarchy::*;
-pub use inspector::*;
 pub use script_editor::*;

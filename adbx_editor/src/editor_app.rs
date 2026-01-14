@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 /// エディタアプリケーションのメインリソース
 #[derive(Resource)]
+#[allow(dead_code)]
 pub struct EditorApp {
     pub current_scene: Option<String>,
     pub selected_entity: Option<Entity>,

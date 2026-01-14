@@ -3,6 +3,7 @@ use super::EditorRuntimeCommunication;
 use adbx_shared::scene::SceneData;
 
 /// エディタからランタイムにシーン読み込みを要求
+#[allow(dead_code)]
 pub fn request_scene_load(
     communication: &EditorRuntimeCommunication,
     scene_path: String,
@@ -14,6 +15,7 @@ pub fn request_scene_load(
 }
 
 /// エディタからランタイムにシーン保存を要求
+#[allow(dead_code)]
 pub fn request_scene_save(
     communication: &EditorRuntimeCommunication,
     scene: SceneData,
@@ -25,6 +27,7 @@ pub fn request_scene_save(
 }
 
 /// エディタからランタイムにアセット読み込みを要求
+#[allow(dead_code)]
 pub fn request_asset_load(
     communication: &EditorRuntimeCommunication,
     asset_path: String,

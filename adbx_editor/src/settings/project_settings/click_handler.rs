@@ -2,6 +2,7 @@ use super::super::editor_settings::resource::{EditorSettings, SettingsPanel};
 use bevy::prelude::*;
 
 /// 設定パネルのクリック処理（プロジェクト設定関連）
+#[allow(dead_code)]
 pub fn handle_project_settings_panel_click(
     mut settings_panel: ResMut<SettingsPanel>,
     _editor_settings: ResMut<EditorSettings>,

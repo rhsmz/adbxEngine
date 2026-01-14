@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::ui::Interaction;
 
 /// 検索・置換のリソース
 #[derive(Resource, Default)]

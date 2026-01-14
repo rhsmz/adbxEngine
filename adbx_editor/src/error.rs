@@ -3,6 +3,7 @@ use thiserror::Error;
 
 /// エディタエラー型
 #[derive(Error, Debug)]
+#[allow(dead_code)]
 pub enum EditorError {
     #[error("Shared error: {0}")]
     Shared(#[from] AdbxError),
@@ -88,6 +89,7 @@ impl EditorError {
 }
 
 // 簡易的なエラー作成ヘルパー
+#[allow(dead_code)]
 impl EditorError {
     pub fn project(message: impl Into<String>) -> Self {
         EditorError::Project {
@@ -114,4 +116,5 @@ impl EditorError {
     }
 }
 
+#[allow(dead_code)]
 pub type Result<T> = std::result::Result<T, EditorError>;

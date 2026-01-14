@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 /// パフォーマンス設定リソース
 #[derive(Resource)]
+#[allow(dead_code)]
 pub struct PerformanceSettings {
     /// UI更新の間隔（フレーム数）
     pub ui_update_interval: u32,
@@ -28,6 +29,7 @@ pub struct FrameCounter {
 }
 
 impl FrameCounter {
+    #[allow(dead_code)]
     pub fn should_update_ui(&self, interval: u32) -> bool {
         self.frame % interval == 0
     }

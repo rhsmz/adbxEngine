@@ -1,6 +1,7 @@
 use super::super::{OperationRecorder, RecordedOperation};
 
 /// 操作履歴をAI理解可能な形式で取得（改善版）
+#[allow(dead_code)]
 pub fn get_ai_readable_history(recorder: &OperationRecorder, limit: Option<usize>) -> String {
     let limit = limit.unwrap_or(recorder.operations.len());
     let operations: Vec<&RecordedOperation> =

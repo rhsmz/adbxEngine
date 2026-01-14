@@ -1,6 +1,7 @@
 use super::super::{OperationRecorder, RecordedOperation};
 
 /// 操作履歴をAI API用のコンテキスト形式で取得
+#[allow(dead_code)]
 pub fn get_ai_context(recorder: &OperationRecorder, limit: Option<usize>) -> String {
     let limit = limit.unwrap_or(20); // デフォルトは最新20件
     let operations: Vec<&RecordedOperation> =

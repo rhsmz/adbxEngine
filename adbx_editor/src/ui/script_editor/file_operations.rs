@@ -1,5 +1,5 @@
 use super::ScriptEditor;
-use bevy::prelude::*;
+use bevy::prelude::{Commands, ResMut};
 use std::path::PathBuf;
 
 /// スクリプトファイルを読み込む

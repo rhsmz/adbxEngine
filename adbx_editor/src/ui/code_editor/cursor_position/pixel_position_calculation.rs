@@ -94,6 +94,7 @@ pub fn calculate_cursor_position_from_mouse_click(
 }
 
 /// デフォルトパラメータでクリック位置からカーソル位置を計算
+#[allow(dead_code)]
 pub fn calculate_cursor_position_from_mouse_click_default(
     text: &str,
     click_x: f32,

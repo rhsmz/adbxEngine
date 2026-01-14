@@ -3,6 +3,7 @@ use super::OperationRecorder;
 use std::path::PathBuf;
 
 /// 操作記録をファイルにエクスポート（JSON形式）
+#[allow(dead_code)]
 pub fn export_operations_to_json(
     recorder: &OperationRecorder,
     file_path: PathBuf,
@@ -14,6 +15,7 @@ pub fn export_operations_to_json(
 }
 
 /// 操作記録をファイルにエクスポート（AI読み取り可能形式）
+#[allow(dead_code)]
 pub fn export_operations_to_text(
     recorder: &OperationRecorder,
     file_path: PathBuf,
@@ -26,6 +28,7 @@ pub fn export_operations_to_text(
 }
 
 /// 操作記録をファイルにエクスポート（AIコンテキスト形式）
+#[allow(dead_code)]
 pub fn export_operations_to_markdown(
     recorder: &OperationRecorder,
     file_path: PathBuf,

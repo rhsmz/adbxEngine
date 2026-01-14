@@ -2,6 +2,7 @@ use super::super::{OperationContext, OperationRecorder, OperationType};
 use bevy::prelude::*;
 
 /// 操作を記録するヘルパー関数
+#[allow(dead_code)]
 pub fn record_entity_created(
     mut recorder: ResMut<OperationRecorder>,
     entity: Entity,

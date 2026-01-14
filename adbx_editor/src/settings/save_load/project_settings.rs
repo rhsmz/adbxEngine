@@ -3,6 +3,7 @@ use super::manager::SettingsManager;
 use std::path::PathBuf;
 
 /// プロジェクト設定を保存
+#[allow(dead_code)]
 pub fn save_project_settings(
     settings: &ProjectSettings,
     project_path: &PathBuf,
@@ -11,6 +12,7 @@ pub fn save_project_settings(
 }
 
 /// プロジェクト設定を読み込み
+#[allow(dead_code)]
 pub fn load_project_settings(project_path: &PathBuf) -> Result<ProjectSettings, String> {
     SettingsManager::load_project_settings(project_path)
 }

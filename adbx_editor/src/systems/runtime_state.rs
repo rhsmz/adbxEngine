@@ -16,6 +16,7 @@ pub struct RuntimeStateManager {
     pub scene_path: Option<String>, // 実行中のシーンのパス
 }
 
+#[allow(dead_code)]
 impl RuntimeStateManager {
     pub fn new() -> Self {
         Self {

@@ -19,6 +19,7 @@ pub struct CompletionCandidate {
 
 /// 補完候補の種類
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)]
 pub enum CompletionKind {
     Keyword,  // キーワード
     Function, // 関数

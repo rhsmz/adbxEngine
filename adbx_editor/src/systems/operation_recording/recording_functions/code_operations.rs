@@ -2,6 +2,7 @@ use super::super::{OperationContext, OperationRecorder, OperationType};
 use bevy::prelude::*;
 
 /// コード生成を記録
+#[allow(dead_code)]
 pub fn record_code_generated(
     mut recorder: ResMut<OperationRecorder>,
     prompt: String,

@@ -60,6 +60,7 @@ pub fn apply_settings_changes(
 }
 
 /// 設定を更新するシステム（UIからの入力を受け取って更新）
+#[allow(dead_code)]
 pub fn update_settings_from_ui(
     _editor_settings: ResMut<EditorSettings>,
     _keyboard_input: Res<ButtonInput<KeyCode>>,

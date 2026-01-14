@@ -1,6 +1,7 @@
 use super::super::OperationRecorder;
 
 /// 操作履歴をJSON形式で取得（AI APIに送信する形式）
+#[allow(dead_code)]
 pub fn get_history_json(
     recorder: &OperationRecorder,
     limit: Option<usize>,
