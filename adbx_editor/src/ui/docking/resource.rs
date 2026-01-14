@@ -1,3 +1,5 @@
+// 未使用だが将来使用予定のAPI
+#[allow(unused_imports)]
 use crate::systems::operation_recording::{
     record_panel_moved, record_panel_resized, OperationRecorder,
 };

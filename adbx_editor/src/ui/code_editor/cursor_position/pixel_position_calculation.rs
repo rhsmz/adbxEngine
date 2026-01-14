@@ -1,7 +1,6 @@
 use super::constants::{
     CHAR_WIDTH, LINE_HEIGHT, LINE_NUMBER_WIDTH, PADDING_LEFT, PADDING_TOP, TAB_WIDTH,
 };
-use super::line_column_calculation::calculate_char_position_from_line_column;
 
 /// カーソルのX位置を計算（文字幅を考慮）
 pub fn calculate_cursor_x_pixel_position(content: &str, line: usize, col: usize) -> f32 {

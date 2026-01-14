@@ -1,4 +1,4 @@
-use super::super::{AssetBrowser, AssetType};
+use super::super::AssetBrowser;
 use super::file_list::draw_asset_file_list;
 use super::header::draw_asset_browser_header;
 use super::preview_panel::draw_asset_preview_panel;

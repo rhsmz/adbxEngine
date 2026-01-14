@@ -1,7 +1,6 @@
 use crate::ui::code_editor::ai_integration::{AiRequest, AiResponse};
 use crate::ui::code_editor::state::{CompletionState, OpenFile};
 use bevy::prelude::*;
-use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
 
 /// ハイブコーディングエディタのリソース

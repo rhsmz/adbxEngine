@@ -1,4 +1,3 @@
-use super::super::cursor_position::calculate_char_position_from_line_column;
 use super::super::resource::CodeEditor;
 
 /// 指定位置に文字を挿入

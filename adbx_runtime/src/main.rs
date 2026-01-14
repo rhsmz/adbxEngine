@@ -3,6 +3,7 @@ use adbx_runtime::scene_loader::load_initial_scene;
 use adbx_runtime::AdbxRuntimePlugin;
 use bevy::prelude::*;
 use std::env;
+use std::path::PathBuf;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -11,7 +12,7 @@ fn main() {
     let (scene_path, project_path, window_title, window_width, window_height) = parse_args(&args);
 
     // プロジェクトパスが指定されている場合、ビルド設定を読み込む
-    let game_config = if let Some(proj_path) = project_path {
+    let game_config = if let Some(ref proj_path) = project_path {
         match load_build_config(proj_path) {
             Ok(build_config) => {
                 // ビルド設定からGameConfigを作成

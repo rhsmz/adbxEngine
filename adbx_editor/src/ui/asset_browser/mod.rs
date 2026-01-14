@@ -9,9 +9,14 @@ pub mod ui_draw;
 pub use click_handler::handle_asset_browser_click;
 pub use directory_scan::AssetBrowserExt;
 pub use image_preview::update_image_previews;
-pub use import_export::{export_asset, import_asset};
-pub use resource::{AssetBrowser, AssetFileInfo, AssetType};
+pub use resource::{AssetBrowser, AssetFileInfo};
 pub use ui_draw::draw_asset_browser;
+
+// 未使用だが将来使用予定のAPI
+#[allow(unused_imports)]
+pub use import_export::{export_asset, import_asset};
+#[allow(unused_imports)]
+pub use resource::AssetType;
 
 // AssetBrowserにscan_directoryメソッドを追加
 impl AssetBrowser {

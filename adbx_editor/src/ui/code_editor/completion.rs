@@ -1,5 +1,4 @@
 use crate::ui::code_editor::resource::CodeEditor;
-use crate::ui::code_editor::state::OpenFile;
 
 /// 補完を承認（選択された候補を挿入）
 pub fn accept_selected_completion_candidate(code_editor: &mut CodeEditor) {

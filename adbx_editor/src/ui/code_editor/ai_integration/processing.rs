@@ -1,4 +1,4 @@
-use super::resource::{AiIntegration, AiRequestStatus, AiResponse};
+use super::resource::{AiIntegration, AiResponse};
 use bevy::prelude::*;
 
 /// AIリクエストを処理するシステム（非同期処理）

@@ -4,8 +4,11 @@ pub mod ray_intersection;
 pub mod transform_update;
 
 // 公開API
-pub use handle_detection::detect_gizmo_handle_click;
 pub use main::handle_gizmo_interaction;
+
+// 未使用だが将来使用予定のAPI
+#[allow(unused_imports)]
+pub use handle_detection::detect_gizmo_handle_click;
 
 // 未使用だが将来使用予定のAPI
 #[allow(unused_imports)]

@@ -1,4 +1,3 @@
-use super::constants::CHAR_WIDTH;
 
 /// カーソル位置を計算（行と列を返す）
 pub fn calculate_cursor_line_and_column(text: &str, cursor_pos: usize) -> (usize, usize) {
