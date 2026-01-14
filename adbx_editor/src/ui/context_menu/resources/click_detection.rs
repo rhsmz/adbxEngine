@@ -4,6 +4,7 @@ use bevy::prelude::*;
 use bevy::ui::Interaction;
 
 /// 右クリック検出とメニュー表示
+#[allow(dead_code)]
 pub fn detect_right_click_for_context_menu(
     mouse_input: Res<ButtonInput<MouseButton>>,
     windows: Query<&Window>,

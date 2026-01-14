@@ -69,6 +69,7 @@ pub use right_click::detect_right_click_for_context_menu;
 pub use script_execution::handle_script_execution;
 
 // display functions
+#[allow(dead_code)]
 pub fn show_context_menu(
     commands: bevy::prelude::Commands,
     context_menu: bevy::prelude::ResMut<ContextMenu>,

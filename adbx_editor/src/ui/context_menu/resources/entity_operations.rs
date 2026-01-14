@@ -2,6 +2,7 @@ use super::types::EntityOperation;
 use bevy::prelude::*;
 
 /// エンティティ操作（作成、削除、複製）
+#[allow(dead_code)]
 pub fn handle_entity_operations(
     commands: &mut Commands,
     selection: &mut ResMut<crate::systems::selection::Selection>,
@@ -30,6 +31,7 @@ pub fn handle_entity_operations(
 }
 
 /// エンティティを作成
+#[allow(dead_code)]
 fn create_entity(
     commands: &mut Commands,
     selection: &mut ResMut<crate::systems::selection::Selection>,

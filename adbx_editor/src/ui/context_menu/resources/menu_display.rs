@@ -3,6 +3,7 @@ use super::types::{ContextMenu, ContextType};
 use bevy::prelude::*;
 
 /// コンテキストメニューの表示
+#[allow(dead_code)]
 pub fn show_context_menu(
     mut commands: Commands,
     mut context_menu: ResMut<ContextMenu>,
