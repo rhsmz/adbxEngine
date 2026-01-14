@@ -35,6 +35,7 @@ pub fn code_files() -> Vec<FileFilter> {
     ]
 }
 
+#[allow(dead_code)]
 pub fn image_files() -> Vec<FileFilter> {
     vec![
         FileFilter {
@@ -55,6 +56,7 @@ pub fn image_files() -> Vec<FileFilter> {
     ]
 }
 
+#[allow(dead_code)]
 pub fn scene_files() -> Vec<FileFilter> {
     vec![
         FileFilter {

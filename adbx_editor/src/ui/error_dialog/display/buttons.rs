@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 /// エラーダイアログのボタンエリアを描画
+#[allow(dead_code)]
 pub fn draw_error_dialog_buttons(parent: &mut ChildSpawnerCommands) {
     parent
         .spawn((

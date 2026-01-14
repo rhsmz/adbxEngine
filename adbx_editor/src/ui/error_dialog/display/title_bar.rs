@@ -2,6 +2,7 @@ use super::super::ErrorDialog;
 use bevy::prelude::*;
 
 /// エラーダイアログのタイトルバーを描画
+#[allow(dead_code)]
 pub fn draw_error_dialog_title_bar(
     parent: &mut ChildSpawnerCommands,
     error_dialog: &ErrorDialog,

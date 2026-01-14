@@ -3,6 +3,7 @@ use super::ErrorDialog;
 use bevy::prelude::*;
 
 /// エラーダイアログの入力処理
+#[allow(dead_code)]
 pub fn handle_error_dialog_input(
     mut error_dialog: ResMut<ErrorDialog>,
     mouse_input: Res<ButtonInput<MouseButton>>,

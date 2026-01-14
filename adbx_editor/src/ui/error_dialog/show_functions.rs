@@ -71,6 +71,7 @@ pub fn show_info_dialog(
 }
 
 /// エラーダイアログを閉じる
+#[allow(dead_code)]
 pub fn close_error_dialog(error_dialog: &mut ErrorDialog) {
     error_dialog.is_visible = false;
     error_dialog.title.clear();

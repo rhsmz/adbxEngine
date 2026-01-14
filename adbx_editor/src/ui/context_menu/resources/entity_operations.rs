@@ -52,6 +52,7 @@ fn create_entity(
 }
 
 /// エンティティを削除
+#[allow(dead_code)]
 fn delete_entities(
     commands: &mut Commands,
     selection: &mut ResMut<crate::systems::selection::Selection>,
@@ -67,6 +68,7 @@ fn delete_entities(
 }
 
 /// エンティティを複製
+#[allow(dead_code)]
 fn duplicate_entities(
     commands: &mut Commands,
     selection: &mut ResMut<crate::systems::selection::Selection>,

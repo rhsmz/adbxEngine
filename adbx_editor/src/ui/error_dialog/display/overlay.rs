@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 /// エラーダイアログのオーバーレイを描画
+#[allow(dead_code)]
 pub fn draw_error_dialog_overlay(commands: &mut Commands) -> Entity {
     commands
         .spawn((

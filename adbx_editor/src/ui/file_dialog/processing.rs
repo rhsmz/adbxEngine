@@ -2,6 +2,7 @@ use super::resource::{FileDialogRequest, FileDialogResult, FileDialogType};
 use bevy::prelude::*;
 
 /// ファイルダイアログの処理システム
+#[allow(dead_code)]
 pub fn process_file_dialog(mut file_dialog_request: ResMut<FileDialogRequest>) {
     if let Some(dialog_type) = file_dialog_request.dialog_type.take() {
         let result = match dialog_type {

@@ -15,7 +15,7 @@ pub fn draw_code_lines(
     let lines: Vec<&str> = content_text.lines().collect();
     let total_lines = lines.len();
     let start_line = scroll_offset as usize;
-    let end_line = (start_line + visible_line_count + 1).min(total_lines);
+    let end_line = start_line.saturating_add(visible_line_count.saturating_add(1)).min(total_lines);
 
     for (i, line) in lines.iter().enumerate() {
         if i < start_line || i >= end_line {

@@ -9,6 +9,7 @@ pub struct FileDialogRequest {
 }
 
 /// ファイルダイアログの種類
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum FileDialogType {
     OpenFile {
@@ -26,6 +27,7 @@ pub enum FileDialogType {
 }
 
 /// ファイルフィルター
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct FileFilter {
     pub name: String,

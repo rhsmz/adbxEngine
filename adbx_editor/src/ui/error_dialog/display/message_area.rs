@@ -2,6 +2,7 @@ use super::super::ErrorDialog;
 use bevy::prelude::*;
 
 /// エラーダイアログのメッセージエリアを描画
+#[allow(dead_code)]
 pub fn draw_error_dialog_message_area(
     parent: &mut ChildSpawnerCommands,
     error_dialog: &ErrorDialog,
@@ -42,6 +43,7 @@ pub fn draw_error_dialog_message_area(
 }
 
 /// 詳細情報の展開/折りたたみボタンを描画
+#[allow(dead_code)]
 fn draw_details_toggle(parent: &mut ChildSpawnerCommands, error_dialog: &ErrorDialog) {
     parent
         .spawn((
@@ -118,6 +120,7 @@ fn draw_details_toggle(parent: &mut ChildSpawnerCommands, error_dialog: &ErrorDi
 }
 
 /// 詳細情報の内容を描画
+#[allow(dead_code)]
 fn draw_details_content(parent: &mut ChildSpawnerCommands, error_dialog: &ErrorDialog) {
     let details_text = if let Some(ref error) = error_dialog.error {
         error.user_friendly_message()

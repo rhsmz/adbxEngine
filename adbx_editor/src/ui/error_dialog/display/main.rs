@@ -7,6 +7,7 @@ use super::title_bar::draw_error_dialog_title_bar;
 use bevy::prelude::*;
 
 /// エラーダイアログのUI描画
+#[allow(dead_code)]
 pub fn draw_error_dialog(
     mut commands: Commands,
     mut error_dialog: ResMut<ErrorDialog>,

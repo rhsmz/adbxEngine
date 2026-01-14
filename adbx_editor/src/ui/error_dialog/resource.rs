@@ -3,6 +3,7 @@ use bevy::prelude::*;
 
 /// エラーダイアログのリソース
 #[derive(Resource, Default)]
+#[allow(dead_code)]
 pub struct ErrorDialog {
     pub is_visible: bool,
     pub title: String,

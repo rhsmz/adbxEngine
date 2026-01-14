@@ -3,6 +3,7 @@ use bevy::prelude::*;
 
 /// ドロップゾーン情報
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct DockZone {
     pub position: PanelPosition,
     pub bounds: bevy::math::Rect,
@@ -31,6 +32,7 @@ pub fn detect_drop_zone(position: Vec2, window_size: Vec2) -> Option<PanelPositi
 
 /// ドロップゾーンの視覚的表示用コンポーネント
 #[derive(Component)]
+#[allow(dead_code)]
 pub struct DropZoneIndicator {
     pub position: PanelPosition,
 }

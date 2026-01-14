@@ -2,6 +2,7 @@ use super::super::resource::{DockingSystem, DragState};
 use bevy::prelude::*;
 
 /// パネルのドラッグ開始処理
+#[allow(dead_code)]
 pub fn handle_panel_drag(
     mut docking: ResMut<DockingSystem>,
     mouse_input: Res<ButtonInput<MouseButton>>,
