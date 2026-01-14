@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adbx Engine - アーキテクチャダイアグラム</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .diagram-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        .diagram-section h2 {
+            color: #34495e;
+            margin-top: 0;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        .diagram-container {
+            text-align: center;
+            margin: 20px 0;
+            min-height: 200px;
+        }
+        .diagram-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.loading {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .info {
+            background-color: #e8f4fd;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Adbx Engine Editor - アーキテクチャダイアグラム</h1>
+
+        <div class="controls">
+            <button onclick="loadAllDiagrams()">すべてのダイアグラムを読み込み</button>
+            <button onclick="checkKrokiStatus()">Krokiサービス状態確認</button>
+            <button onclick="refreshDiagrams()">ダイアグラム更新</button>
+        </div>
+
+        <div id="kroki-status" class="status loading">
+            Krokiサービスの状態を確認中...
+        </div>
+
+        <div class="info">
+            <h3>📋 使い方</h3>
+            <p>Kroki Dockerが起動していることを確認してください：</p>
+            <pre>cd docs/kroki-docker
+docker-compose up -d</pre>
+            <p>サービスが起動すると、以下のダイアグラムが自動的に読み込まれます。</p>
+        </div>
+
+        <!-- システム概要 -->
+        <div class="diagram-section">
+            <h2>システム概要</h2>
+            <div class="diagram-container">
+                <div id="system-overview-status" class="status loading">読み込み中...</div>
+                <img id="system-overview" alt="システム概要" style="display:none;">
+            </div>
+            <p>adbx_editor、adbx_runtime、adbx_sharedのパッケージ構成と関係を示す全体構成図です。</p>
+        </div>
+
+        <!-- ECSシステムフロー -->
+        <div class="diagram-section">
+            <h2>ECSシステムフロー</h2>
+            <div class="diagram-container">
+                <div id="ecs-flow-status" class="status loading">読み込み中...</div>
+                <img id="ecs-flow" alt="ECSシステムフロー" style="display:none;">
+            </div>
+            <p>エディタ内のECSシステムの詳細なフローと相互作用を示します。</p>
+        </div>
+
+        <!-- エディタ-ランタイム通信 -->
+        <div class="diagram-section">
+            <h2>エディタ-ランタイム通信フロー</h2>
+            <div class="diagram-container">
+                <div id="communication-flow-status" class="status loading">読み込み中...</div>
+                <img id="communication-flow" alt="通信フロー" style="display:none;">
+            </div>
+            <p>エディタとランタイム間のメッセージ通信の流れを示します。</p>
+        </div>
+
+        <!-- シーン読み込み/保存 -->
+        <div class="diagram-section">
+            <h2>シーン読み込み/保存フロー</h2>
+            <div class="diagram-container">
+                <div id="scene-flow-status" class="status loading">読み込み中...</div>
+                <img id="scene-flow" alt="シーン読み込み/保存フロー" style="display:none;">
+            </div>
+            <p>シーンファイルの読み込みと保存のデータフローです。</p>
+        </div>
+
+        <!-- ホットリロードフロー -->
+        <div class="diagram-section">
+            <h2>ホットリロードフロー</h2>
+            <div class="diagram-container">
+                <div id="hot-reload-status" class="status loading">読み込み中...</div>
+                <img id="hot-reload" alt="ホットリロードフロー" style="display:none;">
+            </div>
+            <p>アセットとスクリプトのホットリロードの処理フローです。</p>
+        </div>
+
+        <!-- UIコンポーネント階層 -->
+        <div class="diagram-section">
+            <h2>UIコンポーネント階層</h2>
+            <div class="diagram-container">
+                <div id="ui-components-status" class="status loading">読み込み中...</div>
+                <img id="ui-components" alt="UIコンポーネント階層" style="display:none;">
+            </div>
+            <p>エディタのUIコンポーネントの階層構造と関係を示します。</p>
+        </div>
+
+        <!-- システム依存関係 -->
+        <div class="diagram-section">
+            <h2>システム依存関係</h2>
+            <div class="diagram-container">
+                <div id="system-dependencies-status" class="status loading">読み込み中...</div>
+                <img id="system-dependencies" alt="システム依存関係" style="display:none;">
+            </div>
+            <p>エディタシステム間の依存関係とデータフローを示します。</p>
+        </div>
+    </div>
+
+    <script>
+        const KROKI_BASE_URL = 'http://localhost:8000';
+        const DIAGRAMS = {
+            'system-overview': {
+                type: 'plantuml',
+                content: `@startuml
+package "adbx_editor" {
+    class EditorApp {
+        + UI Components
+        + ECS Systems
+        + Communication
+    }
+
+    package "UI Components" {
+        class InspectorPanel
+        class HierarchyView
+        class AssetBrowser
+    }
+
+    package "ECS Systems" {
+        class SelectionSystem
+        class SceneManagement
+        class GizmoSystem
+    }
+}
+
+package "adbx_runtime" {
+    class RuntimeApp {
+        + Lua VM
+        + Hot Reload
+    }
+}
+
+package "adbx_shared" {
+    class Protocol
+    class Scene
+    class Asset
+}
+
+EditorApp --> RuntimeApp : TCP/mpsc
+EditorApp --> Protocol
+EditorApp --> Scene
+EditorApp --> Asset
+
+@enduml`
+            },
+            'ecs-flow': {
+                type: 'plantuml',
+                content: `@startuml
+title ECS System Flow in Editor
+
+actor User
+participant EditorApp
+participant UI as "UI Systems"
+participant Core as "Core Systems"
+participant Runtime as "Runtime (adbx_runtime)"
+
+== Startup Phase ==
+EditorApp -> EditorApp: Initialize Resources
+EditorApp -> UI: Setup UI Components
+UI -> Core: Register Component Editors
+Core -> Runtime: Establish Communication
+
+== Runtime Phase ==
+User -> UI: User Interaction
+UI -> Core: Process Input
+Core -> Core: Update ECS State
+Core -> UI: Update UI State
+UI -> User: Render UI
+
+== Scene Operations ==
+User -> UI: Scene Operation
+UI -> Core: Scene Command
+Core -> Runtime: Send to Runtime
+Runtime -> Runtime: Execute in Runtime
+Runtime -> Core: Result
+Core -> UI: Update Display
+
+== Hot Reload ==
+Runtime -> Runtime: File Change Detected
+Runtime -> Core: Asset Update
+Core -> UI: Refresh UI
+UI -> User: Updated Display
+
+@enduml`
+            },
+            'communication-flow': {
+                type: 'plantuml',
+                content: `@startuml
+participant Editor
+participant Communication
+participant Runtime
+
+Editor -> Communication: EditorMessage
+Communication -> Runtime: TCP / mpsc
+Runtime -> Communication: RuntimeMessage
+Communication -> Editor: TCP / mpsc
+@enduml`
+            },
+            'scene-flow': {
+                type: 'plantuml',
+                content: `@startuml
+participant Editor
+participant SceneManager
+participant FileSystem
+participant Runtime
+
+Editor -> SceneManager: load_scene()
+SceneManager -> FileSystem: read file
+FileSystem -> SceneManager: scene data
+SceneManager -> Runtime: deploy scene
+Runtime -> SceneManager: confirmation
+SceneManager -> Editor: scene loaded
+
+Editor -> SceneManager: save_scene()
+SceneManager -> Runtime: get scene data
+Runtime -> SceneManager: current scene
+SceneManager -> FileSystem: write file
+FileSystem -> SceneManager: saved
+SceneManager -> Editor: scene saved
+@enduml`
+            },
+            'hot-reload': {
+                type: 'plantuml',
+                content: `@startuml
+participant FileWatcher
+participant AssetRegistry
+participant Runtime
+participant Editor
+participant UI
+
+FileWatcher -> FileWatcher: File change detected
+FileWatcher -> AssetRegistry: Asset type check
+AssetRegistry -> AssetRegistry: Load/Update asset
+
+alt Standard Asset
+    AssetRegistry -> Runtime: Update asset
+    Runtime -> Runtime: Apply changes
+    Runtime -> Editor: Asset updated
+else Custom Asset
+    AssetRegistry -> AssetRegistry: Custom loader
+    AssetRegistry -> Runtime: Custom asset update
+    Runtime -> Runtime: Process custom asset
+    Runtime -> Editor: Custom asset updated
+end
+
+Runtime -> Editor: Hot reload notification
+Editor -> UI: Update UI
+UI -> UI: Refresh display
+
+note right: Asset types supported:\n- Standard (Mesh, Texture, etc.)\n- Custom (ConfigFile, etc.)
+@enduml`
+            },
+            'ui-components': {
+                type: 'plantuml',
+                content: `@startuml
+class EditorApp {
+    + UI Components
+    + Systems
+}
+
+class HierarchyView {
+    + expanded_entities: HashSet<Entity>
+    + scroll_offset: f32
+    + drag_state: HierarchyDragState
+}
+
+class InspectorPanel {
+    + content: InspectorContent
+    + input_state: InspectorInputState
+    + registry: ComponentEditorRegistry
+    ---
+    - last_update_time: f64 (unused)
+    - update_throttle: f64 (unused)
+    - pending_update: bool (unused)
+}
+
+class AssetBrowser {
+    + current_directory: PathBuf
+    + selected_asset: Option<String>
+    + file_filter: Vec<FileFilter>
+}
+
+class CodeEditor {
+    + content: String
+    + cursor_position: CursorPosition
+    + language: String
+    + ai_enabled: bool (unused)
+}
+
+class ScriptEditor {
+    + current_script: Option<PathBuf>
+    + script_content: String
+    + entity_scripts: HashMap<Entity, Vec<String>>
+}
+
+class LogPanel {
+    + entries: Vec<LogEntry>
+    + filters: LogFilters
+    + auto_scroll: bool
+}
+
+class SceneView {
+    + camera: Camera
+    + gizmos: Vec<Gizmo>
+    + selection: HashSet<Entity>
+}
+
+EditorApp *-- HierarchyView
+EditorApp *-- InspectorPanel
+EditorApp *-- AssetBrowser
+EditorApp *-- CodeEditor
+EditorApp *-- ScriptEditor
+EditorApp *-- LogPanel
+EditorApp *-- SceneView
+
+note right of InspectorPanel : Component editors\nregistered here
+note right of CodeEditor : AI integration\nplanned
+@enduml`
+            },
+            'system-dependencies': {
+                type: 'plantuml',
+                content: `@startuml
+title System Dependencies and Data Flow
+
+package "UI Layer" as UI {
+    [HierarchyView] --> [SelectionSystem] : Entity selection
+    [InspectorPanel] --> [ComponentEditorRegistry] : Component editing
+    [AssetBrowser] --> [AssetRegistry] : Asset management
+    [SceneView] --> [GizmoSystem] : Gizmo operations
+    [LogPanel] --> [LoggingSystem] : Log display
+}
+
+package "Core Systems" as Core {
+    [SelectionSystem] --> [SceneManager] : Scene operations
+    [SceneManager] --> [OperationRecorder] : Undo/Redo
+    [ComponentEditorRegistry] --> [SceneManager] : Component updates
+    [AssetRegistry] --> [HotReloadSystem] : Asset watching
+}
+
+package "Communication" as Comm {
+    [SceneManager] --> [RuntimeCommunication] : Scene sync
+    [HotReloadSystem] --> [RuntimeCommunication] : Asset updates
+    [OperationRecorder] --> [RuntimeCommunication] : Operation sync
+}
+
+package "Runtime (adbx_runtime)" as Runtime {
+    [RuntimeCommunication] --> [LuaVM] : Script execution
+    [RuntimeCommunication] --> [AssetLoader] : Asset loading
+    [LuaVM] --> [SceneRuntime] : Runtime scene
+}
+
+UI --> Core : User actions
+Core --> Comm : System events
+Comm --> Runtime : Runtime commands
+Runtime --> Comm : Runtime responses
+Comm --> Core : Update notifications
+Core --> UI : State updates
+
+note right : Data flows from\nUI → Core → Communication → Runtime\nand back with responses
+@enduml`
+            }
+        };
+
+        async function checkKrokiStatus() {
+            const statusDiv = document.getElementById('kroki-status');
+            try {
+                const response = await fetch(`${KROKI_BASE_URL}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `Krokiサービス正常稼働中 (バージョン: ${data.version.kroki?.number || 'unknown'})`;
+                } else {
+                    throw new Error('Service responded with error');
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `
+                    Krokiサービスに接続できません。<br>
+                    Dockerコンテナが起動しているか確認してください：<br>
+                    <code>cd docs/kroki-docker && docker-compose up -d</code>
+                `;
+            }
+        }
+
+        // UTF-8対応のBase64エンコード関数
+        function utf8ToBase64(str) {
+            return btoa(unescape(encodeURIComponent(str)));
+        }
+
+        async function loadDiagram(diagramKey) {
+            const diagram = DIAGRAMS[diagramKey];
+            const imgElement = document.getElementById(diagramKey);
+            const statusElement = document.getElementById(`${diagramKey}-status`);
+
+            try {
+                statusElement.className = 'status loading';
+                statusElement.textContent = '読み込み中...';
+
+                // UTF-8対応のBase64エンコード
+                const encoded = utf8ToBase64(diagram.content);
+                const url = `${KROKI_BASE_URL}/${diagram.type}/svg/${encoded}`;
+
+                console.log(`Loading diagram: ${diagramKey}`);
+                console.log(`URL: ${url}`);
+
+                // 画像読み込み確認
+                const response = await fetch(url);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText.substring(0, 100)}`);
+                }
+
+                imgElement.src = url;
+                imgElement.style.display = 'block';
+                statusElement.className = 'status success';
+                statusElement.textContent = '読み込み完了';
+
+            } catch (error) {
+                console.error(`Failed to load diagram ${diagramKey}:`, error);
+                statusElement.className = 'status error';
+                statusElement.innerHTML = `
+                    ダイアグラムの読み込みに失敗しました。<br>
+                    エラー: ${error.message}<br>
+                    Krokiサービスが起動しているか確認してください。
+                `;
+                imgElement.style.display = 'none';
+            }
+        }
+
+        async function loadAllDiagrams() {
+            const promises = Object.keys(DIAGRAMS).map(key => loadDiagram(key));
+            await Promise.allSettled(promises);
+        }
+
+        async function refreshDiagrams() {
+            // キャッシュをクリアして再読み込み
+            Object.keys(DIAGRAMS).forEach(key => {
+                const img = document.getElementById(key);
+                img.src = '';
+                img.style.display = 'none';
+            });
+            await loadAllDiagrams();
+        }
+
+        // ページ読み込み時にKroki状態を確認
+        window.addEventListener('load', () => {
+            checkKrokiStatus();
+        });
+    </script>
+</body>
+</html></content>
+</xai:function_call">Writing file to c:\Users\rsmz\Develops\Game\adbxEngine\docs\architecture\diagrams.html
