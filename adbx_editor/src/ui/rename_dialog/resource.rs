@@ -13,6 +13,7 @@ pub struct RenameDialogRequest {
 
 /// リネームダイアログの結果
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub enum RenameDialogResult {
     Renamed {
         old_path: PathBuf,

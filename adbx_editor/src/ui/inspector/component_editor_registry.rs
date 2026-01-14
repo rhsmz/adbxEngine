@@ -4,6 +4,7 @@ use std::collections::HashMap;
 
 /// コンポーネントエディタのトレイト
 /// 各Componentタイプに対して、カスタムエディタを実装できます
+#[allow(dead_code)]
 pub trait ComponentEditor: Send + Sync {
     /// コンポーネントのUIを描画
     fn draw_ui(&self, commands: &mut Commands, entity: Entity, parent_ui: Entity);
@@ -18,6 +19,7 @@ pub struct ComponentEditorRegistry {
     editors: HashMap<TypeId, Box<dyn ComponentEditor>>,
 }
 
+#[allow(dead_code)]
 impl ComponentEditorRegistry {
     /// 新しいエディタを登録
     pub fn register<T: Component + 'static>(&mut self, editor: Box<dyn ComponentEditor>) {

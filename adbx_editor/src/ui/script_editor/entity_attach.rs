@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use std::path::PathBuf;
 
 /// スクリプトをEntityにアタッチ
+#[allow(dead_code)]
 pub fn attach_script_to_entity(entity: Entity, script_path: PathBuf, mut commands: Commands) {
     use adbx_runtime::lua::component::LuaScript;
     commands

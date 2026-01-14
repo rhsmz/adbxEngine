@@ -3,6 +3,7 @@ use std::path::PathBuf;
 
 /// スクリプトエディタのリソース
 #[derive(Resource, Default)]
+#[allow(dead_code)]
 pub struct ScriptEditor {
     pub current_script: Option<PathBuf>,
     pub content: String,
@@ -20,6 +21,7 @@ pub struct ScriptEditor {
 
 /// スクリプトエラー情報
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct ScriptError {
     pub line: usize,
     pub message: String,

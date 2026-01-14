@@ -117,6 +117,7 @@ pub fn draw_log_panel(
 }
 
 /// ログパネルの表示/非表示切り替え
+#[allow(dead_code)]
 pub fn toggle_log_panel(mut log_panel: ResMut<LogPanel>) {
     log_panel.is_visible = !log_panel.is_visible;
 }

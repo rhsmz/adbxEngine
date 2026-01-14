@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 /// シーンビューのリソース
 #[derive(Resource)]
+#[allow(dead_code)]
 pub struct SceneView {
     pub camera_entity: Option<Entity>,
     pub gizmo_mode: GizmoMode,

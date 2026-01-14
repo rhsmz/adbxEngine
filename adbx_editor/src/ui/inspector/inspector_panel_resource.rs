@@ -3,6 +3,7 @@ use std::collections::HashMap;
 
 /// インスペクターパネルのリソース
 #[derive(Resource, Default)]
+#[allow(dead_code)]
 pub struct InspectorPanel {
     pub selected_entity: Option<Entity>,
     pub content_entity: Option<Entity>, // 現在のコンテンツエンティティ

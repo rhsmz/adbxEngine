@@ -34,6 +34,7 @@ pub struct FileFilter {
 
 /// ファイルダイアログの結果
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub enum FileDialogResult {
     File(PathBuf),
     Folder(PathBuf),

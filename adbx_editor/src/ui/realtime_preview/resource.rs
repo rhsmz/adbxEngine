@@ -14,6 +14,7 @@ pub struct RealtimePreview {
 
 /// プレビューコンテンツ
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct PreviewContent {
     pub content: String,
     pub rendered_content: Option<String>, // レンダリングされたコンテンツ（例: HTML、画像など）

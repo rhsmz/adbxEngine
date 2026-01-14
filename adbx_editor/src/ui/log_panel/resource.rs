@@ -11,6 +11,7 @@ pub struct LogEntry {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)]
 pub enum LogLevel {
     Info,
     Warn,
@@ -40,6 +41,7 @@ impl LogLevel {
 
 /// ログパネルのリソース
 #[derive(Resource, Default)]
+#[allow(dead_code)]
 pub struct LogPanel {
     pub logs: VecDeque<LogEntry>,
     pub max_logs: usize,
@@ -47,6 +49,7 @@ pub struct LogPanel {
     pub is_visible: bool,
 }
 
+#[allow(dead_code)]
 impl LogPanel {
     pub fn new() -> Self {
         Self {
