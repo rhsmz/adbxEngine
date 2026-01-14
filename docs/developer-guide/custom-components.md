@@ -50,6 +50,42 @@ fn register_my_component_editor(
 - **Mesh3dEditor**: `Mesh3d`コンポーネント用
 - **MeshMaterial3dEditor**: `MeshMaterial3d<StandardMaterial>`コンポーネント用
 
+### デフォルトエディタの登録
+
+デフォルトのコンポーネントエディタは`register_default_component_editors`システムで登録されます：
+
+```rust
+/// デフォルトのエディタを登録
+pub fn register_default_component_editors(
+    mut registry: bevy::prelude::ResMut<
+        crate::ui::inspector::component_editor_registry::ComponentEditorRegistry,
+    >,
+) {
+    use crate::ui::inspector::component_editor_registry::ComponentEditorRegistry;
+    use bevy::prelude::*;
+
+    // Transformエディタを登録
+    registry.register::<Transform>(Box::new(TransformEditor));
+
+    // Cameraエディタを登録
+    registry.register::<bevy::camera::Camera3d>(Box::new(Camera3dEditor));
+    registry.register::<bevy::camera::Camera2d>(Box::new(Camera2dEditor));
+
+    // Spriteエディタを登録
+    registry.register::<Sprite>(Box::new(SpriteEditor));
+
+    // Mesh3dエディタを登録
+    registry.register::<bevy::prelude::Mesh3d>(Box::new(Mesh3dEditor));
+
+    // MeshMaterial3dエディタを登録
+    registry.register::<bevy::prelude::MeshMaterial3d<bevy::pbr::StandardMaterial>>(Box::new(
+        MeshMaterial3dEditor,
+    ));
+
+    bevy::log::info!("Component editors registered: Transform, Camera3d, Camera2d, Sprite, Mesh3d, MeshMaterial3d");
+}
+```
+
 ## 注意事項
 
 - `ComponentEditorRegistry`の`iter`メソッドと`component_name`メソッドは現在未使用です

@@ -36,18 +36,96 @@ Runtime -> Editor: SceneLoaded message
 
 ## ホットリロードフロー
 
+### 標準アセットのホットリロード
+
 ```kroki-plantuml
 @startuml
-participant FileWatcher
-participant HotReload
-participant AssetRegistry
-participant Runtime
+title Standard Asset Hot Reload Flow
 
-FileWatcher -> HotReload: file changed
-HotReload -> AssetRegistry: get loader
-AssetRegistry -> HotReload: loader
-HotReload -> Runtime: reload asset
-Runtime -> Editor: HotReloaded message
+participant BevyAssetWatcher as "Bevy AssetWatcher"
+participant FileSystem
+participant AssetServer as "Bevy AssetServer"
+participant Runtime
+participant Editor
+
+== File Change Detection ==
+BevyAssetWatcher -> FileSystem: Monitor file changes
+FileSystem -> BevyAssetWatcher: File modified event
+
+== Asset Reload ==
+BevyAssetWatcher -> AssetServer: AssetEvent::Modified
+AssetServer -> AssetServer: Reload asset
+AssetServer -> Runtime: Asset available
+
+== Editor Notification ==
+Runtime -> Editor: Asset reloaded notification
+Editor -> Editor: Update UI (AssetBrowser, etc.)
+
+note right: Requires file_watcher feature in Cargo.toml
+@enduml
+```
+
+### カスタムアセットのホットリロード
+
+```kroki-plantuml
+@startuml
+title Custom Asset Hot Reload Flow
+
+participant FileWatcher
+participant CustomAssetRegistry as "CustomAssetRegistry"
+participant AssetLoader as "CustomAssetLoader"
+participant Runtime
+participant Editor
+
+== File Change Detection ==
+FileWatcher -> FileWatcher: Detect file change (*.config, *.cfg, etc.)
+
+== Loader Resolution ==
+FileWatcher -> CustomAssetRegistry: get_loader_by_extension()
+CustomAssetRegistry -> CustomAssetRegistry: Find registered loader
+CustomAssetRegistry -> FileWatcher: Return loader (e.g., ConfigFileLoader)
+
+== Asset Loading ==
+FileWatcher -> AssetLoader: load_asset()
+AssetLoader -> FileSystem: Read file content
+FileSystem -> AssetLoader: File content
+AssetLoader -> AssetLoader: Parse content
+AssetLoader -> FileWatcher: Parsed asset data
+
+== Runtime Update ==
+FileWatcher -> Runtime: Hot reload complete
+Runtime -> Editor: Custom asset reloaded
+
+note right: Supports extensions: config, cfg\nCustom loaders can be registered via CustomAssetRegistry
+@enduml
+```
+
+### アセットタイプ別の処理フロー
+
+```kroki-plantuml
+@startuml
+title Asset Type Processing Flow
+
+start
+:File change detected;
+
+if (Is standard Bevy asset?) then (yes)
+    :Bevy AssetWatcher handles reload;
+    :Standard asset types (Image, Mesh, etc.);
+else (no)
+    if (Custom loader registered?) then (yes)
+        :Use CustomAssetLoader;
+        :Process via registered loader;
+        note right: ConfigFileLoader for .config/.cfg
+    else (no)
+        :No loader available;
+        :Log debug message;
+    endif
+endif
+
+:Notify editor of changes;
+:Update UI components;
+end
 @enduml
 ```
 

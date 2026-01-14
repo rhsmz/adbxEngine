@@ -46,7 +46,66 @@ fn register_my_asset_loader(mut registry: ResMut<CustomAssetRegistry>) {
 
 以下のアセットローダーがデフォルトで登録されています：
 
-- **ConfigFileLoader**: `.config`と`.cfg`拡張子のファイルを読み込みます
+- **ConfigFileLoader**: `.config`と`.cfg`拡張子の設定ファイルを読み込みます
+
+### ConfigFileLoader の実装詳細
+
+```rust
+use adbx_runtime::hot_reload::custom_asset_registry::{CustomAssetLoader, CustomAssetRegistry};
+use std::collections::HashMap;
+use std::path::Path;
+
+pub struct ConfigFileLoader;
+
+impl CustomAssetLoader for ConfigFileLoader {
+    fn load_asset(&self, path: &Path) -> Result<Box<dyn std::any::Any>, String> {
+        // ファイルを読み込む
+        let content = std::fs::read_to_string(path)
+            .map_err(|e| format!("Failed to read config file: {}", e))?;
+
+        // 簡易的な設定ファイルパーサー
+        let config: HashMap<String, String> = content
+            .lines()
+            .filter_map(|line| {
+                let line = line.trim();
+                if line.is_empty() || line.starts_with('#') {
+                    return None;
+                }
+                if let Some(pos) = line.find('=') {
+                    let key = line[..pos].trim().to_string();
+                    let value = line[pos + 1..].trim().to_string();
+                    Some((key, value))
+                } else {
+                    None
+                }
+            })
+            .collect();
+
+        Ok(Box::new(config))
+    }
+
+    fn asset_type_name(&self) -> &str {
+        "ConfigFile"
+    }
+
+    fn supported_extensions(&self) -> Vec<String> {
+        vec!["config".to_string(), "cfg".to_string()]
+    }
+}
+```
+
+### デフォルトローダーの登録
+
+デフォルトのアセットローダーは`register_default_custom_asset_loaders`システムで登録されます：
+
+```rust
+pub fn register_default_custom_asset_loaders(mut registry: ResMut<CustomAssetRegistry>) {
+    // 設定ファイルローダーを登録
+    registry.register_loader(ConfigFileLoader);
+
+    bevy::log::info!("Default custom asset loaders registered");
+}
+```
 
 ## ホットリロード
 

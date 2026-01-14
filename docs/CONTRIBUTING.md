@@ -40,6 +40,7 @@ docs/
    cd docs/kroki-docker
    docker-compose up -d
    ```
+   サービスは`http://localhost:8000`で利用可能になります。
 
 2. **ダイアグラムの記述**:
    Markdownファイル内で以下の形式を使用します：
@@ -52,11 +53,25 @@ docs/
    ````
 
 3. **サポートされている形式**:
-   - PlantUML
-   - BlockDiag
-   - Diagrams.net (draw.io)
+   - PlantUML（クラス図、シーケンス図、ユースケース図など）
+   - BlockDiag（ブロック図、ネットワーク図）
+   - Diagrams.net（フローチャート、ダイアグラム）
+
+4. **ダイアグラムの確認**:
+   テキストをBase64エンコードして直接URLで確認できます：
+   ```bash
+   # PlantUMLの場合
+   echo "@startuml\nclass Example\n@enduml" | base64 -w 0
+   ```
 
 詳細は[Kroki Docker環境のREADME](kroki-docker/README.md)を参照してください。
+
+#### ダイアグラム更新のタイミング
+
+- 新しいアーキテクチャ要素が追加された場合
+- APIの関係性が変更された場合
+- データフローが変更された場合
+- 新しいUIコンポーネントが追加された場合
 
 ### ドキュメントの更新手順
 

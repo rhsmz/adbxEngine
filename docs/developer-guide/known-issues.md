@@ -4,7 +4,7 @@
 
 ## コンパイル時の警告
 
-現在、約170個の警告が生成されています。主な警告は以下の通りです：
+現在、170個の警告が生成されています（`cargo build`実行時）。主な警告は以下の通りです：
 
 ### 未使用の列挙型バリアント
 
@@ -47,19 +47,28 @@
 
 ### BuildGameMenuRequestリソースの初期化
 
-`BuildGameMenuRequest`リソースが`app_initialization.rs`で初期化されていない場合、起動時にパニックが発生します。
+`BuildGameMenuRequest`リソースが`app_initialization.rs`で初期化されていない場合、ビルドメニュー操作時にパニックが発生します。
 
 **エラーメッセージ:**
 ```
-Parameter `ResMut<'_, BuildGameMenuRequest>` failed validation: Resource does not exist
+thread 'main' (7000) panicked at C:\Users\rsmz\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\bevy_ecs-0.17.3\src\error\handler.rs:125:1:
+Encountered an error in system `adbx_editor::systems::menu::build_game_menu::handle_build_game_request`: Parameter `ResMut<'_, BuildGameMenuRequest>` failed validation: Resource does not exist
 ```
 
-**解決方法:**
-`app_initialization.rs`の`initialize_app`関数に以下を追加してください：
+**現在の状況:**
+この問題はコードベースの不具合であり、`app_initialization.rs`でリソースが初期化されていません。ビルド機能を使用する場合は、以下の回避策を検討してください：
 
-```rust
-app.init_resource::<crate::systems::menu::build_game_menu::BuildGameMenuRequest>();
-```
+1. **一時的な回避策:**
+   ```rust
+   // app_initialization.rsのinitialize_app関数に追加
+   app.init_resource::<crate::systems::menu::build_game_menu::BuildGameMenuRequest>();
+   ```
+
+2. **推奨される対処:**
+   ビルド機能を使用せず、直接`cargo build --bin adbx_runtime`でランタイムをビルドしてください。
+
+**修正予定:**
+この問題は今後のバージョンで修正される予定です。
 
 ## アセットディレクトリの警告
 
