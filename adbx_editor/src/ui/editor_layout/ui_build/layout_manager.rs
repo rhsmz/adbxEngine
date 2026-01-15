@@ -2,10 +2,11 @@ use super::super::EditorLayout;
 use super::menu_bar::build_menu_bar;
 use super::panel_container::build_panel_containers;
 use super::toolbar::build_toolbar;
+use crate::ui::scene_view::SceneView;
 use bevy::prelude::*;
 
 /// エディタのメインUIレイアウトを構築
-pub fn build_editor_ui(mut commands: Commands, layout: Res<EditorLayout>) {
+pub fn build_editor_ui(mut commands: Commands, layout: Res<EditorLayout>, scene_view: Res<SceneView>) {
     // メインコンテナ
     commands
         .spawn((
@@ -25,6 +26,6 @@ pub fn build_editor_ui(mut commands: Commands, layout: Res<EditorLayout>) {
             build_toolbar(parent);
 
             // パネルコンテナ
-            build_panel_containers(parent, &layout);
+            build_panel_containers(parent, &layout, &scene_view);
         });
 }

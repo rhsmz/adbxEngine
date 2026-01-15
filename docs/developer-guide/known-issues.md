@@ -4,7 +4,7 @@
 
 ## コンパイル時の警告
 
-現在、170個の警告が生成されています（`cargo build`実行時）。主な警告は以下の通りです：
+現在、170個程度の警告が生成されています（`cargo build`実行時）。主な警告は以下の通りです：
 
 ### 未使用の列挙型バリアント
 
@@ -42,6 +42,18 @@
 - `SceneView::camera_entity`
 - `ScriptEditor::entity`
 - `ScriptError::column`
+
+## 対応状況
+
+| 項目 | ステータス | 対応内容 | 理由 |
+|------|-----------|----------|------|
+| 列挙型バリアント | 保留 | `#[allow(dead_code)]`適用済み | 将来の実装予約 |
+| 未使用メソッド/関数 | 保留 | `#[allow(dead_code)]`適用済み | 将来の実装予約 |
+| 未使用フィールド | 保留 | `#[allow(dead_code)]`適用済み | 将来の実装予約 |
+| BuildGameMenuRequest初期化 | 完了 | `app_initialization.rs`で初期化済み | v0.1.0で修正 |
+| アセットディレクトリ警告 | 完了 | `adbx_editor/assets/`および`adbx_runtime/assets/`作成済み | 監視機能有効化 |
+| TCP未接続警告 | 完了 | 自動再接続システム実装済み | 通信状態管理強化 |
+| Camera order曖昧性警告 | 完了 | SceneViewカメラのorderを-1に設定 | カメラ重複解消 |
 
 ## 起動時の問題
 

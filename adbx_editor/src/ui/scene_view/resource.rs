@@ -5,6 +5,7 @@ use bevy::prelude::*;
 #[allow(dead_code)]
 pub struct SceneView {
     pub camera_entity: Option<Entity>,
+    pub render_target: Option<Handle<Image>>,
     pub gizmo_mode: GizmoMode,
     pub orbit_target: Vec3,
     pub orbit_distance: f32,
@@ -23,6 +24,7 @@ impl Default for SceneView {
     fn default() -> Self {
         Self {
             camera_entity: None,
+            render_target: None,
             gizmo_mode: GizmoMode::None,
             orbit_target: Vec3::ZERO,
             orbit_distance: 10.0,

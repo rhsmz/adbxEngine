@@ -17,7 +17,10 @@ pub fn notify_entity_selection(
                 entity_id: entity.index() as u32,
             },
         ) {
-            bevy::log::warn!("Failed to notify entity selection: {}", e);
+            // 接続状態がDisconnectedでなければログを出力（毎回のWARNを抑制）
+            if communication.connection_state == super::resource::ConnectionState::Disconnected {
+                bevy::log::debug!("Failed to notify entity selection (disconnected): {}", e);
+            }
         }
     }
 }
@@ -35,7 +38,10 @@ pub fn notify_component_update(
             component_data,
         },
     ) {
-        bevy::log::warn!("Failed to notify component update: {}", e);
+        // 接続状態がDisconnectedでなければログを出力（毎回のWARNを抑制）
+        if communication.connection_state == super::resource::ConnectionState::Disconnected {
+            bevy::log::debug!("Failed to notify component update (disconnected): {}", e);
+        }
     }
 }
 

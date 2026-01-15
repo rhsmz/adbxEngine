@@ -15,16 +15,24 @@ pub fn receive_from_runtime(communication: &mut EditorRuntimeCommunication) -> V
 
             // メッセージ長を読み取り（4バイト）
             let mut len_bytes = [0u8; 4];
-            if stream.read_exact(&mut len_bytes).is_ok() {
-                let len = u32::from_le_bytes(len_bytes) as usize;
+            match stream.read_exact(&mut len_bytes) {
+                Ok(_) => {
+                    let len = u32::from_le_bytes(len_bytes) as usize;
 
-                // メッセージ本体を読み取り
-                let mut message_bytes = vec![0u8; len];
-                if stream.read_exact(&mut message_bytes).is_ok() {
-                    if let Ok(message_str) = String::from_utf8(message_bytes) {
-                        if let Ok(message) = serde_json::from_str::<RuntimeMessage>(&message_str) {
-                            messages.push(message);
+                    // メッセージ本体を読み取り
+                    let mut message_bytes = vec![0u8; len];
+                    if stream.read_exact(&mut message_bytes).is_ok() {
+                        if let Ok(message_str) = String::from_utf8(message_bytes) {
+                            if let Ok(message) = serde_json::from_str::<RuntimeMessage>(&message_str) {
+                                messages.push(message);
+                            }
                         }
+                    }
+                }
+                Err(e) => {
+                    // WouldBlockは正常（データなし）、それ以外のエラーはログ出力
+                    if e.kind() != std::io::ErrorKind::WouldBlock {
+                        bevy::log::warn!("TCP receive failed: {}", e);
                     }
                 }
             }

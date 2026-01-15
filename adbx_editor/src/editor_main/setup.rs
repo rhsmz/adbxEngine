@@ -3,7 +3,7 @@ use bevy::prelude::*;
 /// エディタの初期セットアップ
 pub fn setup_editor(mut commands: Commands) {
     // エディタの初期セットアップ
-    commands.spawn((bevy::camera::Camera2d::default(), Transform::default()));
+    // Camera2dは削除（SceneViewのCamera3dとの衝突を避ける）
 
     // テスト用のエンティティを追加（選択とGizmoのテスト用）
     commands.spawn((Name::new("TestEntity1"), Transform::from_xyz(0.0, 0.0, 0.0)));

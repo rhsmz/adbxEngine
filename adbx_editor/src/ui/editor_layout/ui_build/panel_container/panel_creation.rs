@@ -1,5 +1,6 @@
 use super::super::super::EditorLayout;
 use super::panel_header::build_panel_header;
+use crate::ui::scene_view::{draw_scene_view_ui, SceneView};
 use bevy::prelude::*;
 
 /// ヒエラルキーパネルの構築
@@ -34,7 +35,7 @@ pub fn build_hierarchy_panel(parent: &mut ChildSpawnerCommands, layout: &EditorL
 }
 
 /// シーンビューエリアの構築
-pub fn build_scene_view_area(parent: &mut ChildSpawnerCommands) {
+pub fn build_scene_view_area(parent: &mut ChildSpawnerCommands, scene_view: &SceneView) {
     parent
         .spawn((
             Node {
@@ -47,14 +48,7 @@ pub fn build_scene_view_area(parent: &mut ChildSpawnerCommands) {
             BackgroundColor(Color::srgb(0.1, 0.1, 0.1)),
         ))
         .with_children(|scene| {
-            scene.spawn((
-                Text::new("Scene View"),
-                bevy::text::TextFont {
-                    font_size: 16.0,
-                    ..default()
-                },
-                bevy::text::TextColor(Color::WHITE),
-            ));
+            draw_scene_view_ui(scene, scene_view);
         });
 }
 

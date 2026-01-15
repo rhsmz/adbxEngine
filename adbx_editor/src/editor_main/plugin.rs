@@ -8,6 +8,21 @@ pub enum EditorState {
     Playing,
 }
 
+/// ランタイム接続状態をチェックし、必要に応じて再接続
+fn check_runtime_connection(
+    mut communication: ResMut<crate::communication::EditorRuntimeCommunication>,
+) {
+    if communication.is_separated {
+        if let Err(e) = crate::communication::process_management::check_connection_and_reconnect(
+            &mut communication,
+            None, // プロジェクトパスはオプション
+        ) {
+            // 再接続失敗時のログはcheck_connection_and_reconnect内で出力済み
+            bevy::log::trace!("Connection check failed: {}", e);
+        }
+    }
+}
+
 pub struct EditorPlugin;
 
 impl Plugin for EditorPlugin {
@@ -68,6 +83,7 @@ impl Plugin for EditorPlugin {
                     crate::systems::realtime_sync::apply_runtime_entity_updates,
                 ),
             )
+            .add_systems(Update, check_runtime_connection)
             .add_systems(
                 Update,
                 (

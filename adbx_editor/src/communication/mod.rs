@@ -9,7 +9,7 @@ pub mod resource;
 pub use message_receiving::{handle_runtime_messages, receive_from_runtime};
 pub use message_sending::send_to_runtime;
 pub use notifications::{notify_component_update, notify_entity_selection};
-pub use process_management::{start_runtime_process, stop_runtime_process};
+pub use process_management::{start_runtime_process, stop_runtime_process, check_connection_and_reconnect};
 pub use resource::EditorRuntimeCommunication;
 
 // 未使用だが将来使用予定のAPI

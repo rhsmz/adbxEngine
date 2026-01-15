@@ -15,20 +15,16 @@ pub fn send_to_runtime(
 
             // メッセージ長を送信（4バイト）
             let len = message_json.len() as u32;
-            stream
-                .write_all(&len.to_le_bytes())
-                .map_err(|e| format!("Failed to write message length: {}", e))?;
+            let write_result = stream.write_all(&len.to_le_bytes())
+                .and_then(|_| stream.write_all(message_json.as_bytes()))
+                .and_then(|_| stream.flush());
 
-            // メッセージ本体を送信
-            stream
-                .write_all(message_json.as_bytes())
-                .map_err(|e| format!("Failed to write message: {}", e))?;
-
-            stream
-                .flush()
-                .map_err(|e| format!("Failed to flush stream: {}", e))?;
-
-            Ok(())
+            match write_result {
+                Ok(_) => Ok(()),
+                Err(e) => {
+                    Err(format!("TCP send failed: {}", e))
+                }
+            }
         } else {
             Err("TCP stream not connected".to_string())
         }

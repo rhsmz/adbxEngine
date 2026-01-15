@@ -3,10 +3,11 @@ use super::panel_creation::{
     build_asset_browser_panel, build_code_editor_panel, build_hierarchy_panel,
     build_inspector_panel, build_log_panel, build_scene_view_area, build_script_editor_panel,
 };
+use crate::ui::scene_view::SceneView;
 use bevy::prelude::*;
 
 /// パネルコンテナの構築
-pub fn build_panel_containers(parent: &mut ChildSpawnerCommands, layout: &EditorLayout) {
+pub fn build_panel_containers(parent: &mut ChildSpawnerCommands, layout: &EditorLayout, scene_view: &SceneView) {
     // メインコンテンツエリア
     parent
         .spawn((
@@ -23,7 +24,7 @@ pub fn build_panel_containers(parent: &mut ChildSpawnerCommands, layout: &Editor
             build_hierarchy_panel(content, layout);
 
             // 中央エリア（シーンビュー）
-            build_scene_view_area(content);
+            build_scene_view_area(content, scene_view);
 
             // インスペクターパネル（右側）
             build_inspector_panel(content, layout);

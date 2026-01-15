@@ -29,6 +29,34 @@ cargo build
 cargo build --release
 ```
 
+### 開発環境のセットアップ
+
+初回のビルド前に、以下の準備を行ってください：
+
+1. **アセットディレクトリの作成**: エディタとランタイムの監視機能を有効にするため、以下のディレクトリを作成してください。
+   ```bash
+   mkdir adbx_editor/assets
+   mkdir adbx_runtime/assets
+   ```
+
+2. **コード品質チェック**: 定期的にClippyを実行して警告を確認してください。
+   ```bash
+   # Taskfileを使用（推奨）
+   task clippy-all
+
+   # または直接Cargoを使用
+   cargo clippy --workspace -- -D warnings
+   ```
+
+3. **テスト実行**: すべてのテストを実行して機能を検証してください。
+   ```bash
+   # Taskfileを使用（推奨）
+   task test
+
+   # または直接Cargoを使用
+   cargo test
+   ```
+
 **注意**: ビルドには`file_watcher` featureが有効なBevy 0.17.3が必要です。このfeatureはアセットのホットリロード機能を提供します。
 
 ### 実行
@@ -55,12 +83,7 @@ cargo run --bin adbx_editor --release
    ```
    アセット監視機能を有効にする場合は、ディレクトリを作成してください。
 
-2. **リソース初期化**: すべての必要なリソースが自動的に初期化されますが、`BuildGameMenuRequest`リソースの初期化が不足している場合、起動時に以下のエラーが発生します：
-   ```
-   Encountered an error in system `adbx_editor::systems::menu::build_game_menu::handle_build_game_request`:
-   Parameter `ResMut<'_, BuildGameMenuRequest>` failed validation: Resource does not exist
-   ```
-   この問題はコードベースの不具合であり、修正が進行中です。暫定的な対処として、ビルド機能を使用しないでください。
+2. **リソース初期化**: すべての必要なリソースが自動的に初期化されます。`BuildGameMenuRequest`リソースは`app_initialization.rs`で初期化されているため、ビルド機能が正常に動作します。
 
 3. **レイアウトファイル**: 初回起動時はデフォルトレイアウトが使用されます。レイアウトファイルは`~/.adbx_editor/layout.json`に保存されます。
 
