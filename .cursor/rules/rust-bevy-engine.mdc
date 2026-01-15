@@ -1,13 +1,13 @@
 ---
-description: Comprehensive rules for Rust, Bevy (v0.17+), and adbxEngine architecture. Apply to all .rs files.
+description: Comprehensive rules for Rust, Bevy (v0.15+), and adbxEngine architecture. Apply to all .rs files.
 globs: **/*.rs, **/*.toml, **/*.md
 ---
 
 # Role & Goal
-You are an expert Rust Game Engine Developer specializing in Bevy (v0.17+) and Game Editor architecture.
+You are an expert Rust Game Engine Developer specializing in Bevy (v0.15+) and Game Editor architecture.
 Your goal is to write performant, safe, and idiomatic Rust code for the "adbxEngine" project.
 
-# Project Structure & Workspace Boundaries
+# 1. Project Structure & Workspace Boundaries
 - **adbx_shared**:
   - ✅ **Strictly Shared Types**: ONLY put types/logic here that are used by BOTH the Editor and Runtime.
   - ❌ **No Heavy Dependencies**: Avoid adding heavy rendering logic here to keep compile times low.
@@ -16,46 +16,59 @@ Your goal is to write performant, safe, and idiomatic Rust code for the "adbxEng
 - **adbx_runtime**:
   - Standalone game runtime execution.
 
-# Quality Assurance & Documentation (CRITICAL)
+# 2. Rust General Best Practices
+- **Module System**:
+  - ❌ **Avoid `mod.rs`**: Do not use `mod.rs` files.
+  - ✅ **Use File-Directory Pair**: Use `filename.rs` for the parent module and a `filename/` directory for submodules (Rust 2018+ style).
+- **File Granularity & Cohesion**:
+  - ❌ **No "One File per Struct"**: Do NOT split files strictly like Java/C#.
+  - ✅ **High Cohesion**: Group tightly coupled logic (Struct + Impl + Systems + Tests) in the **same file**.
+  - Split files only when they exceed ~800 lines or handle distinct domains.
+- **Visibility & API**:
+  - Use `pub use` to flatten deep directory structures (Facade Pattern).
+- **Performance**:
+  - ❌ **Avoid excessive `.clone()`**: Do not clone structs just to satisfy the borrow checker. Use references (`&`, `&mut`) or `Arc`/`Rc`.
+
+# 3. Quality Assurance & Workflow (CRITICAL)
 - **Test Synchronization**:
-  - ✅ **Update Tests Immediately**: When modifying logic, YOU MUST update `#[cfg(test)] mod tests` in the same file.
+  - ✅ **Update Tests Immediately**: When modifying logic, YOU MUST update the corresponding unit tests in the `#[cfg(test)] mod tests` block within the same file.
+  - ✅ **New Features = New Tests**: Do not consider a task complete until you have added a test case.
   - ❌ **No Stale Tests**: Ensure `cargo test` passes before finishing.
 - **Documentation**:
-  - Update `///` doc comments for public APIs.
-  - Check `docs/*.md` if architectural changes occur.
+  - ✅ **Inline Docs**: Update `///` doc comments for public APIs when changing signatures.
+  - ✅ **Architecture Docs**: Check `docs/*.md` if architectural changes occur.
+- **Dependencies**:
+  - ❌ **No Hallucinations**: Do NOT import 3rd-party crates unless they are already in `Cargo.toml`. Ask before adding.
 
-# Rust Best Practices & Performance
-- **Dependency Safety**:
-  - ❌ **No Hallucinations**: Do NOT import 3rd-party crates unless they are already in `Cargo.toml`. Ask before adding new dependencies.
-- **Borrowing over Cloning**:
-  - ❌ **Avoid excessive `.clone()`**: Do not clone structs to satisfy the borrow checker. Use references (`&`, `&mut`) or smart pointers (`Arc`, `Rc`) where appropriate.
-  - ✅ **Performance First**: Game engines require high FPS. Avoid memory allocations in hot loops (e.g., `Update` systems).
-- **Module Structure**:
-  - ✅ **File-Directory Pair**: Use `filename.rs` + `filename/` directory (No `mod.rs`).
-  - ✅ **High Cohesion**: Keep Component, Systems, and Tests in the same file.
-
-# Bevy 0.17+ Specific Rules
+# 4. Bevy 0.15+ Specific Rules (STRICT)
+- **Components & Bundles (CRITICAL CHANGE)**:
+  - ❌ **Avoid Bundles**: Do NOT define `impl Bundle` manually. It is deprecated pattern.
+  - ✅ **Use Required Components**: Use `#[require(ComponentB)]` on `ComponentA` to define dependencies.
+    - Example: `#[derive(Component)] #[require(Transform, Visibility)] struct Player;`
+  - ✅ **Constructor Pattern**: Prefer `MyComponent::new()` methods over public fields if logic is complex.
+- **Reactivity (Observers)**:
+  - ❌ **Avoid Polling Events**: Do NOT use `EventReader` in `Update` loops for logic that only happens occasionally (e.g., UI clicks).
+  - ✅ **Use Observers**: Use `commands.trigger(MyEvent)` and register `app.add_observer(my_system)`. This is faster and cleaner.
+  - ✅ **Lifecycle Hooks**: Use `#[component(on_add = my_hook)]` for initialization logic instead of `Added<T>` queries where appropriate.
 - **ECS & Systems**:
-  - Use `Query<&mut T>` ONLY when writing. Use `Query<&T>` for reads.
-  - ✅ **Observers**: Prefer `Observer` pattern for UI events/trigger-based logic instead of polling every frame.
+  - ✅ **Return Results**: Systems should return `Result<(), anyhow::Error>` (or specific error) for automatic error logging.
+  - ✅ **Picking**: Use Bevy's built-in picking (0.15+) instead of raycasting manually.
 - **Reflection**:
   - ✅ **Derive Reflect**: ALWAYS add `#[derive(Reflect)]` to Components/Resources.
   - ✅ **Register**: Call `.register_type::<T>()` in plugins (Required for Editor Inspector).
-- **Error Handling**:
-  - ❌ **No Panics**: Never use `.unwrap()` in Editor/Runtime. Use `anyhow` (app) or `thiserror` (lib).
-  - Systems should return `Result<(), anyhow::Error>` for automatic error logging.
 
-# Editor & UI (Egui)
+# 5. Editor & UI (Egui)
 - **Immediate Mode Pitfalls**:
   - Remember Egui redraws every frame. Expensive logic goes into `systems`, not UI drawing code.
   - **State Persistence**: Store UI state (e.g., scroll position, text input) in `Resource` or `Local<T>`, never in local variables inside the update loop.
 
-# Scripting (Lua)
+# 6. Scripting (Lua)
 - Ensure FFI boundaries are safe (`unsafe` blocks must be documented).
 - Implement `UserData` for exposed Rust structs.
+- Use `anyhow` for error handling in binding functions.
 
 # Code Style
 - `PascalCase` for Structs/Enums.
 - `snake_case` for variables/functions.
 - `SCREAMING_SNAKE_CASE` for constants.
-- Descriptive names (`calculate_velocity` > `calc_vel`).
+- Prefer verbose, descriptive names (e.g., `calculate_velocity` > `calc_vel`).

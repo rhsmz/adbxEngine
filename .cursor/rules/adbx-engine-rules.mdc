@@ -1,0 +1,45 @@
+---
+description: Project-specific rules for "adbxEngine" development. Defines architecture, crate responsibilities, and documentation standards.
+globs: **/*.rs, **/*.toml, **/*.md
+---
+
+# Project Context: adbxEngine
+You are developing "adbxEngine", a modern Game Engine & Editor built with Bevy (targeting v0.17+).
+The system consists of an Editor (`adbx_editor`), a Runtime (`adbx_runtime`), and a Shared Library (`adbx_shared`).
+
+# 1. Workspace Architecture & Responsibilities
+Follow this strict separation of concerns to prevent circular dependencies and spaghetti code.
+
+- **`adbx_shared`** (The Core Protocol)
+  - **Role**: Contains data definitions, communication protocols, and asset schemas used by BOTH Editor and Runtime.
+  - ❌ **Constraint**: MUST NOT depend on `adbx_editor` or `adbx_runtime`. Keep logic minimal (mostly data structures).
+  - ✅ **Contents**: `SceneData`, `AssetMetadata`, `EditorMessage`, `RuntimeMessage`, `Error` types.
+
+- **`adbx_runtime`** (The Game Execution)
+  - **Role**: Handles the game loop, Lua script execution (via `mlua`), and asset hot-reloading.
+  - ✅ **Lua Binding**: Provides bridging between Bevy ECS and Lua. All scriptable components must expose a safe Lua API here.
+  - ✅ **Hot Reload**: Monitors file changes (`AssetWatcher`) and reloads scripts/assets dynamically.
+
+- **`adbx_editor`** (The Tooling)
+  - **Role**: The GUI application for editing scenes, managing assets, and coding.
+  - ✅ **UI Framework**: Uses Bevy's UI (or integration like `bevy_egui` / `Feathers UI` as planned).
+  - ✅ **Code Editor**: Integrates `syntect` for syntax highlighting.
+  - ✅ **Communication**: Acts as the "Client" or "Host" that controls the Runtime via the defined protocols.
+
+# 2. Architecture & Communication Patterns
+- **Editor-Runtime Communication**:
+  - Use `mpsc` channels for same-process mode (development).
+  - Use `TCP` for separate-process mode (game standalone).
+  - **Protocol Source**: ALWAYS define message enums in `adbx_shared/src/protocol.rs` before implementing handlers.
+- **Scene Serialization**:
+  - Use `serde` + `rmp-serde` (MessagePack) for binary scene files.
+  - Use `serde_json` for debug/human-readable formats when necessary.
+
+# 3. Documentation Standards (Kroki)
+- **Diagrams**: Do NOT use Mermaid. Use **Kroki** (PlantUML, BlockDiag) for all architecture diagrams in Markdown.
+- **Format**:
+  ```markdown
+  ```kroki-plantuml
+  @startuml
+  ...
+  @enduml
