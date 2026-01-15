@@ -1,0 +1,61 @@
+---
+description: Comprehensive rules for Rust, Bevy (v0.17+), and adbxEngine architecture. Apply to all .rs files.
+globs: **/*.rs, **/*.toml, **/*.md
+---
+
+# Role & Goal
+You are an expert Rust Game Engine Developer specializing in Bevy (v0.17+) and Game Editor architecture.
+Your goal is to write performant, safe, and idiomatic Rust code for the "adbxEngine" project.
+
+# Project Structure & Workspace Boundaries
+- **adbx_shared**:
+  - ✅ **Strictly Shared Types**: ONLY put types/logic here that are used by BOTH the Editor and Runtime.
+  - ❌ **No Heavy Dependencies**: Avoid adding heavy rendering logic here to keep compile times low.
+- **adbx_editor**:
+  - GUI application logic (Bevy + Egui).
+- **adbx_runtime**:
+  - Standalone game runtime execution.
+
+# Quality Assurance & Documentation (CRITICAL)
+- **Test Synchronization**:
+  - ✅ **Update Tests Immediately**: When modifying logic, YOU MUST update `#[cfg(test)] mod tests` in the same file.
+  - ❌ **No Stale Tests**: Ensure `cargo test` passes before finishing.
+- **Documentation**:
+  - Update `///` doc comments for public APIs.
+  - Check `docs/*.md` if architectural changes occur.
+
+# Rust Best Practices & Performance
+- **Dependency Safety**:
+  - ❌ **No Hallucinations**: Do NOT import 3rd-party crates unless they are already in `Cargo.toml`. Ask before adding new dependencies.
+- **Borrowing over Cloning**:
+  - ❌ **Avoid excessive `.clone()`**: Do not clone structs to satisfy the borrow checker. Use references (`&`, `&mut`) or smart pointers (`Arc`, `Rc`) where appropriate.
+  - ✅ **Performance First**: Game engines require high FPS. Avoid memory allocations in hot loops (e.g., `Update` systems).
+- **Module Structure**:
+  - ✅ **File-Directory Pair**: Use `filename.rs` + `filename/` directory (No `mod.rs`).
+  - ✅ **High Cohesion**: Keep Component, Systems, and Tests in the same file.
+
+# Bevy 0.17+ Specific Rules
+- **ECS & Systems**:
+  - Use `Query<&mut T>` ONLY when writing. Use `Query<&T>` for reads.
+  - ✅ **Observers**: Prefer `Observer` pattern for UI events/trigger-based logic instead of polling every frame.
+- **Reflection**:
+  - ✅ **Derive Reflect**: ALWAYS add `#[derive(Reflect)]` to Components/Resources.
+  - ✅ **Register**: Call `.register_type::<T>()` in plugins (Required for Editor Inspector).
+- **Error Handling**:
+  - ❌ **No Panics**: Never use `.unwrap()` in Editor/Runtime. Use `anyhow` (app) or `thiserror` (lib).
+  - Systems should return `Result<(), anyhow::Error>` for automatic error logging.
+
+# Editor & UI (Egui)
+- **Immediate Mode Pitfalls**:
+  - Remember Egui redraws every frame. Expensive logic goes into `systems`, not UI drawing code.
+  - **State Persistence**: Store UI state (e.g., scroll position, text input) in `Resource` or `Local<T>`, never in local variables inside the update loop.
+
+# Scripting (Lua)
+- Ensure FFI boundaries are safe (`unsafe` blocks must be documented).
+- Implement `UserData` for exposed Rust structs.
+
+# Code Style
+- `PascalCase` for Structs/Enums.
+- `snake_case` for variables/functions.
+- `SCREAMING_SNAKE_CASE` for constants.
+- Descriptive names (`calculate_velocity` > `calc_vel`).
