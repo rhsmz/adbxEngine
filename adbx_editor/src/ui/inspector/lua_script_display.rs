@@ -1,3 +1,4 @@
+use adbx_shared::components::{LuaScript, LuaScriptState};
 use bevy::prelude::*;
 
 /// Luaスクリプトコンポーネントの表示
@@ -5,8 +6,8 @@ pub fn draw_lua_script_component(
     commands: &mut Commands,
     entity: Entity,
     parent_ui: Entity,
-    lua_script: &adbx_runtime::lua::component::LuaScript,
-    lua_script_state: Option<&adbx_runtime::lua::component::LuaScriptState>,
+    lua_script: &LuaScript,
+    lua_script_state: Option<&LuaScriptState>,
 ) {
     commands.entity(parent_ui).with_children(|parent| {
         parent
@@ -42,18 +43,18 @@ pub fn draw_lua_script_component(
                 // スクリプト状態表示
                 if let Some(state) = lua_script_state {
                     let state_text = match state {
-                        adbx_runtime::lua::component::LuaScriptState::Loaded => "Loaded",
-                        adbx_runtime::lua::component::LuaScriptState::Running => "Running",
-                        adbx_runtime::lua::component::LuaScriptState::Error => "Error",
+                        LuaScriptState::Loaded => "Loaded",
+                        LuaScriptState::Running => "Running",
+                        LuaScriptState::Error => "Error",
                     };
                     let state_color = match state {
-                        adbx_runtime::lua::component::LuaScriptState::Loaded => {
+                        LuaScriptState::Loaded => {
                             Color::srgb(0.0, 1.0, 0.0)
                         }
-                        adbx_runtime::lua::component::LuaScriptState::Running => {
+                        LuaScriptState::Running => {
                             Color::srgb(0.0, 0.5, 1.0)
                         }
-                        adbx_runtime::lua::component::LuaScriptState::Error => {
+                        LuaScriptState::Error => {
                             Color::srgb(1.0, 0.0, 0.0)
                         }
                     };

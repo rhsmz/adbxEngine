@@ -1,5 +1,6 @@
 use super::super::component_editor_registry::ComponentEditorRegistry;
 use super::super::lua_script_display::draw_lua_script_component;
+use adbx_shared::components::{LuaScript, LuaScriptState};
 use bevy::prelude::*;
 
 /// 個別コンポーネントエディタの描画（エディタレジストリを使用）
@@ -13,8 +14,8 @@ pub fn draw_component_editors(
     sprite_query: &Query<&Sprite>,
     mesh_3d_query: &Query<&bevy::prelude::Mesh3d>,
     mesh_material_3d_query: &Query<&bevy::prelude::MeshMaterial3d<bevy::pbr::StandardMaterial>>,
-    lua_script_query: &Query<&adbx_runtime::lua::component::LuaScript>,
-    lua_script_state_query: &Query<&adbx_runtime::lua::component::LuaScriptState>,
+    lua_script_query: &Query<&LuaScript>,
+    lua_script_state_query: &Query<&LuaScriptState>,
     transform_query: &Query<&Transform, Changed<Transform>>,
 ) {
     // Camera3dコンポーネントの表示

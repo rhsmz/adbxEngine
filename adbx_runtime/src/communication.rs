@@ -34,7 +34,13 @@ pub fn receive_from_editor(communication: &mut RuntimeEditorCommunication) -> Ve
     if communication.is_separated {
         // 分離実行モード：TCP通信を使用
         if let Some(ref stream) = communication.tcp_stream {
-            let mut stream = stream.lock().unwrap();
+            let mut stream = match stream.lock() {
+                Ok(stream) => stream,
+                Err(e) => {
+                    bevy::log::error!("Failed to lock TCP stream: {}", e);
+                    return messages;
+                }
+            };
             stream.set_nonblocking(true).ok();
 
             // メッセージ長を読み取り（4バイト）
@@ -56,7 +62,13 @@ pub fn receive_from_editor(communication: &mut RuntimeEditorCommunication) -> Ve
     } else {
         // 同一プロセスモード：mpscチャネルを使用
         if let Some(ref rx) = communication.editor_rx {
-            let rx = rx.lock().unwrap();
+            let rx = match rx.lock() {
+                Ok(rx) => rx,
+                Err(e) => {
+                    bevy::log::error!("Failed to lock receiver: {}", e);
+                    return messages;
+                }
+            };
             while let Ok(msg) = rx.try_recv() {
                 messages.push(msg);
             }
@@ -70,42 +82,42 @@ pub fn receive_from_editor(communication: &mut RuntimeEditorCommunication) -> Ve
 pub fn send_to_editor(
     communication: &RuntimeEditorCommunication,
     message: RuntimeMessage,
-) -> Result<(), String> {
+) -> Result<(), anyhow::Error> {
     if communication.is_separated {
         // 分離実行モード：TCP通信を使用
         if let Some(ref stream) = communication.tcp_stream {
-            let mut stream = stream.lock().unwrap();
+            let mut stream = stream.lock().map_err(|e| anyhow::anyhow!("Failed to lock TCP stream: {}", e))?;
             let message_json = serde_json::to_string(&message)
-                .map_err(|e| format!("Failed to serialize message: {}", e))?;
+                .map_err(|e| anyhow::anyhow!("Failed to serialize message: {}", e))?;
 
             // メッセージ長を送信（4バイト）
             let len = message_json.len() as u32;
             stream
                 .write_all(&len.to_le_bytes())
-                .map_err(|e| format!("Failed to write message length: {}", e))?;
+                .map_err(|e| anyhow::anyhow!("Failed to write message length: {}", e))?;
 
             // メッセージ本体を送信
             stream
                 .write_all(message_json.as_bytes())
-                .map_err(|e| format!("Failed to write message: {}", e))?;
+                .map_err(|e| anyhow::anyhow!("Failed to write message: {}", e))?;
 
             stream
                 .flush()
-                .map_err(|e| format!("Failed to flush stream: {}", e))?;
+                .map_err(|e| anyhow::anyhow!("Failed to flush stream: {}", e))?;
 
             Ok(())
         } else {
-            Err("TCP stream not connected".to_string())
+            Err(anyhow::anyhow!("TCP stream not connected"))
         }
     } else {
         // 同一プロセスモード：mpscチャネルを使用
         if let Some(ref tx) = communication.runtime_tx {
             let tx = tx.lock().unwrap();
             tx.send(message)
-                .map_err(|e| format!("Failed to send message: {}", e))?;
+                .map_err(|e| anyhow::anyhow!("Failed to send message: {}", e))?;
             Ok(())
         } else {
-            Err("Communication channel not initialized".to_string())
+            Err(anyhow::anyhow!("Communication channel not initialized"))
         }
     }
 }
@@ -125,7 +137,13 @@ pub fn handle_editor_messages(
                 let temp_entity = commands.spawn_empty().id();
 
                 // Lua VMでスクリプトを実行
-                let lua = lua_vm.lua.lock().unwrap();
+                let lua = match lua_vm.lua.lock() {
+                    Ok(lua) => lua,
+                    Err(e) => {
+                        bevy::log::error!("Failed to lock Lua VM: {}", e);
+                        return;
+                    }
+                };
                 let result = lua.scope(|_scope| {
                     let globals = lua.globals();
                     globals.set("entity_id", temp_entity.index())?;

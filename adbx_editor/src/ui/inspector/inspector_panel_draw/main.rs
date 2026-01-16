@@ -5,6 +5,7 @@ use super::super::inspector_panel_resource::{
 use super::component_editor::draw_component_editors;
 use super::header::{draw_entity_header, draw_no_selection};
 use super::transform_editor::draw_transform_editor;
+use adbx_shared::components::{LuaScript, LuaScriptState};
 use bevy::prelude::*;
 
 /// インスペクターパネルのUI描画（編集可能版）
@@ -19,8 +20,8 @@ pub fn draw_inspector_panel_ui(
     sprite_query: Query<&Sprite>,
     mesh_3d_query: Query<&bevy::prelude::Mesh3d>,
     mesh_material_3d_query: Query<&bevy::prelude::MeshMaterial3d<bevy::pbr::StandardMaterial>>,
-    lua_script_query: Query<&adbx_runtime::lua::component::LuaScript>,
-    lua_script_state_query: Query<&adbx_runtime::lua::component::LuaScriptState>,
+    lua_script_query: Query<&LuaScript>,
+    lua_script_state_query: Query<&LuaScriptState>,
     name_query: Query<&Name>,
     inspector_panel_query: Query<Entity, (With<Name>, With<Node>)>,
 ) {

@@ -8,14 +8,15 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// ドッキング可能なパネルの状態
-#[derive(Resource, Default)]
+#[derive(Resource, Default, Reflect)]
+#[reflect(Resource)]
 pub struct DockingSystem {
     pub panels: HashMap<String, PanelState>,
     pub drag_state: Option<DragState>,
 }
 
 /// パネルの状態
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Reflect)]
 pub struct PanelState {
     pub name: String,
     pub position: PanelPosition,
@@ -26,7 +27,7 @@ pub struct PanelState {
 }
 
 /// パネルの位置
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Reflect)]
 pub enum PanelPosition {
     Left,
     Right,
@@ -37,7 +38,7 @@ pub enum PanelPosition {
 }
 
 /// ドラッグ状態
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Reflect)]
 pub struct DragState {
     pub panel_name: String,
     pub start_position: Vec2,
@@ -47,7 +48,7 @@ pub struct DragState {
 }
 
 /// リサイズエッジ
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Reflect)]
 pub enum ResizeEdge {
     Left,
     Right,
@@ -133,7 +134,8 @@ pub fn initialize_docking_system(mut docking: ResMut<DockingSystem>) {
 }
 
 /// パネルヘッダーのマーカーコンポーネント
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct PanelHeader {
     pub panel_name: String,
 }

@@ -1,24 +1,20 @@
 use crate::project::{load_scene, save_scene_with_format, Project, SerializationFormat};
 use crate::systems::operation_recording::record_scene_saved;
 use crate::systems::scene_serialization::{deserialize_scene, serialize_scene};
+use adbx_shared::components::SceneEntity;
 use bevy::prelude::*;
 use std::collections::HashMap;
 
-/// シーンに属するエンティティをマークするコンポーネント
-#[derive(Component, Debug)]
-#[allow(dead_code)]
-pub struct SceneEntity {
-    pub scene_name: String,
-}
-
 /// シーンを読み込むリクエスト（リソースベース）
-#[derive(Resource, Default)]
+#[derive(Resource, Default, Reflect)]
+#[reflect(Resource)]
 pub struct LoadSceneRequest {
     pub scene_name: Option<String>,
 }
 
 /// シーン管理システムのリソース
-#[derive(Resource)]
+#[derive(Resource, Reflect)]
+#[reflect(Resource)]
 pub struct SceneManager {
     pub entity_id_map: HashMap<u32, Entity>,
     pub current_scene_name: String,

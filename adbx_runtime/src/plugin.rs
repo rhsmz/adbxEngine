@@ -20,6 +20,10 @@ impl Plugin for AdbxRuntimePlugin {
         let component_bridge = Arc::new(Mutex::new(ComponentBridge::default()));
 
         app
+            // リフレクション登録
+            .register_type::<adbx_shared::components::SceneEntity>()
+            .register_type::<adbx_shared::components::LuaScript>()
+            .register_type::<adbx_shared::components::LuaScriptState>()
             // CustomEventをMessageとして登録
             .add_message::<CustomEvent>()
             // Commandsブリッジ

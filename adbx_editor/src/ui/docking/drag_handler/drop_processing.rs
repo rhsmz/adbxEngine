@@ -31,7 +31,8 @@ pub fn detect_drop_zone(position: Vec2, window_size: Vec2) -> Option<PanelPositi
 }
 
 /// ドロップゾーンの視覚的表示用コンポーネント
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 #[allow(dead_code)]
 pub struct DropZoneIndicator {
     pub position: PanelPosition,

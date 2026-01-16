@@ -10,10 +10,8 @@ use bevy::prelude::*;
 use mlua::{Lua, Result as LuaResult};
 use std::sync::{Arc, Mutex};
 
-/// Lua VMリソース（スレッドセーフ）
-#[derive(Resource, Clone)]
+/// Lua VMリソース�E�スレチE��セーフ！E#[derive(Resource, Clone)]
 pub struct LuaVm {
-    #[allow(dead_code)]
     pub lua: Arc<Mutex<Lua>>,
 }
 
@@ -41,7 +39,7 @@ impl LuaVm {
     }
 }
 
-/// Luaスクリプトを読み込んで実行するシステム
+/// Luaスクリプトを読み込んで実行するシスチE��
 pub fn load_lua_scripts(
     mut commands: Commands,
     query: Query<Entity, Added<LuaScript>>,
@@ -50,7 +48,7 @@ pub fn load_lua_scripts(
 ) {
     for entity in query.iter() {
         if let Ok(script) = script_query.get(entity) {
-            // LuaScriptStateコンポーネントを追加
+            // LuaScriptStateコンポ�Eネントを追加
             let lua = lua_vm.lua.lock().unwrap();
             let state = match load_and_execute_script(&lua, entity, &script.script_content) {
                 Ok(_) => LuaScriptState::Loaded,
@@ -65,10 +63,7 @@ pub fn load_lua_scripts(
     }
 }
 
-/// Luaスクリプトを実行するシステム（最適化版）
-/// スクリプトはキャッシュされ、初回のみコンパイルされます
-/// 実行頻度の制限と不要な実行のスキップを実装
-pub fn execute_lua_scripts(
+/// Luaスクリプトを実行するシスチE���E�最適化版�E�E/// スクリプトはキャチE��ュされ、�E回�EみコンパイルされまぁE/// 実行頻度の制限と不要な実行�EスキチE�Eを実裁Epub fn execute_lua_scripts(
     mut query: Query<(Entity, &LuaScript, &mut LuaScriptState)>,
     lua_vm: Res<LuaVm>,
     mut script_cache: ResMut<ScriptCache>,
@@ -82,14 +77,14 @@ pub fn execute_lua_scripts(
             continue;
         }
 
-        // 実行をスキップするかどうかをチェック
+        // 実行をスキチE�EするかどぁE��をチェチE��
         if let Some(&should_skip) = script_cache.skip_execution.get(&entity) {
             if should_skip {
-                continue; // update関数がない場合は実行をスキップ
+                continue; // update関数がなぁE��合�E実行をスキチE�E
             }
         }
 
-        // 実行頻度の制限をチェック
+        // 実行頻度の制限をチェチE��
         if let Some(&last_execution) = script_cache.execution_timestamps.get(&entity) {
             let config = script_cache
                 .execution_configs
@@ -99,19 +94,18 @@ pub fn execute_lua_scripts(
             let min_interval = 1.0 / config.max_executions_per_second;
 
             if (current_time - last_execution) < min_interval {
-                continue; // 実行頻度制限によりスキップ
+                continue; // 実行頻度制限によりスキチE�E
             }
         }
 
         *state = LuaScriptState::Running;
 
-        // スクリプトをキャッシュから取得またはコンパイル
+        // スクリプトをキャチE��ュから取得また�Eコンパイル
         let result = script_cache.get_or_compile(entity, &script.script_content, &lua);
 
         match result {
             Ok(Some(execution_state)) => {
-                // update関数があれば呼び出す
-                let update_result = match execution_state {
+                // update関数があれ�E呼び出ぁE                let update_result = match execution_state {
                     crate::lua::script_cache::ScriptExecutionState::HasUpdate => {
                         // 実行時刻を更新
                         script_cache
@@ -123,8 +117,7 @@ pub fn execute_lua_scripts(
                             globals.set("entity_id", entity.index())?;
                             globals.set("delta_time", time.delta_secs())?;
 
-                            // update関数を取得して呼び出す
-                            if let Ok(update_fn) = globals.get::<_, mlua::Function>("update") {
+                            // update関数を取得して呼び出ぁE                            if let Ok(update_fn) = globals.get::<_, mlua::Function>("update") {
                                 update_fn.call::<_, ()>(())?;
                             }
 
@@ -132,7 +125,7 @@ pub fn execute_lua_scripts(
                         })
                     }
                     crate::lua::script_cache::ScriptExecutionState::NoUpdate => {
-                        // update関数がない場合は実行をスキップするようにマーク
+                        // update関数がなぁE��合�E実行をスキチE�Eするようにマ�Eク
                         script_cache.skip_execution.insert(entity, true);
                         Ok(())
                     }
@@ -149,8 +142,7 @@ pub fn execute_lua_scripts(
                 }
             }
             Ok(None) => {
-                // スクリプトが空またはコンパイルできない
-                *state = LuaScriptState::Error;
+                // スクリプトが空また�EコンパイルできなぁE                *state = LuaScriptState::Error;
             }
             Err(e) => {
                 bevy::log::error!(

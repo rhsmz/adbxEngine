@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::math::{Vec3, Quat};
 use std::collections::HashMap;
 
 /// TransformコンポーネントへのアクセスをLuaスクリプトに提供するブリッジ

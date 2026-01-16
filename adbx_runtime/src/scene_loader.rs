@@ -1,15 +1,11 @@
 use crate::game_config::GameConfig;
 use adbx_shared::scene::SceneData;
+use adbx_shared::components::SceneEntity;
 use bevy::prelude::*;
+use rmp_serde;
 use serde_json;
 use std::collections::HashMap;
 use std::path::PathBuf;
-
-/// シーンに属するエンティティをマークするコンポーネント
-#[derive(Component, Debug)]
-pub struct SceneEntity {
-    pub scene_name: String,
-}
 
 /// シーンファイルを読み込む
 pub fn load_scene_file(scene_path: &PathBuf) -> Result<SceneData, String> {
@@ -31,10 +27,11 @@ pub fn load_scene_file(scene_path: &PathBuf) -> Result<SceneData, String> {
 
         // MessagePackを試す（.msgpackと.mpの両方をサポート）
         if ext == "msgpack" || ext == "mp" {
-            // MessagePackサポートは後で実装（rmp-serdeが必要）
-            return Err(format!(
-                "MessagePack format is not yet supported in runtime"
-            ));
+            let scene_bytes = std::fs::read(scene_path)
+                .map_err(|e| format!("Failed to read scene file: {}", e))?;
+            let scene: SceneData = rmp_serde::from_slice(&scene_bytes)
+                .map_err(|e| format!("Failed to parse scene (msgpack): {}", e))?;
+            return Ok(scene);
         }
     }
 
@@ -42,6 +39,52 @@ pub fn load_scene_file(scene_path: &PathBuf) -> Result<SceneData, String> {
         "Unsupported scene file format: {}",
         scene_path.display()
     ))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    fn temp_scene_path(extension: &str) -> PathBuf {
+        let nanos = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_nanos();
+        std::env::temp_dir().join(format!("adbx_scene_{}_{}.{}", std::process::id(), nanos, extension))
+    }
+
+    #[test]
+    fn test_load_scene_file_json() {
+        let scene = SceneData {
+            name: "JsonScene".to_string(),
+            entities: vec![],
+        };
+        let path = temp_scene_path("json");
+        let content = serde_json::to_string(&scene).expect("json serialize");
+        std::fs::write(&path, content).expect("write json scene");
+
+        let loaded = load_scene_file(&path).expect("load json scene");
+        assert_eq!(loaded.name, "JsonScene");
+
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn test_load_scene_file_msgpack() {
+        let scene = SceneData {
+            name: "MsgpackScene".to_string(),
+            entities: vec![],
+        };
+        let path = temp_scene_path("msgpack");
+        let content = rmp_serde::to_vec(&scene).expect("msgpack serialize");
+        std::fs::write(&path, content).expect("write msgpack scene");
+
+        let loaded = load_scene_file(&path).expect("load msgpack scene");
+        assert_eq!(loaded.name, "MsgpackScene");
+
+        let _ = std::fs::remove_file(&path);
+    }
 }
 
 /// SceneDataからBevy ECSにシーンを読み込む
@@ -77,7 +120,7 @@ pub fn deserialize_scene(
                         rotation.get("w").and_then(|v| v.as_f64()),
                     ) {
                         transform.rotation =
-                            Quat::from_xyzw(x as f32, y as f32, z as f32, w as f32);
+                            bevy::math::Quat::from_xyzw(x as f32, y as f32, z as f32, w as f32);
                     }
                 }
 

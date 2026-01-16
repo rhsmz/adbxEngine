@@ -28,6 +28,20 @@ pub struct EditorPlugin;
 impl Plugin for EditorPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<EditorState>()
+            // リフレクション登録
+            .register_type::<crate::ui::docking::PanelHeader>()
+            .register_type::<crate::ui::docking::drag_handler::drop_processing::DropZoneIndicator>()
+            .register_type::<crate::ui::docking::resource::PanelState>()
+            .register_type::<crate::ui::docking::resource::DragState>()
+            .register_type::<crate::ui::docking::resource::ResizeEdge>()
+            .register_type::<crate::ui::docking::resource::PanelPosition>()
+            .register_type::<crate::ui::inspector::TransformInputField>()
+            .register_type::<crate::ui::inspector::InspectorInputState>()
+            .register_type::<crate::ui::inspector::InspectorContent>()
+            .register_type::<crate::ui::hierarchy::HierarchyItem>()
+            .register_type::<adbx_shared::components::SceneEntity>()
+            .register_type::<adbx_shared::components::LuaScript>()
+            .register_type::<adbx_shared::components::LuaScriptState>()
             .add_systems(
                 Startup,
                 (

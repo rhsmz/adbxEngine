@@ -59,6 +59,11 @@ package "adbx_shared" {
         + SceneData
         + EntityData
     }
+    RECTANGLE Components {
+        + SceneEntity
+        + LuaScript
+        + LuaScriptState
+    }
     RECTANGLE Asset {
         + AssetType
         + AssetMetadata

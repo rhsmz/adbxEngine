@@ -30,7 +30,10 @@ Editor -> SceneManager: load_scene()
 SceneManager -> FileSystem: read file
 FileSystem -> SceneManager: SceneData
 SceneManager -> Runtime: LoadScene message
+Runtime -> Runtime: Create SceneEntity components
 Runtime -> Editor: SceneLoaded message
+
+note right: SceneEntity, LuaScript, LuaScriptState\ncomponents are shared via adbx_shared crate
 @enduml
 ```
 

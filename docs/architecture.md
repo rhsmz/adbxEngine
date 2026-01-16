@@ -1,215 +1,116 @@
-# アーキテクチャ概要
+# 設計書: adbxEngine
 
-Adbx Engine Editorのアーキテクチャと主要コンポーネントの関係を説明します。
+この設計書は、既存の実装とドキュメントを基に、adbxEngineの全体設計を再整理したものです。
+設計の意図、責務分担、通信・データフロー、非機能要件を明確化し、今後の実装・拡張の指針を示します。
 
-## アーキテクチャの概要
+## 1. 目的とスコープ
 
-Adbx Engine Editorは、以下の主要コンポーネントから構成されています：
+- **目的**: エディタとランタイムを疎結合に保ちつつ、開発・実行・ホットリロードを一貫して支える構造を定義する。
+- **対象**: `adbx_editor`, `adbx_runtime`, `adbx_shared` の3クレートと、それらの相互通信・データ形式。
+- **非対象**: UIの詳細レイアウト、個別のシステム実装の内部アルゴリズム。
 
-- **adbx_editor**: エディタアプリケーション本体（ECSベース）
-- **adbx_runtime**: ゲームランタイム（Lua統合、ホットリロード）
-- **adbx_shared**: 共有ライブラリ（通信プロトコル、シーン/アセット定義）
+## 2. 全体像
 
-エディタはBevy ECSを基盤としており、リアルタイム同期とホットリロード機能を備えています。
-
-## 主要コンポーネント
-
-### ECSシステム構造
-
-- **UI Components**: インスペクタ、階層ビュー、アセットブラウザ、コードエディタなどのUI要素
-- **Core Systems**: 選択、シーン管理、ギズモ操作、メニューステムなどのコア機能
-- **Communication**: エディタ-ランタイム間のリアルタイム同期
-- **Hot Reload**: アセットとスクリプトのホットリロード機能
-
-### リソースと依存関係
-
-主要なECSリソース：
-- `EditorApp`: エディタのメイン状態
-- `InspectorPanel`: コンポーネント編集パネル
-- `SceneManager`: シーン管理
-- `CustomAssetRegistry`: カスタムアセットローダー管理
-- `BuildGameRequest`: ゲームビルド要求
-
-## 図一覧
-
-### [システム概要](system-overview.md)
-- 全体構成図
-- ECSシステムの詳細フロー
-- リソースとシステムの依存関係
-
-### [データフロー図](data-flow.md)
-- エディタ-ランタイム通信フロー
-- シーン読み込み/保存フロー
-- ホットリロードフロー（標準/カスタムアセット）
-- アプリケーション初期化フロー
-
-### [コンポーネント図](component-diagram.md)
-- UIコンポーネント階層
-- システム依存関係
-- UIパネルの相互作用フロー
-
-### [パフォーマンス最適化](performance.md)
-- パフォーマンス監視システム
-- メモリ使用量の最適化
-
-## Kroki図の生成手順
-
-ドキュメント内のダイアグラムは[Kroki](https://kroki.io/)を使用して生成されています。
-
-### Dockerを使用したローカル生成
-
-#### 1. Krokiサービスの起動
-
-```bash
-cd docs/kroki-docker
-docker-compose up -d
-```
-
-サービスが起動すると `http://localhost:8000` でアクセス可能になります。
-
-#### 2. サービス状態の確認
-
-```bash
-curl -s http://localhost:8000/health | jq
-```
-
-#### 3. ダイアグラムの直接プレビュー
-
-ブラウザで以下のURLにアクセスしてダイアグラムを直接確認できます：
-
-- **PlantUML**: `http://localhost:8000/plantuml/svg/{encoded-text}`
-- **BlockDiag**: `http://localhost:8000/blockdiag/svg/{encoded-text}`
-- **Diagrams.net**: `http://localhost:8000/diagramsnet/svg/{encoded-text}`
-
-### テキストからのエンコード方法
-
-Krokiでは、ダイアグラムテキストをBase64エンコードしてURLに含めます。
-
-#### Linux/macOSの場合
-
-```bash
-# PlantUMLの場合
-echo "@startuml
-class Example {
-    + method()
-}
-@enduml" | base64 -w 0
-
-# または
-plantuml_text="@startuml
-class Example {
-    + method()
-}
-@enduml"
-echo "$plantuml_text" | base64 -w 0
-```
-
-#### Windows (PowerShell)の場合
-
-```powershell
-# PlantUMLの場合
-$plantuml = "@startuml
-class Example {
-    + method()
-}
-@enduml"
-$encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($plantuml))
-Write-Host $encoded
-```
-
-#### 実際のURL例
-
-エンコードされたテキストをURLに含めてアクセス：
-
-```
-http://localhost:8000/plantuml/svg/UGBzYXJ1bWwKIGNsYXNzIEV4YW1wbGUgewogICAgICBtZXRob2QoKQogIH0KIEBlbmR1bWw
-```
-
-### Markdownファイルでの確認方法
-
-#### GitHub/GitLabでの自動表示
-
-ドキュメント内の `kroki-plantuml` 形式のコードブロックは、GitHubやGitLabなどのプラットフォームで自動的にダイアグラムに変換されます：
-
-```markdown
 ```kroki-plantuml
 @startuml
-class Example {
-    + method()
+!define RECTANGLE class
+
+package "adbx_editor" {
+  RECTANGLE EditorApp
+  RECTANGLE UISystems
+  RECTANGLE CoreSystems
+  RECTANGLE EditorComm
 }
+
+package "adbx_runtime" {
+  RECTANGLE RuntimeApp
+  RECTANGLE LuaVM
+  RECTANGLE HotReload
+  RECTANGLE RuntimeComm
+}
+
+package "adbx_shared" {
+  RECTANGLE Protocol
+  RECTANGLE SceneData
+  RECTANGLE AssetSchema
+  RECTANGLE ErrorTypes
+}
+
+EditorApp --> UISystems
+EditorApp --> CoreSystems
+EditorComm --> Protocol
+RuntimeComm --> Protocol
+
+EditorComm <--> RuntimeComm : TCP / mpsc
+
+EditorApp --> SceneData
+RuntimeApp --> SceneData
+EditorApp --> AssetSchema
+RuntimeApp --> AssetSchema
+EditorApp --> ErrorTypes
+RuntimeApp --> ErrorTypes
+
+RuntimeApp --> LuaVM
+RuntimeApp --> HotReload
 @enduml
 ```
-```
 
-#### VS Codeでのローカル確認
+## 3. クレート責務
 
-1. **Markdown Preview Enhanced**拡張機能をインストール
-2. 設定でKrokiサポートを有効化：
-   ```json
-   {
-     "markdown-preview-enhanced.enableKroki": true,
-     "markdown-preview-enhanced.krokiServer": "http://localhost:8000"
-   }
-   ```
+### 3.1 `adbx_shared` (コアプロトコル)
 
-#### Cursor IDEでの確認
+- **役割**: Editor/Runtime共通のデータ定義と通信プロトコルの唯一の正。
+- **含むもの**: `SceneData`, `AssetMetadata`, `EditorMessage`, `RuntimeMessage`, `Error` 系列。
+- **制約**: `adbx_editor` / `adbx_runtime` への依存は禁止。
 
-CursorのMarkdownプレビュー機能でKrokiダイアグラムが自動的に表示されます。
+### 3.2 `adbx_runtime` (ゲーム実行)
 
-#### ブラウザでの確認
+- **役割**: ゲームループ、Lua実行、アセット/スクリプトのホットリロード。
+- **Lua**: ECSとの橋渡しを提供し、安全なLua APIを維持。
+- **Hot Reload**: `AssetWatcher` によりファイル変更を監視し、再読み込みを通知。
 
-ローカル環境でダイアグラムをブラウザで確認するには：
+### 3.3 `adbx_editor` (ツール/エディタ)
 
-1. **HTMLファイルを開く**:
-   ```bash
-   # ブラウザで開く
-   start docs/architecture/diagrams.html
-   ```
+- **役割**: シーン編集、アセット管理、コード編集のGUIを提供。
+- **UI**: Bevy UI / Eguiの即時モードに合わせて状態をResourceとして保持。
+- **通信**: Runtimeを制御するクライアントとして振る舞う。
 
-2. **Krokiサービスが起動していることを確認**
+## 4. 通信設計
 
-3. **「すべてのダイアグラムを読み込み」ボタンをクリック**
+- **プロトコルの定義場所**: `adbx_shared/src/protocol.rs` に集約。
+- **同一プロセス**: `mpsc` でメッセージを双方向送受信。
+- **分離プロセス**: TCPで同期し、エディタ/ランタイムの責務境界を維持。
 
-`diagrams.html`ファイルには以下の機能があります：
-- 全アーキテクチャダイアグラムの統合表示
-- Krokiサービスの状態確認
-- ダイアグラムのリアルタイム読み込み
-- エラーハンドリングとステータス表示
+## 5. データ設計
 
-### トラブルシューティング
+### 5.1 シーン
 
-#### ダイアグラムが表示されない場合
+- **永続化**: `serde` + `rmp-serde` (MessagePack) を標準形式。
+- **デバッグ用途**: 必要に応じて `serde_json` を利用。
 
-1. **Krokiサービスが起動しているか確認**:
-   ```bash
-   curl http://localhost:8000/health
-   ```
+### 5.2 アセット
 
-2. **ダイアグラム構文の確認**:
-   - PlantUML: `@startuml` と `@enduml` で囲まれているか
-   - 構文エラーがないか
+- **メタデータ**: `AssetMetadata` を基準に共有。
+- **カスタムローダー**: `CustomAssetRegistry` によって拡張可能。
 
-3. **エンコードの確認**:
-   ```bash
-   # エンコード結果が正しいかテスト
-   echo "SGVsbG8gV29ybGQ=" | base64 -d  # "Hello World" が出力されるはず
-   ```
+## 6. 実行フロー (要点)
 
-#### よくあるエラー
+- **起動**: `EditorApp` がリソース初期化 -> UI構築 -> Runtime接続。
+- **編集**: UI入力 -> CoreSystems -> SceneData更新 -> Runtime同期。
+- **ホットリロード**: Runtime監視 -> 変更検知 -> Editorへ通知 -> UI反映。
 
-- **Invalid XML character**: PlantUML構文に特殊文字が含まれている
-- **Syntax error**: ダイアグラム構文が不正
-- **Connection refused**: Krokiサービスが起動していない
+詳細なフローは `docs/architecture/data-flow.md` を参照。
 
-### 注意事項
+## 7. 非機能要件
 
-- ダイアグラムは`kroki-plantuml`, `kroki-blockdiag`などの形式でマークダウンに記述
-- ローカル環境ではDockerコンテナを使用
-- CI/CD環境ではKrokiサービスを別途用意
-- 大規模なダイアグラムはブラウザで直接確認することを推奨
+- **拡張性**: 共有データは `adbx_shared` に集約し、依存方向を単一化。
+- **性能**: UIの重い処理はSystemsで実行し、描画は軽量化。
+- **安全性**: Lua境界は `anyhow` を用いたエラーハンドリングを徹底。
 
-## 関連ドキュメント
+## 8. 参照ドキュメント
 
-- [APIドキュメント](../api/)
-- [開発者ガイド](../developer-guide/)
-- [ユーザーガイド](../user-guide/)
+- `docs/architecture/system-overview.md` (構成図とECS詳細フロー)
+- `docs/architecture/data-flow.md` (通信/保存/ホットリロードの詳細)
+- `docs/architecture/component-diagram.md` (UI・システム依存関係)
+- `docs/architecture/performance.md` (性能最適化方針)
+- `docs/architecture/diagrams.html` (Kroki統合ビュー)

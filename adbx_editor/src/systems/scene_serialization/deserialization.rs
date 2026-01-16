@@ -1,4 +1,4 @@
-use crate::systems::scene_management::SceneEntity;
+use adbx_shared::components::SceneEntity;
 use adbx_shared::scene::{ComponentData, SceneData};
 use bevy::prelude::*;
 use std::collections::HashMap;

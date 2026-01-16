@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 /// エディタアプリケーションのメインリソース
-#[derive(Resource)]
+#[derive(Resource, Reflect)]
+#[reflect(Resource)]
 #[allow(dead_code)]
 pub struct EditorApp {
     pub current_scene: Option<String>,

@@ -23,7 +23,8 @@ pub struct HierarchyDragState {
 }
 
 /// ヒエラルキーアイテムのマーカーコンポーネント
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct HierarchyItem {
     pub entity: Entity,
 }

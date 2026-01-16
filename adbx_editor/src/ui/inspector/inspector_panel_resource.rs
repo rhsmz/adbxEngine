@@ -32,14 +32,16 @@ impl Default for TransformInputValues {
 }
 
 /// Transform入力フィールドのマーカーコンポーネント
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct TransformInputField {
     pub entity: Entity,
     pub field_type: TransformFieldType,
 }
 
 /// 入力フィールドの編集状態を管理
-#[derive(Resource, Default)]
+#[derive(Resource, Reflect, Default)]
+#[reflect(Resource)]
 pub struct InspectorInputState {
     pub editing_field: Option<(Entity, TransformFieldType)>,
     pub drag_start_value: Option<f32>,
@@ -47,6 +49,7 @@ pub struct InspectorInputState {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Reflect)]
 pub enum TransformFieldType {
     TranslationX,
     TranslationY,
@@ -60,5 +63,6 @@ pub enum TransformFieldType {
 }
 
 /// インスペクターコンテンツのマーカーコンポーネント
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct InspectorContent;
